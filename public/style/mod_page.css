@@ -1,0 +1,33 @@
+/*左框*/
+.index_left{width:725px;float:left;}
+.index_left .box{clear:left;border: 1px solid #FFE4C4;background-color:#FFFAF0;padding: 5px;margin-bottom: 10px;float: left;width: 713px;border-bottom-left-radius: 2px 2px;border-bottom-right-radius: 2px 2px;border-top-left-radius: 2px 2px;border-top-right-radius: 2px 2px;-webkit-border-radius:2px;-moz-border-radius:2px;}
+
+
+/*右框*/
+.index_right{width:215px;float:right;}
+.index_right .right_box{clear:left;}
+.index_right .right_box .recommendbox{margin-left: 10px;margin-bottom: 12px;padding: 4px;background-color: #fccb04;}
+.index_right .right_box .recommendbox .tab_title{padding-left:3px;font-size: 14px;line-height: 26px;color: #333;position: relative;width: 193px;}
+.index_right .right_box .recommendbox .tab_title .ico{position:absolute;right: 0px;top: 2px;}
+
+.right_box .recommendbox .tab_top a{float:left;width:47px;height:21px;margin-right:2px;line-height:21px;border-bottom:0;text-decoration:none;text-align:center;background-image:url(../images/ico/button.gif);background-repeat:no-repeat;background-position:-248px -130px;}
+.right_box .recommendbox .tab_top a:hover{width:51px;height:23px;line-height:23px;color:#000;background-position:-302px -130px;}
+.right_box .recommendbox .tab_top a.on{width:51px;height:23px;line-height:23px;color:#000;background-position:-302px -130px;}
+
+.index_right .right_box .recommendbox .tab_box {background-color:#FFF;}
+.index_right .right_box .recommendbox .tab_box .tab{line-height:24px;background-image:url(../images/ico/num.gif);background-position:left top;background-repeat:no-repeat;display:none;zoom:1;}
+.index_right .right_box .recommendbox .tab_box .tab li{height:24px;line-height:24px;overflow:hidden;width: 195px;background-color:#CCC;display:inline;}
+.index_right .right_box .recommendbox .tab_box .tab li dd{float:left;width:100px;height:24px;line-height:24px;overflow:hidden;padding-left: 20px;}
+.index_right .right_box .recommendbox .tab_box .tab li dt{float:right;width: 65px;height:24px;line-height:24px;overflow: hidden;padding-right: 3px;}
+
+.index_right .right_box .recommendbox .tab_box .tab2{line-height:24px;background-image:url(../images/ico/num.gif);background-position:left top;background-repeat:no-repeat;display:none;zoom:1;}
+.index_right .right_box .recommendbox .tab_box .tab2 li{height:24px;line-height:24px;overflow:hidden;width: 195px;background-color:#CCC;display:inline;}
+.index_right .right_box .recommendbox .tab_box .tab2 li dd{float:left;width:120px;height:24px;line-height:24px;overflow:hidden;padding-left: 20px;}
+.index_right .right_box .recommendbox .tab_box .tab2 li dt{float:right;width: 45px;height:24px;line-height:24px;overflow: hidden;padding-right: 3px;}
+
+
+/*右框-广告*/
+.index_right .right_ad{margin-left: 10px;margin-bottom: 12px;}
+.index_right .right_ad img{width:205px;}
+
+.page_view_content{padding-top:12px;padding-bottom:20px;height:380px;font-size:13px;line-height:220%;}

@@ -1,0 +1,21 @@
+/*------------------
+  星级评论级别
+  ------------------*/
+.pingji li{float:left;width: 140px;line-height: 150%;padding-top: 5px;}
+.pingji li dd{float:left;margin:0;padding:0;color: #666;width: 50px;height: 14px;line-height: 14px;}
+.pingji li dl{float:left;margin:0;padding:0;padding-left: 2px;padding-right: 2px;padding-top: 2px;width: 62px;height: 20px;}
+.pingji li dt {background:url(/public/images/form_stars.gif) no-repeat 1px 0;width:82px;float:left;margin:0;padding:0;margin-top:2px;height: 12px;line-height: 12px;}
+.pingji li dt.hp {background:none;font-family: Verdana, Geneva, sans-serif;color: #333;}
+.pingji li dl {width:20px;float:left;margin:0;padding:0;margin-top:2px;height: 12px;line-height: 12px;background-color:#999;}
+.pingji li div {width:20px;float:left;margin:0;padding:0;margin-top:2px;height: 12px;line-height: 12px;text-align:center;background-color:#F00;}
+.pingji li dt.selectS1 { background-position:1px -17px;}
+.pingji li dt.selectS2 { background-position:1px -34px;}
+.pingji li dt.selectS3 { background-position:1px -51px;}
+.pingji li dt.selectS4 { background-position:1px -68px;}
+.pingji li dt.selectS5 { background-position:1px -85px;}
+.pingji li dt a {text-indent:-999px;overflow:hidden;float:left;width:12px;line-height:12px;height:12px;text-decoration:none;background:none; cursor:default;}
+.pingji li dt a.scor {text-indent:0;background:none;width:20px;float: right;}
+
+/*评论提示*/
+.content .tip_pingji{color:#FFF;padding:4px;width: 80px;text-align: center;z-index: 200;position:absolute;left:105px;top:40px;filter:alpha(opacity=0);-moz-opacity:0;opacity: 0;overflow:hidden;}
+.content .tip_pingji #note{padding:2px;color:#FFF;background-color: #F90;}

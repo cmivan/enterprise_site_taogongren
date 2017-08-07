@@ -1,0 +1,40 @@
+#WB_MSG_BOX{position:relative; cursor:default;}
+
+.wb_msg_main *{margin:0;padding:0;border:0;outline:0;}
+.wb_msg_main table{border-collapse:collapse;border-spacing:0;}
+.wb_msg_main {position:absolute;top:10px; left:-10px;font-family:Arial,Helvetica,sans-serif,"宋体";font-size:12px;font-style:normal;}
+
+.wb_msg_main .close a{position:absolute;right:9px;top:9px;width:8px;height:7px;overflow:hidden;background:url('/public/js/msg_tip/images/gnbimgs.gif') no-repeat 0 -149px;}
+.wb_msg_main .close a:hover{background-position:-8px -149px;}
+.wb_msg_main .arrow {position:absolute;left:32px;top:-8px;width:15px;height:9px;line-height:9px;background:url('/public/js/msg_tip/images/msg_arrow.gif'); background-position:bottom center; background-repeat:no-repeat;}
+
+.CP_w{border:0;border-collapse:collapse;border-spacing:0;width:250px;}
+.CP_w a:hover{color:#000;}
+.CP_w thead .tLeft,.CP_w thead .tMid,.CP_w thead .tRight,.CP_w tfoot .tLeft,.CP_w tfoot .tMid,.CP_w tfoot .tRight,.CP_w_shut{background-image:url('/public/js/msg_tip/images/gnbimgs.gif');}
+.CP_w tbody .tLeft,.CP_w tbody .tRight{background-image:url('/public/js/msg_tip/images/gnbimgs.gif');background-repeat:repeat-y;}
+.CP_w thead .tLeft{background-position:0 0;background-repeat:no-repeat;width:3px;height:3px;background-color:#f00:;}
+.CP_w thead .tMid{background-position:-3px 0;background-repeat:repeat-x;height:3px;}
+.CP_w thead .tRight{background-position:right 0;background-repeat:no-repeat;width:3px;height:3px;}
+.CP_w tfoot .tLeft{background-position:0 -142px;background-repeat:no-repeat;width:3px;height:3px;}
+.CP_w tfoot .tMid{background-position:-3px -142px;background-repeat:repeat-x;height:3px;}
+.CP_w tfoot .tRight{background-position:right -142px;background-repeat:no-repeat;width:3px;height:3px;}
+.CP_w tbody .tLeft{background-position:0 -50px;width:3px;}
+.CP_w tbody .tMid{background:#FDFFEA; padding-left:5px;}
+.CP_w tbody .tRight{background-position:right -50px;width:3px;}
+.CP_w thead .tLeft span,.CP_w thead .tMid span,.CP_w thead .tRight span,.CP_w tfoot .tLeft span,.CP_w tfoot .tMid span,.CP_w tfoot .tRight span,.CP_w tbody .tLeft span,.CP_w tbody .tRight span{display:block;overflow:hidden;}
+.CP_w thead .tLeft span{width:3px;height:3px;}
+.CP_w thead .tMid span{height:3px;}
+.CP_w thead .tRight span{width:3px;height:3px;}
+.CP_w thead .tRight span{width:3px;height:3px;}
+.CP_w tfoot .tLeft span{width:3px;height:3px;}
+.CP_w tfoot .tMid span{height:3px;}
+.CP_w tfoot .tRight span{width:3px;height:3px;}
+.CP_w tbody .tLeft span{width:3px;}
+.CP_w tbody .tRight span{width:3px;}
+.CP_w .yInfo {padding:5px 16px 6px 6px;*padding-bottom:2px;}
+.CP_w .yInfo p{padding-right:14px;line-height:20px;}
+.CP_w .yInfo hr{margin-bottom:8px; margin-top:2px; background-image:url(../../images/ico/xline.gif); background-repeat:repeat-x; height:2px;}
+.CP_w .yInfo span{color:#333!important;}
+.CP_w .yInfo span{display:inline-block;margin:0 11px 0 0;padding:0;color:#7b2820;}
+.CP_w .yInfo a:link,.CP_w .yInfo a:visited{color:#399FD6;}
+.CP_w .yInfo a:hover{color:#390;}

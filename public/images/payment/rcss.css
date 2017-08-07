@@ -1,0 +1,90 @@
+/* 全局样式 */
+
+
+ul { display:block; list-style-type:none;}
+img{ /*vertical-align:top; */border:0;}
+A:link {color: #616161; text-decoration: none;}
+A:visited {color: #616161; text-decoration: none;}
+A:active {color: #FF6000; text-decoration: underline;}
+A:hover {color: #FF6000; text-decoration: underline;}
+.orange12{color:#FF5900;} 
+
+
+
+
+
+/* 付款方式 */
+.netplay{
+	width:660px;
+	margin:0px;
+	text-align:center;
+	padding-top:20px;
+}
+.netplay_bar{margin:15px 0;}
+.netplay_tit{padding:10px 0;}
+.netplay_tit01{padding:20px 0 0 0;}
+.netplaytext{
+	width:660px;
+	margin:0px;
+}
+.netplaytext .wb{
+	width:514px;
+	float:left;
+	text-align:left;
+	line-height:18px;
+}
+.netplayorange{color:#ff6000; font-size:13px; font-weight:bold; line-height:20px;}
+.netplaytext .pic{width:146px; float:left; text-align:center;}
+.netplaybox{
+	width:660px;
+	margin:10px 0;
+}
+.netplaybox .box01{width:6px; height:85px; background:url(netplaybox.jpg) no-repeat 0 0px; overflow:hidden; float:left;}
+.netplaybox .box02{
+	width:622px;
+	height:71px;
+	background:url(netplayboxbg.jpg) repeat-x 0 0px;
+	overflow:hidden;
+	float:left;
+	padding:14px 10px 0 15px;
+	text-align:left;
+}
+.netplaybox .box02 .text{color:#D67941; line-height:20px;}
+.netplaybox .box02 .text .orange{color:#ff6000; line-height:20px;}
+.netplaybox .box02 .text .orange a{color:#ff6000; line-height:20px; text-decoration:none;}
+.netplaybox .box02 .text .orange a:hover{color:#ff6000; line-height:20px; text-decoration:underline;}
+.netplaybox .box03{width:6px; height:85px; background:url(netplaybox.jpg) no-repeat -6px 0px; overflow:hidden; float:left;}
+
+.netplaybox .box001{width:6px; height:171px; background:url(netplaybox.jpg) no-repeat 0px -85px; overflow:hidden; float:left;}
+.netplaybox .box002{
+	width:622px;
+	height:157px;
+	background:url(netplayboxbg.jpg) repeat-x 0px -85px;
+	overflow:hidden;
+	float:left;
+	padding:14px 10px 0 15px;
+	text-align:left;
+}
+.netplaybox .box002 .text{line-height:18px;}
+.netplaybox .box003{width:6px; height:171px; background:url(netplaybox.jpg) no-repeat -6px -85px; overflow:hidden; float:left;}
+
+.netplaybox .box0001{width:6px; height:195px; background:url(netplaybox.jpg) no-repeat 0px -256px; overflow:hidden; float:left;}
+.netplaybox .box0002{
+	width:622px;
+	height:195px;
+	background:url(netplayboxbg.jpg) repeat-x 0px -256px;
+	overflow:hidden;
+	float:left;
+	padding:14px 10px 0 15px;
+	text-align:left;
+}
+.netplaybox .box0002 .text{line-height:18px;}
+.netplaybox .box0003{width:6px; height:195px; background:url(netplaybox.jpg) no-repeat -6px -256px; overflow:hidden; float:left;}
+
+.netplaytext .table{border-collapse:collapse;}
+.netplaytext .table td,th{height:34px; border: solid 1px #F0CFA4; text-align:left; padding-left:20px; text-align:left; color:#616161; padding-top:2px;}
+.netplaytext .table th{height:38px; background:#FFFEF3; font: bold 14px "宋体"; color:#ff6000; padding-left:20px; text-align:left;}
+.netplaytext .wbtext{color:#ff6000;}
+.netplaytext .wbtext a{color:#ff6000; text-decoration:none;}
+.netplaytext .wbtext a:hover{color:#ff6000; text-decoration:underline;}
+

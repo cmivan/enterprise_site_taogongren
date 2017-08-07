@@ -1,0 +1,1 @@
+<?php echo $content; //由于需要对重新生成的CSS及JS内容使用缓存技术，所以这里需要用到view输出 ?>

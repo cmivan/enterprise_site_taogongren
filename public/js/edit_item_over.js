@@ -1,0 +1,12 @@
+//用户管理页面
+$(function(){
+  $(".edit_item_tr").hover(
+  function(){
+	  $(this).css({"background-color":"#F5F5DC"});
+	  $(this).find("td").css({"background-color":"#F5F5DC"});
+	  }, 
+  function(){
+	  $(this).css({"background-color":""});
+	  $(this).find("td").css({"background-color":""});
+	  });
+});

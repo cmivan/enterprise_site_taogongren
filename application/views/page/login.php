@@ -1,0 +1,5 @@
+<form class="validform" method="post">
+<table width="100%" border="0" align="center" cellpadding="0" cellspacing="6" class="userloginbox"><tr><td colspan="2"></td></tr><tr>
+<td width="80" align="center">手机号码：</td><td><input type="text" id="username" style="width:150px;" class="inputxt" value="" />
+&nbsp;&nbsp;<a href="<?php echo site_url("reg")?>" target="_top">免费注册!</a></td></tr><tr><td align="center">登录密码：</td><td><input type="password" id="password" class="inputxt" style="width:150px;" />
+&nbsp;&nbsp;<a href="<?php echo site_url("forget")?>" target="_top" title="忘记密码？">忘记密码？</a></td></tr><tr><td>&nbsp;</td><td style="color:#F00;"><button class="cm_but btu_login" id="login_btu" type="submit">&nbsp;</button><?php /*?><button class="login_qq" type="submit">&nbsp;</button><?php */?></td></tr></table></form>

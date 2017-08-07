@@ -1,0 +1,7 @@
+<?php $this->load->view('public/validform'); ?>
+<link rel="stylesheet" type="text/css" href="<?php echo $css_url;?>mod_form.css" />
+<div class="mainbox" box="content_box"><?php /*?>个人信息页面操作导航<?php */?><div class="mainbox_nav"> <?php echo Get_User_Nav($thisnav,$c_urls); ?> </div><div class="mainbox_box"><form class="validform" method="post"><br><br><table border="0" cellpadding="0" cellspacing="5" class="edit_box_padding_left"><tr><td><div class="val_left"></div></td><td><div class="val_center"></div></td><td><div class="val_right"></div></td></tr>
+<tr><td align="right">原密码：</td><td><input type="password" name="password" class="inputxt" datatype="s6-18" nullmsg="请输入原密码！" errormsg="密码范围在6~18位之间,不能使用空格！" id="password" /></td><td><div class="validform_checktip">输入原来的密码</div></td></tr>
+
+<tr><td align="right">新密码：</td><td><input type="password" name="password_new" class="inputxt" datatype="*" nullmsg="请设置密码！" errormsg="密码范围在6~18位之间,不能使用空格！" id="password_new" /></td><td><div class="validform_checktip">密码范围在6~16位之间,不能使用空格</div></td></tr><tr><td align="right">确认密码：</td><td><input type="password" name="password_new2" class="inputxt" datatype="*" recheck="password_new" nullmsg="请再输入一次密码！" errormsg="您两次输入的账号密码不一致！" id="password_new2" /></td><td><div class="validform_checktip">两次输入密码需一致</div></td></tr>
+<tr><td></td><td colspan="2"><input type="submit" class="save_but" value="" /></td></tr></table><br><br><br></form></div></div>

@@ -1,0 +1,5 @@
+<?php $this->load->view('public/validform'); ?>
+<?php /*?>倒计时<?php */?>
+<script language="javascript" type="text/javascript" src="<?php echo $js_url;?>sms_timeout.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo site_url('global_v1/sms_js/bind')?>"></script>
+<form class="validform"><table border="0" cellpadding="0" cellspacing="3"><tr><td><div class="val_left"></div></td><td><div class="val_center"></div></td><td><div class="val_right"></div></td></tr><tr><td>新绑定手机：</td><td><input type="text" name="mobile" id="mobile" class="inputxt" datatype="m" nullmsg="请输入手机号！" errormsg="请输入您的手机号码！" /></td><td><div class="validform_checktip">请填写您注册时用的的手机号码</div></td></tr><tr><td>验证码：</td><td colspan="2" class="td30"><table border="0" cellpadding="0" cellspacing="0"><tr><td><input name="code" id="code" type="text" class="inputxt" maxlength="4" style="width:120px;" datatype="p" nullmsg="请输入验证码！" errormsg="请填写正确的！"/></td><td><label id="send_sms"><a href="javascript:void(0);">获取验证码</a></label></td></tr></table></td></tr><tr><td></td><td colspan="2"><button type="submit" class="cm_but btu_next">&nbsp;</button></td></tr></table></form>

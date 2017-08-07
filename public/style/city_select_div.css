@@ -1,0 +1,25 @@
+/*------------------
+  城市选择列表-页面顶部
+  ------------------*/
+.city_select{position:relative;width: 630px;z-index:3;}
+.city_select .citys{margin-bottom:5px;}
+.city_select .citys #title{float:left;width:100px;height:23px;line-height:23px;margin-right: 10px;}
+.city_select .citys #title a{float:left;width:92px;height:23px;text-decoration:none;line-height:23px;padding-left: 8px;background-repeat: no-repeat;color: #FFF;font-weight: bold;text-shadow:#900 1px 1px;overflow:hidden;}
+.city_select .citys a{background-image:url(../images/ico/button.gif);background-repeat:no-repeat;}
+
+.city_select .citys #areas{float:right;width:625px;/*height:23px;*/ line-height:23px;height:auto;}
+.city_select .provinces_citys_box{background-color:#FFF;-moz-box-shadow: 0 3px 6px #A0522D;-webkit-box-shadow: 0 3px 6px #A0522D;box-shadow: 0 3px 6px #A0522D;color: white;display: none;font-family: Helvetica, Arial, FreeSans, sans-serif;height: auto;width:688px;overflow: hidden;margin-bottom: 8px;position:absolute;left:-180px;border:#F90 4px solid;z-index: 0;top: 23px;}
+.city_select .provinces_citys{line-height:24px;}
+.city_select .provinces_citys .quyu{padding:4px;}
+.city_select .provinces_citys .quyu a{float:left;width:62px; padding:0;text-align:center;background-color:#CCC;margin-right:2px;line-height:22px;height:22px;text-decoration:none;clear:right;
+background-image:url(../images/ico/button.gif);background-repeat:no-repeat; background-position:-5px -590px;
+}
+.city_select .provinces_citys .quyu a:hover{background-color:#CCC;color:#FFF;background-position:-125px -590px;}
+.city_select .provinces_citys .quyu a.on{background-color:#999;color:#FFF;background-position:-125px -590px;}
+.city_select .provinces_citys #quyu_box{background-position:center;background-repeat:no-repeat;display:table-row;}
+.city_select .provinces_citys .item{margin:0;padding:4px;background-color:#E8E8E8;}
+.city_select .provinces_citys .item2{margin:0;padding:4px;background-color:#FFF;}
+.city_select .provinces_citys .provinces{color:#999;float:left;width:70px;padding-left: 4px;overflow:hidden;word-break:break-all;word-wrap:break-word;}
+.city_select .provinces_citys .areas{color:#CCC;float:left;width:600px;border-left:#CCC 1px dashed;padding-left:5px;}
+.city_select .provinces_citys a{color:#666;font-weight:lighter;float:left;padding:1px;padding-left:7px;padding-right:7px;line-height:22px;text-decoration:none;display:inline-block;white-space:nowrap;}
+.city_select .provinces_citys a:hover{background-color:#F90;color:#FFF;display:inline-block;white-space:nowrap;}

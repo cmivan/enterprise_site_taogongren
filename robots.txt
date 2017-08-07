@@ -1,0 +1,19 @@
+# robots.txt generated at http://www.taogongren.com/ 
+User-agent: googlebot-image
+Disallow: /
+User-agent: googlebot-mobile
+Disallow: /
+User-agent: yahoo-mmcrawler
+Disallow: /
+User-agent: psbot
+Disallow: /
+User-agent: asterias
+Disallow: /
+User-agent: *
+Disallow: 
+Disallow: /public/up/face
+Disallow: /public/images
+Disallow: /public/style
+Disallow: /public/system_style
+Disallow: /public/js
+# Sitemap: http://www.taogongren.com/sitemap.gz

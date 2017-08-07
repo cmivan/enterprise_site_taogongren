@@ -1,0 +1,65 @@
+DL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+DT {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+DD {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+
+IMG {
+	BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+
+#newsSlider .container {
+	MARGIN: 0; margin-bottom:-10px; OVERFLOW: hidden; WIDTH: 248px; POSITION: relative; HEIGHT: 230px;
+}
+#newsSlider DIV.slides {
+	LEFT: 0px; POSITION: absolute; TOP: 0px
+}
+#newsSlider UL.slides {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px; LIST-STYLE-TYPE: none; POSITION: absolute; TOP: 0px
+}
+#newsSlider UL.slides DL {
+	MARGIN-TOP: 20px
+}
+#newsSlider UL.slides DT A {
+	FONT: bold 14px/30px "Lucida Grande", "Lucida Sans Unicode", Arial, Verdana, sans-serif; COLOR: #2a609f
+}
+#newsSlider UL.slides DD {
+	LINE-HEIGHT: 22px
+}
+#newsSlider UL.slides DD .more {
+	MARGIN-TOP: -18px; BACKGROUND: url(images/more.gif); FLOAT: right; OVERFLOW: hidden; WIDTH: 14px; TEXT-INDENT: -100em; HEIGHT: 12px
+}
+#newsSlider DIV.slides DIV {
+	PADDING-RIGHT: 0px; DISPLAY: none; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; WIDTH: 280px; PADDING-TOP: 0px; POSITION: absolute; TOP: 0px
+}
+UL.slides LI {
+	PADDING-RIGHT: 0px; DISPLAY: none; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; WIDTH: 280px; PADDING-TOP: 0px; POSITION: absolute; TOP: 0px
+}
+#newsSlider #loopedSlider {
+	CLEAR: both; MARGIN: 0px auto; WIDTH: 280px; POSITION: relative
+}
+#newsSlider {
+	CLEAR: both; MARGIN: 0px auto; WIDTH: 280px; POSITION: relative
+}
+#newsSlider UL.pagination {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px; POSITION: absolute; TOP: 185px
+}
+#newsSlider UL.pagination LI {
+	FLOAT: left;
+	MARGIN-RIGHT: 5px;
+	list-style: none;
+}
+#newsSlider UL.pagination LI A {
+	DISPLAY: block; BACKGROUND: url(images/imgnews_side_Number.gif) no-repeat 0px 0px; FONT: bold 12px/15px "Times New Roman", Times, serif; WIDTH: 15px; COLOR: #fff; TEXT-ALIGN: center;
+	text-decoration:none;
+}
+#newsSlider UL.pagination LI.active A {
+	BACKGROUND-POSITION: 0px 100%; COLOR: #fff; TEXT-DECORATION: none
+}
+UL.pagination LI A:hover {
+	BACKGROUND-POSITION: 0px 100%; COLOR: #fff; TEXT-DECORATION: none
+}

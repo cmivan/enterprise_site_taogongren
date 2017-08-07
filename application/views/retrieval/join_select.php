@@ -1,0 +1,3 @@
+<div class=sel_but><div class=sel_title>请选择以个人还是团队身份参加该投标!</div><div class=clear></div><div class="sel_menber"><?php if(!empty($Uuser)){?><a title='(个人)参加投标' class='thickbox' href='<?php echo site_url("/retrieval/joins")?>?height=355&width=680&ok=1&id=<?php echo $id?>&type=U'><img width='80' height='80' src='<?php echo $this->User_Model->faceS($Uuser->photoID)?>' /><br>（个人） <?php echo $Uuser->name?></a>	<?php }?>
+
+<?php if(!empty($Tuser)){?><a title='(团队)参加投标' class='thickbox' href='<?php echo site_url("/retrieval/joins")?>?height=355&width=680&ok=1&id=<?php echo $id?>&type=T'><img width='80' height='80' src='<?php echo $this->User_Model->faceS($Tuser->photoID)?>' /><br>（团队） <?php echo $Tuser->name?></a>	<?php }?></div><div class=clear></div></div>

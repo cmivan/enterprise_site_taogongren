@@ -1,0 +1,6 @@
+RewriteEngine on
+RewriteCond %{http_host} ^taogongren.com [NC]
+RewriteRule ^(.*)$ http://www.taogongren.com/$1 [L,R=301]
+
+RewriteCond $1 !^(index\.php|public|favicon.ico|robots\.txt)
+RewriteRule ^(.*)$ /index.php/$1 [L]

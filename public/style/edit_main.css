@@ -1,0 +1,279 @@
+/*页面左边*/
+.my_left{
+	float:left;
+	width:180px;
+	border:#CCC 1px solid;
+	display:none;
+	}
+.my_left .my_left_nav{background-color:#fff; border-bottom:#CCC 2px solid;}
+.my_left .my_left_nav a{
+	float:left;
+	font-size:14px;
+	width:79px;
+	padding-left:12px;
+	margin-right:-1px;
+	line-height:32px;
+	height:32px;
+	border:0;
+	background-image:url(../images/ico/button.gif);
+	background-position:-5px -629px;
+	background-repeat:no-repeat;
+	}
+.my_left .my_left_nav a:hover,.my_left .my_left_nav a.on{
+	text-decoration:none;color:#000;
+	background-position:-125px -629px;
+	}
+.my_left .my_left_nav .line{
+	height:1px;line-height:1px; border-top:#fff 1px solid; background-color:#999;
+	}
+	
+	
+/*次级导航栏目样式*/
+.edit_nav_2 a{
+	color:#666;
+	float:left;
+	padding:3px;
+	padding-left:12px;
+	padding-right:12px;
+	border:#CCC 1px solid;
+	text-decoration:none;
+	}
+.edit_nav_2 a:hover,.edit_nav_2 a.on{
+	background-color:#F60;
+	color:#FFF;
+	border:#F00 1px solid;
+	text-decoration:none;
+	}
+	
+
+/*页面右边*/
+.my_right{float:right;width:750px;}
+	
+/*主内容框*/	
+.mainbox_nav{
+	margin-bottom:-1px;
+	height:26px;
+	line-height:26px;
+	z-index:1;
+	position:relative;
+	}
+.mainbox_nav a{
+	float:left;
+	padding-left:12px;
+	padding-right:12px;
+	background-color:#F3F3F3;
+	color:#999;
+	font-size:12px;
+	border:#CCC 1px solid;
+	border-bottom:0;
+	margin-right:2px;
+	height:25px;
+	line-height:25px;
+	background-image:url(../images/ico/button.gif);
+	background-repeat:repeat-x;
+	background-position:bottom center;
+	background-position:-5px -426px;
+	}
+.mainbox_nav a.on{
+	background-color:#FFF;
+	border:#CCC 1px solid;
+	border-top:#333 1px solid;
+	border-bottom:#FFF 1px solid;
+	color:#000;
+	border-bottom:0;
+	margin-right:2px;
+	background-position:-5px -386px;
+	}
+.mainbox_nav a:hover.on{background-position:-5px -386px;}
+.mainbox_nav a:hover{background-position:-5px -386px;color:#000;text-decoration:none;}
+.mainbox_nav .info{
+	float:left;
+	padding-left:15px;
+	padding-right:15px;
+	color:#666;
+	font-size:12px;
+	}
+.mainbox_box{
+	border:#CCC 1px solid;background-color:#FFF;
+	padding:8px;
+	padding-top:15px;
+	position:relative;
+	z-index:0;
+	}
+
+
+/*保存按钮*/
+.save_but{
+	border:0;
+	width:88px;
+	height:30px;
+	cursor:pointer;
+	background-image:url(../images/ico/button.gif);background-repeat:no-repeat;background-position:-5px -247px;
+	}
+.save_but:hover{background-position:-125px -247px;}
+.submit_but{border:0;}
+	
+/*上传图片按钮*/	
+#face_up_btu{
+	border:0;cursor:pointer;background-image:url(../images/my/uppic_but.gif);background-repeat:no-repeat;width:98px;height:30px;
+	}
+	
+	
+/*编辑框*/
+.edit_box_order_project{ margin-top:7px; border:#e6e6e6 1px solid; }
+.edit_box_order_project_hover{ margin-top:7px; border:#000 1px solid; }
+.edit_box_padding_left{margin-left:70px;}
+.edit_box_spen{color:#999;}
+.edit_box_main{width:680px;height:1px;line-height:1px;}
+.edit_box_save_but{text-align:center;}
+.edit_box_left{width:100px;height:1px;line-height:1px;}
+.edit_box_right{width:550px;height:1px;line-height:1px;}
+.edit_item_frist td{
+	font-weight: bold;
+	background-image:url(../images/ico/bgs.gif);
+	background-repeat:repeat-x;
+	background-position:bottom;
+	background-position:0 -46px;
+	line-height:180%;
+	}
+.edit_item_frist_bg td{ background-color:#f3f3f3; }
+.edit_item_frist_line { border-top:#e6e6e6 1px solid; }
+.edit_item_none{height:120px;text-align:center;}
+.edit_item_tr{}
+
+	
+.yzpage_maintitle
+{
+	width:100%;
+	border-bottom:1px solid #ccc;
+	clear:both;
+	display:inline-block;
+	margin:0 0 4px;
+	font-size:20px;
+	line-height:180%;
+	font-weight:bold;
+}
+.yzpage_line
+{
+	background-image:url(../images/ico/xline.gif);
+	background-position:right center;
+	background-repeat:repeat-x;
+	line-height:1px;
+	height:1px;
+}
+.yzpage_title{color:#333;}
+.yzpage_note{color:#999;}
+.yzpage_but a{color:#F90;font-weight: bold;}
+
+
+/*头像设置*/
+.team_face{
+	border:#666 1px solid;
+	float:left;
+	padding-bottom:0;
+	margin-bottom:0;
+	/*
+    display:inline-table;
+	padding:6px;
+	background-image:url(../images/ico/face_bg.jpg);
+	background-position:center;
+	background-repeat:no-repeat;
+	*/
+	}
+.team_face a{
+	float:left;width:80px;height:80px;padding:2px;
+	}
+.team_face img{
+	width:80px; height:80px;
+	}
+
+/*订单用户选择*/
+#order_select_user{
+	padding-left:22px;
+	border:#ccc 1px solid;
+	float:left;
+	width:700px;
+	padding-top:20px;
+	padding-bottom:20px;
+	}
+#order_select_user li {
+	width:80px;
+	height:102px;
+	overflow:hidden;
+	padding:6px;
+	margin-right:20px;
+	margin-bottom:20px;
+	list-style:none;
+	text-align:center;
+	background-color:#ddd;
+	border:#aaa 1px solid;
+	border-bottom:#aaa 3px solid;
+	float:left;
+	cursor:pointer;
+	}
+#order_select_user li.over {
+	border:#F63 1px solid;
+	border-bottom:#F60 3px solid;
+	}
+#order_select_user li.select {
+	background-color:#F93;
+	border:#F63 1px solid;
+	border-bottom:#F60 3px solid;
+	background-image:url(../images/ico/jiao.gif);
+	background-position:bottom right;
+	background-repeat:no-repeat;
+	}
+#order_select_user li img{
+	width:80px;
+	height:80px;
+	}
+#order_select_user li span{
+	line-height:22px;
+	height:22px;
+	}
+
+
+
+.left_nav_line{height:0px; line-height:0px; background-color:#999;}
+
+
+/*订单评分样式*/
+.common_tab {
+	border-bottom:1px solid #CCC;
+	margin-bottom:7px;
+	}
+.common_tab a{
+	text-align:center;
+	background-image:url(../images/ico/button.gif);
+	background-repeat:no-repeat;
+	background-position:-248px -246px;
+	float:left;
+	height:30px;
+	line-height:25px;
+	width:94px;
+	margin-left:3px;
+	margin-bottom:-6px;
+	border:0;
+	}
+.common_tab a:hover,.common_tab a.on{
+	text-decoration:none;
+	background-position:-248px -276px;
+	}
+	
+	
+	
+	
+/*页面loading框*/
+.my_right{ position:relative; display:table; height:600px; }
+#user_center_box_mark{
+	position:absolute; z-index:10000; text-align:center; display:table-cell; vertical-align:middle;
+	background-image:url(../images/transparent_bg.gif);
+	}
+#user_center_box_mark #mark_load{
+	margin:auto;
+	margin-top:50px;
+	height:13px;
+	width:208px;
+	/*background-image:url(/public/js/thickbox/images/loadingAnimation.gif);*/
+	}	
+	
