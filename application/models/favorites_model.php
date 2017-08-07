@@ -1,5 +1,5 @@
 <?php
-#收藏用户
+#单用户信息
 
 class Favorites_Model extends CI_Model {
 
@@ -12,67 +12,29 @@ class Favorites_Model extends CI_Model {
 /**
  * 返回列表sql语句,用于分页
  */
-  function listsql($uid)
+  function listsql($logid)
   {
-	    $this->db->select('*');
-    	$this->db->from('favorites');
-    	$this->db->where('uid',$uid);
-    	$this->db->order_by('id','desc');
-		//返回SQL
-		return $this->db->getSQL();
+	 return "select * from favorites where uid=".$logid." order by id desc";
   }		
 	
-	
-/**
- * 增加收藏用户
- */
-	function add($data='')
-	{
-    	return $this->db->insert('favorites',$data);
-	}
-	
-/**
- * 限制只增加一位收藏用户
- */
-	function add_one($uid=0,$uid2=0)
-	{
-		if( $this->is_favorites($uid,$uid2) == false )
-		{
-			$data = array(
-				  'uid' => $uid ,
-				  'fuid' => $uid2
-				  );
-			$this->add($data);
-			return true;
-		}
-		return false;
-	}
+
   
 /**
  * 删除数据
  */
-  function del($id=0,$uid=0)
+  function del($id=0,$logid=0)
   {
-    	$this->db->where('uid', $uid);
-		$this->db->where('id', $id);
-    	return $this->db->delete('favorites'); 
+	  $this->db->query("delete from `favorites` where uid=".$logid." and id=".$id);
   }
-  
+
+
   
 /**
  * 判断是否已经收藏
  */
   function is_favorites($uid=0,$uid2=0)
   {
-  	    $this->db->from('favorites');
-    	$this->db->where('uid', $uid);
-		$this->db->where('fuid', $uid2);
-		
-    	if($this->db->count_all_results()<=0)
-    	{
-    		return false;
-    	}
-    	return true;
+	  return $this->db->query("select id from `favorites` where uid=".$uid." and fuid=".$uid2)->num_rows();
   }
 
 

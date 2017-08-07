@@ -1,25 +1,13 @@
 $(function(){
-	//页面加载完成,技能框自适应高度
-	fitheight();
-		   
-	//收展技术栏并记录状态	   
-	$("#skills_box #btu_skill_change").click(function(){
-		updown();
-		var isopen=$("#skills_box").attr("isopen");
-		if(isopen=="1"){isopen="1";}else{isopen="0";}
-		$.get('/search/open/?isopen=' + isopen);
-	});
-	//设计师样式
-	$("#industry").find("a#612").css({"color":"#F60"});
 
 	//添加提示标签
 	//$(".click_box").attr("title","  选择后，按下回车键(Enter)搜索!  ");
 	//选择工种时触发
-	$("#industryid a").live("click",function(){skills(0);skills(1);});
+	$("#search_industry a").live("click",function(){skills(0);skills(1);});
 	//修改项目类型的时触发
 	$(".click_box #classid").change(function(){skills(0);skills(1);});
 	//点击搜索按钮的时候触发
-	$(".search_but").live("click",function(){ window.location.href = searchUrl(); return false; });
+	$(".search_but").live("click",function(){window.location.href="?"+searchUrl();return false;});
 
     //初始化、绑定右边工人tab事件
 	$(".recommendbox .tab_top").find("a").eq(0).attr("class","on");
@@ -33,7 +21,8 @@ $(function(){
 			var thisindex=$(this).index();
 			$(this).parent().find("a").attr("class","");
 			$(this).attr("class","on");
-			$(this).parent().parent().find(".tab_box").find(".tab").css({display:"none"}).eq(thisindex).css({display:"block"});
+			$(this).parent().parent().find(".tab_box").find(".tab").css({display:"none"});
+			$(this).parent().parent().find(".tab_box").find(".tab").eq(thisindex).css({display:"block"});
 		   },
 		function(){}
 		);							  
@@ -50,8 +39,9 @@ $(function(){
 			$(this).find(".butsearch").css({display:"block"});
 			},
 		function(){
-			$(this).attr("class","").css({"position":""});
+			$(this).attr("class","");
 			//隐藏按钮
+			$(this).css({"position":""});
 			$(this).find(".butsearch").css({display:"none"});
 			}
 		);
@@ -69,13 +59,15 @@ $(function(){
 			},
 		function(){
 			var parObj=$(".search_left").find(".box li").eq(1);
-			parObj.attr("class","").css({"position":""});
+			parObj.attr("class","");
 			//隐藏按钮
+			parObj.css({"position":""});
 			parObj.find(".butsearch").css({display:"none"});
 			}
 		);
-
-//鼠标移到工人上显示效果,背景变色(9:46 2011-3-1)
+ 
+ 
+	//鼠标移到工人上显示效果,背景变色(9:46 2011-3-1)
 //	$(".worker").find("table").hover(
 //		function(){$(this).attr("class","on")},
 //		function(){$(this).attr("class","")}

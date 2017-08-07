@@ -1,4 +1,4 @@
-<?php $this->load->view('public/validform'); ?>
+<?php $this->load->view('public/header'); ?>
 <?php
 $T = false;
 function editbox($key,$val,$T=false){
@@ -48,16 +48,20 @@ function KEbox(keyid){
 .team_nav a:hover{background-color:#FC0;}
 .team_nav a.on{background-color:#FC0;padding-left:10px;padding-right:10px;float:left;margin-right:1px;}
 </style>
-<div class="mainbox" box="content_box">
-<?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo Get_User_Nav($thisnav,$c_urls); ?> </div>
+</head>
+<body><?php $this->load->view('public/top'); ?><div class="main_width">
+<div class="body_main"><?php /*?>管理页面的框架分布<?php */?>
+<div class="my_left"><div class="my_left_nav"><?php $this->load->view($c_url.'leftnav'); ?>
+<div class="clear"></div></div></div><div class="my_right"><div class="mainbox" box="content_box">
+<?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo c_nav($thisnav,$c_urls); ?> </div>
 
 <div class="mainbox_box">
 <?php if($is_sys_inviter==true){?>
 
   <?php if($create_2gift==false){?>
   <div class="tipbox" style="margin-bottom:22px;">
-  成功创建团队并完善团队信息以及<a href="<?php echo site_url($c_urls.'/face')?>" class="tip red" title="进入团队头像页面上传头像!">上传团队头像</a>后可以领取<span class="chenghong">5</span>个由系统送出的淘工币！
-  <a href="javascript:void(0);" class="blue" cmd='null' id="gift_ok">已经完善资料了，我要领取！</a></div>
+  成功创建团队并完善团队信息以及<a href="<?php echo site_url($c_urls.'/face')?>" class="tip" title="进入团队头像页面上传头像!">上传团队头像</a>后可以领取<span class="chenghong">5</span>个由系统送出的淘工币！
+  <a href="javascript:void(0);" class="blue" id="gift_ok">已经完善资料了，我要领取！</a></div>
   <?php }?>
   
 <form class="validform" method="post">
@@ -97,10 +101,10 @@ function KEbox(keyid){
 
 <tr><td align="right" style="vertical-align:top; padding-top:35px;">其他信息：&nbsp;&nbsp;</td><td colspan="2">
   <div class="team_nav">
-  <a nav="y" href="javascript:void(0);" cmd='null' class="on">团队简介</a>
-  <a nav="y" href="javascript:void(0);" cmd='null'>服务项目</a>
-  <a nav="y" href="javascript:void(0);" cmd='null'>服务地区</a>
-  <a nav="y" href="javascript:void(0);" cmd='null'>参考报价</a>
+  <a nav="y" href="javascript:void(0);" class="on">团队简介</a>
+  <a nav="y" href="javascript:void(0);">服务项目</a>
+  <a nav="y" href="javascript:void(0);">服务地区</a>
+  <a nav="y" href="javascript:void(0);">参考报价</a>
   </div>
   
   <?php /*?>团队简介<?php */?>
@@ -146,4 +150,6 @@ function KEbox(keyid){
 <br><br>
 </div>
 <?php }?> 
-</div></div>
+</div></div></div>
+<div class="clear"></div></div></div>
+<?php $this->load->view('public/footer');?>

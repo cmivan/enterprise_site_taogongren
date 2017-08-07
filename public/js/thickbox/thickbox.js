@@ -432,7 +432,7 @@ function msg_tip(tip)
 	tb_show('温馨提示','?TB_intext=true&height=100&width=250',tip);
 }
 
-//正确类提示
+//错误类提示
 function msg_ok(tip)
 {
 	tip = msg_content_box(tip);

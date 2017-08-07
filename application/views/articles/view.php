@@ -22,6 +22,19 @@ $(".recommendbox").find(".tab").eq(1).css({display:"block"});
 
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td>&nbsp;</td><td width="570">
+<?php /*?>
+<!-- ShareTo Button BEGIN -->
+<div class="shareto_toolbox">
+<a href="http://shareto.com.cn/share.html" class="shareto_button_compact">分享到</a>
+<span class="shareto_separator">|</span>
+<a class="shareto_button_tsina"></a><span style="margin-left:0;" class="shareto_separator">新浪微博</span>
+<a class="shareto_button_kaixin001"></a><span style="margin-left:0;" class="shareto_separator">开心网</span>
+<a class="shareto_button_renren"></a><span style="margin-left:0;" class="shareto_separator">人人网</span>
+<a class="shareto_button_douban"></a><span style="margin-left:0;" class="shareto_separator">豆瓣</span>
+</div>
+<script type="text/javascript" src="http://s.shareto.com.cn/js/shareto_button.js" charset="utf-8"></script>
+<!-- ShareTo Button END -->
+<?php */?>
 
 <?php /*?>from:http://www.jiathis.com/share/<?php */?>
 <!-- JiaThis Button BEGIN -->
@@ -45,9 +58,6 @@ $(".recommendbox").find(".tab").eq(1).css({display:"block"});
 </td></tr></table></div></div>
 <div class="index_right"><div class="right_box">
 <div class="recommendbox"><div class="tab_title">学堂分类</div><div class="clear"></div><div class="tab_box" id="help_but"><div class="tab" style="display:block; background-image:url(<?php echo $img_url?>ico/num.gif);"><?php if(!empty($type)){?><?php foreach($type as $rs){?><li><dd><a href="<?php echo site_url("/articles/type/".$rs->t_id)?>"><?php echo $rs->t_title?></a></dd></li><?php }?><?php }?><div class="clear"></div></div></div><div class="clear"></div></div>
-
-<div class="recommendbox"><div class="tab_title">热门学堂</div><div class="clear"></div><div class="tab_box" id="help_but"><div class="tab2" style="display:block; background-image:url(<?php echo $img_url?>ico/num.gif);"><?php if(!empty($list_hot)){?><?php foreach($list_hot as $rs){?><li><dd><a href="<?php echo site_url("/articles/view/".$rs->id)?>" title="<?php echo $rs->title?>"><?php echo $rs->title?></a></dd><dt><span class="red"><?php echo $rs->visited?>℃</span></dt></li><?php }?><?php }?><div class="clear"></div></div></div><div class="clear"></div></div>
-
 <?php $this->load->view('public/mod_yxb');?>
 <div class="right_ad"><a href="javascript:void(0);"><img src="<?php echo $img_url?>ads/index_ad.jpg" /></a></div> </div></div>
 <!--清除浮动--><div class="clear"></div></div></div>

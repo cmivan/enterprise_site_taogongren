@@ -2,6 +2,9 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Up_avatar extends E_Controller {
+	
+	public $data;  //用于返回页面数据
+	public $logid = 0;
 
 	public $rootpath = ""; //图片上传目录
 	public $uppath   = ""; //根目录
@@ -15,6 +18,11 @@ class Up_avatar extends E_Controller {
 		@header("Expires: 0");
 		@header("Cache-Control: private, post-check=0, pre-check=0, max-age=0", FALSE);
 		@header("Pragma: no-cache");
+		
+		//基础数据
+		$this->data = $this->basedata();
+		//初始化用户id
+		$this->logid = $this->data["logid"];
 
 		$this->load->helper('avatar');
 		//图片处理类
@@ -132,7 +140,7 @@ class Up_avatar extends E_Controller {
 		if($type!='small'&&$type!='big'){$type='small';}
 		//需要用来保存图片,所以必须保证该id合法
 		$pic_id_temp = str_replace('0','',$pic_id);
-		$pic_id_temp = get_num($pic_id_temp);
+		$pic_id_temp = is_num($pic_id_temp);
 		if($pic_id_temp==false){exit;}
 		//$pattern="/(\d+)f(\d+)/";
 		//if(preg_match($pattern,$pic_id)==false)
@@ -172,11 +180,11 @@ class Up_avatar extends E_Controller {
 		//更新头像
 		//$ss=inface($pic_id,$this->logid);
 		//$this = & get_instance();
-		
-		//"update `user` set `photoID`=".$pic_id." where id=".$this->logid
-		$this->User_Model->user_update( $this->logid , array('photoID' => $pic_id) );
 
+		$this->db->query("update `user` set `photoID`=".$pic_id." where id=".$this->logid);
+		
 		$msg = json_encode($d);
+		
 		json_echo($msg);
 		
 		//写入日志

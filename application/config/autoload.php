@@ -113,7 +113,7 @@ $autoload['language'] = array('system');
 */
 
 
-$autoload['model'] = array('Place_Model','User_Model');
+$autoload['model'] = array('Place','User_Model');
 
 
 

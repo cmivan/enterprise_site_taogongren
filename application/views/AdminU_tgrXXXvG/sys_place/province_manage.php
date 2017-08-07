@@ -68,13 +68,13 @@ if(!empty($place_regions)){
 <?php
 if(!empty($place_provinces)){
 	foreach($place_provinces as $rs){
-		$city_num = $this->Place_Model->province2city_num($rs->p_id);
+		$city_num = $this->Place->province2city_num($rs->p_id);
 ?>
 <tr class="forumRow">
 <td align="center"><?php echo $rs->p_id;?></td>
 <td class="td_padding">&nbsp;&nbsp;<?php echo $rs->p_name?></td>
 <td align="center" class="td_padding"><?php echo $city_num?></td>
-<td align="center" class="td_padding"><?php echo $this->Place_Model->province2area_num($rs->p_id)?></td>
+<td align="center" class="td_padding"><?php echo $this->Place->province2area_num($rs->p_id)?></td>
 <?php /*?><td align="center" class="td_padding"><?php echo $rs->order_id?></td><?php */?>
 <td align="center" class="td_padding">
 <a href="<?php echo site_url($s_url.'place_city/city_edit')?><?php echo reUrl('p_id='.$rs->p_id.'&id=null')?>">添加</a>

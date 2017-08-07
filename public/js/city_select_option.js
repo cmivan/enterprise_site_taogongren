@@ -19,8 +19,10 @@ function JsonSel(obj,url)
 	selectTo(obj,"loading");
 	//提交并返回数据
 	$.ajax({
-		   url:base_url + url,
-		   type:'GET',dataType:'json',async:false,
+		   url:base_url+url,
+		   type:'GET',
+		   dataType:'json',
+		   async:false,
 		   success:function(data){ selectTo(obj,data); }
 		 });
 	obj.fadeOut(0).fadeIn(400);

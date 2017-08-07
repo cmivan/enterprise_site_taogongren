@@ -1,3 +1,4 @@
+<?php $this->load->view('public/header'); ?>
 <?php /*?>技能列表<?php */?>
 <link rel="stylesheet" type="text/css" href="<?php echo $css_url;?>page_user_skills.css" />
 <?php /*?>点击技能时响应<?php */?>
@@ -5,10 +6,11 @@
 $(function(){
 $(".pro_item a").click(function(){
 	var pro_id=$(this).parent().attr("id");
-	tb_show('添加技能报价','<?php echo site_url($c_urls."/add")?>?height=175&width=420&pro_id='+pro_id,false);
+	tb_show('添加技能报价','<?php echo site_url($c_urls."/edit")?>?height=175&width=420&pro_id='+pro_id,false);
 });});
 </script>
-<div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo Get_User_Nav($thisnav,$c_urls); ?> </div>
+</head><body>
+<?php $this->load->view('public/top'); ?><div class="main_width"><div class="body_main"><?php /*?>管理页面的框架分布<?php */?><div class="my_left"><div class="my_left_nav"><?php $this->load->view($c_url.'leftnav'); ?><div class="clear"></div></div></div><div class="my_right"><div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo c_nav($thisnav,$c_urls); ?> </div>
 
 <div class="mainbox_box">
 <div class="content tipbox">温馨提示：您可以点击下面的项目，并填写您对该项目的报价!</div>
@@ -62,15 +64,16 @@ if(!empty($gc_industrys)){
 				$pro_tip="，报价:".$gcis_rs->price."(元)";
 				$pro_css=" style='color:#F00;text-decoration:underline'  class='tip'";
 				}
-?><div class="pro_item" id="<?php echo $gcis_rs->id?>"><a href="javascript:void(0);" cmd='null' title="<?php echo $gcis_rs->title.$pro_tip?>" <?php echo $pro_css?>><?php echo $gcis_rs->title?></a></div>
+?><div class="pro_item" id="<?php echo $gcis_rs->id?>"><a href="javascript:void(0);" title="<?php echo $gcis_rs->title.$pro_tip?>" <?php echo $pro_css?>><?php echo $gcis_rs->title?></a></div>
 <?php }}}}?></td></tr><?php }?></table></div></div>
 
 <?php }}else{?>
 <div class="industry_box cm_btu">
 <br /><br /><br />
 <table border="0" align="center">
-<tr><td><a class="buttom" cmd='null' href="<?php echo site_url($c_urls."/skills_management")?>">+请添加技能+</a></td></tr>
-</table>
+<tr><td><a class="buttom" href="<?php echo site_url($c_urls."/skills_management")?>">+请添加技能+</a></td></tr>
+</table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 </div>
 <?php }?>
-</div></div></div>
+</div></div></div></div>
+<div class="clear"></div></div></div><?php $this->load->view('public/footer');?>

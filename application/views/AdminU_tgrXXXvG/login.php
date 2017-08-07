@@ -11,11 +11,6 @@
 <script type="text/javascript">
 var url = "<?php echo site_url($s_urls."/verifycode")?>?";
 $(function(){ $('#verifycode').attr('src',url); });
-<?php /*?>
-站点绑定提示标签，但后台没有这项
-因此需定义该函数 防止出错
-<?php */?>
-function bindtip(){ return false; }
 function reload_vcode(v)
 {
 	var rand = Math.random();

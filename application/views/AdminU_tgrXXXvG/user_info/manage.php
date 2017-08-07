@@ -76,9 +76,9 @@ if(!empty($list)){
 <td align="center"><?php echo $this->Records_Model->balance_cost($rs->id,"T")?></td>
 <td align="center"><?php echo $this->Records_Model->balance_cost($rs->id,"S")?></td>
 <?php */?>
-<td align="center"><a href="?p_id=<?php echo $rs->p_id?>"><?php echo $this->Place_Model->province_name($rs->p_id)?></a></td>
-<td align="center"><a href="?p_id=<?php echo $rs->p_id?>&c_id=<?php echo $rs->c_id?>"><?php echo $this->Place_Model->city_name($rs->c_id)?></a></td>
-<td align="center"><a href="?p_id=<?php echo $rs->p_id?>&c_id=<?php echo $rs->c_id?>&a_id=<?php echo $rs->a_id?>"><?php echo $this->Place_Model->area_name($rs->a_id)?></a></td>
+<td align="center"><a href="?p_id=<?php echo $rs->p_id?>"><?php echo $this->Place->province_name($rs->p_id)?></a></td>
+<td align="center"><a href="?p_id=<?php echo $rs->p_id?>&c_id=<?php echo $rs->c_id?>"><?php echo $this->Place->city_name($rs->c_id)?></a></td>
+<td align="center"><a href="?p_id=<?php echo $rs->p_id?>&c_id=<?php echo $rs->c_id?>&a_id=<?php echo $rs->a_id?>"><?php echo $this->Place->area_name($rs->a_id)?></a></td>
 <td align="center"><?php echo dateHi($rs->addtime)?></td>
 <td align="center">
   <input type="button" class="button delete" url='<?php echo reUrl('del_id='.$rs->id)?>' title='<?php echo $rs->name?>' value="删除" />
@@ -90,7 +90,7 @@ if(!empty($list)){
 <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" id="forum3">
 <tr>
 <td width="80"><input type="submit" value="删除选中项" id="Submit_delsel" class="button" /></td>
-<td><?php $this->paging->links(); ?></td>
+<td><?php $this->Paging->links(); ?></td>
 </tr></table>
 </TD></tr>
 <?php }else{?>

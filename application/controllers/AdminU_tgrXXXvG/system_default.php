@@ -2,6 +2,9 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class System_default extends XT_Controller {
+	
+	public $data;  //用于返回页面数据
+	public $logid = 0;
 
 	function __construct()
 	{
@@ -10,18 +13,21 @@ class System_default extends XT_Controller {
 		/*初始化加载application\core\MY_Controller.php
 		这里的加载必须要在产生其他 $data 数据前加载*/
 
+		//基础数据
+		$this->data  = $this->basedata();
 		//初始化用户id
 		$this->logid = $this->data["power_system"]["logid"];
 	}
+	
+
 
 	function index()
 	{
 		//注销session
 		$login = $this->input->get('login');
-		if($login=='out')
-		{
+		if($login=='out'){
 			$this->login_out();
-		}
+			}
 
 		$this->load->view_system('system_default',$this->data);
 	}
@@ -52,14 +58,11 @@ class System_default extends XT_Controller {
 		//获取用户信息
 		$this->load->model('System_user_Model');
 		$rs = $this->System_user_Model->view($this->logid);
-		if(!empty($rs))
-		{
+		if(!empty($rs)){
 			$token_key = pass_token($rs->username.$rs->password.$rs->power.$rs->super);
 			$this->data['token_time'] = $rs->token_time;
 			$this->data['token_key'] = $rs->token_key;
-		}
-		else
-		{
+		}else{
 			json_echo('服务器繁忙!');
 		}
 		
@@ -67,20 +70,16 @@ class System_default extends XT_Controller {
 		$this->data['tip'] = '';
 		$cmd = $this->input->post('cmd');
 		$action = $this->input->get('action');
-		if($cmd=='0'&&$action=='go')
-		{
+		if($cmd=='0'&&$action=='go'){
 			//注销链接
 			$data['token_key'] = 0;
 			$data['token_time'] = dateTime();
 			$this->db->where('id',$this->logid);
 			$this->db->update('km_admin',$data);
 			$this->data['tip'] = '成功注销一键登录链接!';
-		}
-		elseif($cmd=='1'&&$action=='go')
-		{
+		}elseif($cmd=='1'&&$action=='go'){
 			//生成链接
-			if(!empty($rs)&&!empty($token_key))
-			{
+			if(!empty($rs)&&!empty($token_key)){
 				//更新数据
 				$data['token_key'] = 1;
 				$data['token_time'] = dateTime();

@@ -2,6 +2,9 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Login extends QT_Controller {
+	
+	public $data;  //用于返回页面数据
+	public $logid = 0;
 
 	function __construct()
 	{
@@ -10,6 +13,8 @@ class Login extends QT_Controller {
 		/*初始化加载application\core\MY_Controller.php
 		这里的加载必须要在产生其他 $data 数据前加载*/
 
+		//基础数据
+		$this->data  = $this->basedata();
 		//初始化用户id
 		$this->logid = $this->data["logid"];
 	}
@@ -54,16 +59,9 @@ class Login extends QT_Controller {
 		}else{
 			//开始验证
 			$pass = pass_system($pass);
-			
-			$this->db->select('id,super,username,password');
-			$this->db->from('km_admin');
-			$this->db->where('password',$pass);
-			$this->db->where('username',$user);
-			$this->db->limit(1);
-			$rs = $this->db->get()->row();
-			
-			if(!empty($rs))
-			{
+			$rs = $this->db->query("select id,super,username,password from km_admin where
+			 password='".$pass."' and username='".$user."'")->row();
+			if(!empty($rs)){
 				//二重审核
 				if(($rs->password==$pass)&&($rs->username==$user))
 				{

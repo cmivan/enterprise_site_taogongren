@@ -10,14 +10,10 @@ $(".recommendbox").find(".tab").eq(1).css({display:"block"});
 <table width="100%" border="0" align=center cellpadding=0 cellspacing=0 class="forum">	  
 <?php if(!empty($list)){?><?php foreach ($list as $rs){?><tr><td width="80" height="30" align="center" bgcolor="#FFF8E8" style="font-size:13px;"><a href="<?php echo site_url("articles/type/".$rs->t_id)?>"><?php echo $rs->t_title?></a></td><td width="12" align="left" bgcolor="#FFF8E8" style="font-size:13px;"><img src="<?php echo $img_url?>ico/yline.gif" width="1" height="12" /></td><td bgcolor="#FFF8E8" style="font-size:13px;"><a href="<?php echo site_url("articles/view/".$rs->id)?>" target="_blank"><?php echo $rs->title?></a></td><td width="80" align="center" bgcolor="#FFF8E8" title=""><?php echo date("Y-m-d",strtotime($rs->time))?></td></tr><tr><td colspan="4" align="center" style="height:1px; line-height:1px; border-top:#999 1px dotted;"></td></tr><?php }}else{?><tr><td colspan="4" align="center" height="50">暂无相关内容...</td></tr><?php }?>
 <tr><td height="20" colspan="5" align="right"><table width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td height="32" align="center">
-<?php $this->paging->links(); ?>
+<?php $this->Paging->links(); ?>
 </td></tr></table></TD></tr></table></td></tr></table></div></div>
 <div class="index_right"><div class="right_box">
-<div class="recommendbox"><div class="tab_title">学堂分类</div><div class="clear"></div><div class="tab_box" id="help_but"><div class="tab" style="display:block; background-image:url(<?php echo $img_url?>ico/num.gif);"><?php if(!empty($type)){?><?php foreach($type as $rs){?><li><dd><a href="<?php echo site_url("/articles/type/".$rs->t_id)?>"><?php echo $rs->t_title?></a></dd></li><?php }?><?php }?><div class="clear"></div></div></div><div class="clear"></div></div>
-
-<div class="recommendbox"><div class="tab_title">热门学堂</div><div class="clear"></div><div class="tab_box" id="help_but"><div class="tab2" style="display:block; background-image:url(<?php echo $img_url?>ico/num.gif);"><?php if(!empty($list_hot)){?><?php foreach($list_hot as $rs){?><li><dd><a href="<?php echo site_url("/articles/view/".$rs->id)?>" title="<?php echo $rs->title?>"><?php echo $rs->title?></a></dd><dt><span class="red"><?php echo $rs->visited?>℃</span></dt></li><?php }?><?php }?><div class="clear"></div></div></div><div class="clear"></div></div>
-
+<div class="recommendbox"><div class="tab_title">学堂分类</div><div class="clear"></div><div class="tab_box" id="help_but"><div class="tab" style="display:block; background-image:url(<?php echo $img_url?>ico/num.gif);"><?php if(!empty($type)){?><?php foreach($type as $rs){?><li><dd><a href="<?php echo site_url("articles/type/".$rs->t_id)?>"><?php echo $rs->t_title?></a></dd></li><?php }?><?php }?><div class="clear"></div></div></div><div class="clear"></div></div>
 <?php $this->load->view('public/mod_yxb');?>
-<div class="right_ad"><a href="javascript:void(0);"><img src="<?php echo $img_url?>ads/index_ad.jpg" /></a></div> </div></div>
-<!--清除浮动--><div class="clear"></div></div></div>
+<div class="right_ad"><a href="javascript:void(0);"><img src="<?php echo $img_url?>ads/index_ad.jpg" /></a></div> </div></div><!--清除浮动--><div class="clear"></div></div></div>
 <?php $this->load->view('public/footer');?>

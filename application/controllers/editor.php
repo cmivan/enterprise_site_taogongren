@@ -3,14 +3,21 @@
 if (!defined('BASEPATH'))  exit('No direct script access allowed');
 
 class Editor extends QT_Controller{
-
+	
+	public $data;  //用于返回页面数据
+	public $logid = 0;
+	
     public function __construct()
 	{
         parent::__construct();
         $this->load->library('kindeditor');
-
-		if( is_num($this->logid)==false )
-		{
+		
+		//基础数据
+		$this->data  = $this->basedata();
+		//初始化用户id
+		$this->logid = is_num($this->data["logid"]);
+		
+		if($this->logid==false){
 			$this->kindeditor->alert("请登录!");
 		}
     }
@@ -19,9 +26,8 @@ class Editor extends QT_Controller{
     public function upload()
 	{
 		$dir = $this->input->get('dir');
-        if(!empty ($_FILES))
-		{
-			$this->kindeditor->upload($dir,$_FILES,$this->logid);
+        if(!empty ($_FILES)){
+			$this->kindeditor->upload($dir='',$_FILES,$this->logid);
         }
     }
 	

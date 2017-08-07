@@ -16,8 +16,7 @@ $(function(){
 	tb_show('选择报价项目','<?php echo site_url($c_urls.'/project_industrys')?>?height=400&width=738',false);
 	});
 	allprice();
-});
-<?php /*?>用于判断输入框内容是否符合要求(主要是数量，和单价)<?php */?>
+});<?php /*?>用于判断输入框内容是否符合要求(主要是数量，和单价)<?php */?>
 function okinputNum(){
 	var project=$("#project").val();
 	var num    =$("#num").val();
@@ -67,8 +66,11 @@ function allprice(){
 }</script>
 </head><body><?php $this->load->view('public/top'); ?>
 <div class="main_width"><div class="body_main"><?php /*?>管理页面的框架分布<?php */?><div class="my_left"><div class="my_left_nav"><?php $this->load->view($c_url.'leftnav'); ?><div class="clear"></div></div></div>
-<div class="my_right"><div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?>
-<div class="mainbox_nav"> <?php echo Get_User_Nav($thisnav,$c_url); ?> </div>
+<div class="my_right"><div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"><?php
+if(!empty($thisnav)){
+	if(!empty($thisnav["nav"])){
+	foreach($thisnav["nav"] as $nav){
+?><a href="<?php echo site_url($c_url.$nav["link"])?>" <?php if($thisnav["on"]==$nav["link"]){echo "class=on";}?> ><?php echo $nav["title"]?></a><?php }}}?></div>
 <div class="mainbox_box"><?php $this->load->view($c_url.'orders/ordertip'); ?><div class="content"><br><table width="100%" cellpadding="0" cellspacing="0" class="edit_box" style="border:0"><?php
 if(!empty($pro_view)){
    $rid  = $pro_view->retrieval_id;

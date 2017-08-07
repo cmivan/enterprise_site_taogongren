@@ -1,3 +1,0 @@
-<?php $this->load->view('public/validform'); ?>
-<style>.validform td{padding:0;}</style>
-<form class="validform" method="post"><table width="100%" border="0" align="center" cellpadding="0" cellspacing="4"><tr><td width="380"><textarea name="note" rows="3" id="note" style="width:98%; height:50px; padding:4px;" nullmsg="原因不能为空!" datatype="*"></textarea></td></tr><tr><td align="right"><input class="cm_but btu_send" id="send_msg_btu1" type="submit" align="absmiddle" value="" /></td></tr></table><input type="hidden" id="id" name="id" value="<?php echo $id?>" /><input type="hidden" id="go" name="go" value="yes" /></form>

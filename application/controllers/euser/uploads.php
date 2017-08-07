@@ -58,8 +58,7 @@ class Uploads extends E_Controller {
 		$config['new_image'] = $this->uppath . $file_name;
 		$config['create_thumb'] = FALSE;
 		$config['maintain_ratio'] = TRUE;
-		if($image_width > $set_width or $image_height > $set_height)
-		{
+		if($image_width > $set_width or $image_height > $set_height){
 		   $config['width']  = $set_width;
 		   $config['height'] = $set_height;
 		}

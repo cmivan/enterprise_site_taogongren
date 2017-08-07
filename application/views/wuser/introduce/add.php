@@ -1,5 +1,5 @@
-<?php $this->load->view('public/validform'); ?>
-<div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo Get_User_Nav($thisnav,$c_urls); ?> </div>
+<?php $this->load->view('public/header'); ?>
+</head><body><?php $this->load->view('public/top'); ?><div class="main_width"><div class="body_main"><?php /*?>管理页面的框架分布<?php */?><div class="my_left"><div class="my_left_nav"><?php $this->load->view($c_url.'leftnav'); ?><div class="clear"></div></div></div><div class="my_right"><div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo c_nav($thisnav,$c_urls); ?> </div>
 
 <div class="mainbox_box"><div class="tipbox" style="line-height:22px;">
 1、在这里，你可以把你一些工人朋友的信息介绍到我们平台上<br />
@@ -45,4 +45,6 @@
         <tr><td align="right">&nbsp;</td><td colspan="2"><input type="submit" class="save_but" value="" /></td></tr>
         
     </table></form><br><br><br>
-</div></div>
+</div></div></div>
+
+<div class="clear"></div></div></div><?php $this->load->view('public/footer');?>

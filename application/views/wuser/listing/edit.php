@@ -1,4 +1,4 @@
-<?php $this->load->view('public/validform'); ?>
+<?php $this->load->view('public/header'); ?>
 <?php /*?>绑定日期<?php */?>
 <script language="javascript" type="text/javascript" src="<?php echo $js_url?>plus_cal/plus.cal.js"></script>
 <link rel="stylesheet" type="text/css" href="<?php echo $js_url?>plus_cal/plus.cal.css" />
@@ -9,7 +9,9 @@ $(function(){
 	$('#mytime').simpleDatepicker({ chosendate: sdata , startdate: sdata, enddate: edata });
 });
 </script>
-<div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo Get_User_Nav($thisnav,$c_urls); ?> </div>
+</head><body>
+<?php $this->load->view('public/top'); ?>
+<div class="main_width"><div class="body_main"><?php /*?>管理页面的框架分布<?php */?><div class="my_left"><div class="my_left_nav"><?php $this->load->view($c_url.'leftnav'); ?><div class="clear"></div></div></div><div class="my_right"><div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo c_nav($thisnav,$c_urls); ?> </div>
 
 <div class="mainbox_box">
 <form class="validform" method="post">
@@ -27,4 +29,6 @@ $(function(){
   </td></tr><tr><td colspan="2"><input type="submit" class="save_but" value="" /></td></tr>
 </table></form>
 </div>
-</div>
+</div></div>
+
+<div class="clear"></div></div></div><?php $this->load->view('public/footer');?>

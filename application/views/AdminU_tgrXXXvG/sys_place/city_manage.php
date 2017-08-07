@@ -46,7 +46,7 @@ $(function(){
 <?php
 if(!empty($place_city)){
 	foreach($place_city as $rs){
-		$area_num = $this->Place_Model->city2area_num($rs->c_id);
+		$area_num = $this->Place->city2area_num($rs->c_id);
 ?>
 <tr class="forumRow">
 <td align="center"><?php echo $rs->c_id;?></td>

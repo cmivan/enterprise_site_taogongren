@@ -1,4 +1,6 @@
+<?php $this->load->view('public/header'); ?>
 <?php /*?>技能列表<?php */?>
+
 <link rel="stylesheet" type="text/css" href="<?php echo $css_url;?>page_user_skills.css" />
 <script type="text/javascript"><?php /*?>初始化位置<?php */?>
 $(function(){
@@ -61,71 +63,51 @@ $(function(){
 			   if($(this).attr("checked")==false){thisClass.attr("checked",false);}
 			});
 		   });
-  });
-</script>
-<div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo Get_User_Nav($thisnav,$c_urls); ?> </div>
+  });</script>
+</head><body><?php $this->load->view('public/top'); ?><div class="main_width"><div class="body_main"><?php /*?>管理页面的框架分布<?php */?><div class="my_left"><div class="my_left_nav"><?php $this->load->view($c_url.'leftnav'); ?><div class="clear"></div></div></div><div class="my_right"><div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo c_nav($thisnav,$c_urls); ?> </div>
 
 <div class="mainbox_box" style="padding-left:0; padding-right:0; padding-bottom:0; border-bottom:0; border-left:0; border-right:0;"><div class="thistip"></div>
 <?php
 $rsarrid="|0|"; //初始化
-if(!empty($goodat_skills))
-{
-	foreach($goodat_skills as $goodat_skillsItem)
-	{
-		$rsarrid = $rsarrid . $goodat_skillsItem->industryid . '|';
+$jobs_query=mysql_query("select industryid from skills where workerid=".$logid." order by id asc");
+while($row=mysql_fetch_array($jobs_query)){   
+	  $rsarrid=$rsarrid.$row["industryid"]."|";
 	}
-}
 ?>
 <div class="industry_box" style="border-bottom:0; border-left:0; border-right:0;">
-<div class="industry_item">
-<?php
+<div class="industry_item"><?php
 //读取工种
-if(!empty($industrys))
-{
-	foreach($industrys as $industrysItem)
-	{
-?>
-<li itemid="<?php echo $industrysItem->id?>"><a href="javascript:void(0);" cmd='null'><?php echo $industrysItem->title?></a></li>
-<?php 	}}?>
-
-<div class="clear"></div></div>
-<div class="industry_item_box" style="border:0;padding:0px;">
-<?php
+$jobs_query=mysql_query("select * from industry where industryid=0 order by orderid asc");
+while($row=mysql_fetch_array($jobs_query)){
+?><li itemid="<?php echo $row["id"]?>"><a href="javascript:void(0);"><?php echo $row["title"]?></a></li><?php	}?><div class="clear"></div></div>
+<div class="industry_item_box" style="border:0;padding:0px;"><?php
 //读取工种
-if(!empty($industrys))
-{
-	foreach($industrys as $industrysItem)
-	{
-?>
-<div class="item_box" id="<?php echo $industrysItem->id?>">
-<table width="100%" border="0" cellpadding="0" cellspacing="1" class="tab_item">
-<?php
+$jobs_query=mysql_query("select * from industry where industryid=0 order by orderid asc");
+while($jobs_row = mysql_fetch_array($jobs_query)){   
+?><div class="item_box" id="<?php echo $jobs_row["id"]?>">
+<table width="100%" border="0" cellpadding="0" cellspacing="1" class="tab_item"><?php
 //读取分类
-if(!empty($industry_class))
-{
-	foreach($industry_class as $Iclass_item)
-	{
-		$class_industrys = $this->Industry_Model->class_industrys( $Iclass_item->id , $industrysItem->id );
-		//返回某种类某分类下的技能
-		if( !empty($class_industrys) ){
-?>
-<tr class="edit_item_tr">
-<td width="6%" height="28" align="center" class="class_title">
-<label><input disabled="disabled" title="点击全选对应的<?php echo $Iclass_item->title?>项目" type="checkbox" value="<?php echo $Iclass_item->id?>" industryid="<?php echo $industrysItem->id?>" />
-<br /><?php echo $Iclass_item->title?></label>
-</td>
-<td width="94%" class="item_title">
-<?php
-//读取项目
-	foreach($class_industrys as $pro_row)
-	{
-		$pro_ids = '|' . $pro_row->id . '|';
-?>
-<div><label><input disabled="disabled" id="<?php echo $pro_row->id?>" title="<?php echo $pro_row->title?>" type="checkbox" value="1" <?php if(strpos($rsarrid,$pro_ids)>0){?>checked="checked"<?php }?> /><?php echo $pro_row->title?></label></div>
-<?php }?>
-</td></tr>
-<?php	}}}?>
-</table></div>
-<?php }}?>
+$class_query=mysql_query("select * from industry_class order by id asc");
+while($class_row = mysql_fetch_array($class_query)){ 
 
-</div></div></div></div>
+//判断该类型的工种是否已经录入具体项目
+$c_r_query=mysql_query("select count(id) from industry where industryid=".$jobs_row["id"]." and classid=".$class_row["id"]);
+$c_r_row  =mysql_fetch_array($c_r_query);
+//获取到具体项目
+if($c_r_row[0]>0){
+?><tr class="edit_item_tr">
+  <td width="6%" height="28" align="center" class="class_title">
+  <label><input disabled="disabled" title="点击全选对应的<?php echo $class_row["title"]?>项目" type="checkbox" value="<?php echo $class_row["id"]?>" industryid="<?php echo $jobs_row["id"]?>" />
+  <br /><?php echo $class_row["title"]?></label>
+  </td>
+  <td width="94%" class="item_title">
+   <?php
+    //读取项目
+    $pro_sql  = "select * from industry where industryid=".$jobs_row["id"]." and classid=".$class_row["id"]." order by title asc";
+    $pro_query=mysql_query($pro_sql);
+    while($pro_row = mysql_fetch_array($pro_query)){ 
+	      $pro_ids="|".$pro_row["id"]."|";
+    ?>
+    <div><label><input disabled="disabled" id="<?php echo $pro_row["id"]?>" title="<?php echo $pro_row["title"]?>" type="checkbox" value="1" <?php if(strpos($rsarrid,$pro_ids)>0){?>checked="checked"<?php }?> /><?php echo $pro_row["title"]?></label></div>
+    <?php }?>
+  </td></tr><?php	}}?>  </table></div><?php }?></div></div></div></div></div><div class="clear"></div></div></div><?php $this->load->view('public/footer');?>

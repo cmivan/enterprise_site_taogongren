@@ -11,6 +11,8 @@ class System_uploads extends XT_Controller {
 	{
 		 parent::__construct();
 		 
+		 $this->data  = $this->basedata();
+		 
 		 $this->load->library('image_lib');
 		 $this->load->helper(array('form', 'url'));
 		 
@@ -20,10 +22,7 @@ class System_uploads extends XT_Controller {
 	function index()
 	{
 		$this->data['keyid'] = noHtml($this->input->get('keyid'));
-		if($this->data['keyid']=='')
-		{
-			$this->data['keyid'] = 'small_img';
-		}
+		if($this->data['keyid']==''){$this->data['keyid'] = 'small_img';}
 		$this->load->view('uploads/upload_form',$this->data);
 	}
 
@@ -45,14 +44,11 @@ class System_uploads extends XT_Controller {
 		$config['encrypt_name'] = TRUE;
 		$this->load->library('upload', $config);
 		
-		if(!$this->upload->do_upload())
-		{
+		if(!$this->upload->do_upload()){
 			//json_echo($this->upload->display_errors());
 			$data_img['upload_keyid'] = $this->input->post('keyid');
 			$this->load->view('uploads/upload_error', $data_img);
-		}
-		else
-		{
+		}else {
 			$fileinfo = $this->upload->data();
 			$fileinfo['upload_date'] = $upload_date;
 			$fileinfo['upload_keyid'] = $this->input->post('keyid');
@@ -67,21 +63,16 @@ class System_uploads extends XT_Controller {
 	//创建多级文件夹
 	function do_path($cdir='')
 	{
-		if($cdir!=''&&!empty($cdir))
-		{
+		if($cdir!=''&&!empty($cdir)){
 			$rpath = './'; //指向根目录
 			$cdir = str_replace($rpath,'',$cdir);
-			if(strpos($cdir,'/')>0)
-			{
+			if(strpos($cdir,'/')>0){
 				$arr = explode("/",$cdir);
-				foreach($arr as $key=>$value)
-				{
+				foreach($arr as $key=>$value){
 					$$key = $value;
-					if($value!='')
-					{
+					if($value!=''){
 						$new_path = $rpath.$value;
-						if(!file_exists(''.$new_path.''))
-						{
+						if(!file_exists(''.$new_path.'')){
 							mkdir(''.$new_path."/"); //创建这个文件夹
 						}
 						$rpath = $new_path."/";

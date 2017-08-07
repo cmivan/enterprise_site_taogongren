@@ -3,7 +3,7 @@
 form{margin:0;}
 .pro_main_title{font-size:14px;font-weight:bold;color:#333;}.pro_deal_look td{color:#333;}
 #pro_step .item{background-color:#FFFAF0;border:#FFDEAD 1px solid;padding:10px;margin-bottom:10px;}	
-#pro_step .item .del{float:right;text-align:center;padding-right:4px;}</style></head><body><?php $this->load->view('public/top'); ?><div class="main_width"><div class="body_main"><?php /*?>管理页面的框架分布<?php */?><div class="my_left"><div class="my_left_nav"><?php $this->load->view($c_url.'leftnav'); ?><div class="clear"></div></div></div><div class="my_right"><div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo Get_User_Nav($thisnav,$c_url); ?> </div><div class="mainbox_box"><?php $this->load->view($c_url.'orders/ordertip'); ?>
+#pro_step .item .del{float:right;text-align:center;padding-right:4px;}</style></head><body><?php $this->load->view('public/top'); ?><div class="main_width"><div class="body_main"><?php /*?>管理页面的框架分布<?php */?><div class="my_left"><div class="my_left_nav"><?php $this->load->view($c_url.'leftnav'); ?><div class="clear"></div></div></div><div class="my_right"><div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo c_nav($thisnav,$c_url); ?> </div><div class="mainbox_box"><?php $this->load->view($c_url.'orders/ordertip'); ?>
 <div class="content">
 <table width="100%" border="0" cellpadding="4" cellspacing="1" class="edit_box"><tr><td align="left">
 <table width="96%" border="0" align="center" cellpadding="2" cellspacing="5" class="pro_deal_look">

@@ -2,21 +2,35 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Friends extends E_Controller {
+	
+	public $data;  //用于返回页面数据
+	public $logid = 0;
 
 	function __construct()
 	{
 		parent::__construct();
+
+		/*初始化加载application\core\MY_Controller.php
+		这里的加载必须要在产生其他 $this->data 数据前加载*/
+
+		//基础数据
+		$this->data  = $this->basedata();
+		//初始化用户id
+		$this->logid = $this->data["logid"];
 		
-		$this->load->library('Paging');
+		$this->load->model('Paging');
+		
 		$this->load->model('Friends_Model');
 
 		//初始化页面导航
-		$this->data["thisnav"] = array(
-		            array('title' => '我的好友','link' => 'index'),
-					array('title' => '好友请求','link' => 'request'),
-					array('title' => '我推荐的好友','link' => 'recommend')
-					/*,array('title' => '黑名单','link' => 'black')*/
-		            );
+		$this->data["thisnav"]["nav"][0]["title"] = "我的好友";
+		$this->data["thisnav"]["nav"][0]["link"]  = "index";
+		$this->data["thisnav"]["nav"][1]["title"] = "好友请求";
+		$this->data["thisnav"]["nav"][1]["link"]  = "request";
+		$this->data["thisnav"]["nav"][2]["title"] = "我推荐的好友";
+		$this->data["thisnav"]["nav"][2]["link"]  = "recommend";
+		$this->data["thisnav"]["nav"][3]["title"] = "黑名单";
+		$this->data["thisnav"]["nav"][3]["link"]  = "black";
 	}
 	
 
@@ -27,26 +41,24 @@ class Friends extends E_Controller {
 		
 		
 		$cmd = $this->input->get("cmd");
-		$id  = $this->input->getnum("id");
+		$id  = is_num($this->input->get("id"));
 		//删除
-		if($cmd=="del"&&$id!=false)
-		{
+		if($cmd=="del"&&$id!=false){
 			$this->Friends_Model->del($id,$this->logid);
-		}
+			}
 		//拉黑
-		if($cmd=="black"&&$id!=false)
-		{
+		if($cmd=="black"&&$id!=false){
 			$data["isblack"] = 1; 
 			$this->db->where('id',$id);
 			$this->db->where('uid',$this->logid);
 			$this->db->update('friends', $data); 
-		}
+			}
 
 		//获取分页列表sql
 		$listsql=$this->Friends_Model->listsql_friends($this->logid);
 		//获取列表数据
-		$this->data["list"] = $this->paging->show($listsql);
-		//输出到视窗
+		$this->data["list"] = $this->Paging->show($listsql);
+		/*输出到视窗*/
 		$this->load->view_euser('friends/index',$this->data);
 	}
 	
@@ -57,35 +69,32 @@ class Friends extends E_Controller {
 		$this->load->model('Recommend_Model');
 		
 		//删除数据
-		$del_id = $this->input->getnum("del_id");
-		if($del_id!=false)
-		{
+		$del_id = is_num($this->input->get("del_id"));
+		if($del_id!=false){
 		   $this->Recommend_Model->del($del_id,$this->logid);
 		}
 
 		//获取分页列表sql
-		$listsql = $this->Recommend_Model->listsql($this->logid);
+		$listsql=$this->Recommend_Model->listsql($this->logid);
 		//获取列表数据
-		$this->data["list"] = $this->paging->show($listsql);
+		$this->data["list"] = $this->Paging->show($listsql);
 
-		//输出到视窗
+		/*输出到视窗*/
 		$this->load->view_euser('friends/recommend',$this->data);
 	}
 	
 	
 	function recommend_edit()
 	{
-		$this->load->model('Recommend_Model');
-		
-		$fuid = $this->input->getnum("fuid",'404');
+		$fuid = is_num($this->input->get("fuid"),'404');
 		
 		$this->data["fuid"] = $fuid;
-		$this->data["info"] = $this->Recommend_Model->recommend_view($fuid,$this->logid);
+		$this->data["info"] = $this->db->query("select * from `recommend` where fuid=".$fuid." and uid=".$this->logid." LIMIT 1")->row();
 		
 		/*表单配置*/
 		$this->data['formTO']->url = $this->data["c_urls"].'/save';
 		$this->data['formTO']->backurl = '';
-		//输出到视窗
+		/*输出到视窗*/
 		$this->load->view_euser('friends/recommend_edit',$this->data);
 	}
 	
@@ -94,34 +103,28 @@ class Friends extends E_Controller {
 	
 	function save()
 	{
-		$fuid = $this->input->postnum("fuid");
-		if($fuid==false)
-		{
+		$fuid = is_num($this->input->post("fuid"));
+		if($fuid==false){
 			json_form_no('提交失败,无法正确获取ID,请与管理员联系!');
-		}
-		else
-		{
+		}else{
+			
 		   $data["fuid"]  = $fuid;
 		   $data["note"]  = noHtml($this->input->post("note"));
 		   
 		   if($data["fuid"]!=""&&$data["note"]!="")
 		   {
 			   //判断是否已经存在
-			   if( $this->Recommend_Model->is_Recommend($fuid,$this->logid) == false )
-			   {
+			   $rs_num = $this->db->query("select id from `recommend` where fuid=".$fuid." and uid=".$this->logid." LIMIT 1")->num_rows();
+			   if($rs_num<=0){
 				   $data["uid"]  = $this->logid;
 				   $this->db->insert('recommend', $data);
-			   }
-			   else
-			   {
+			   }else{
 				   $this->db->where('uid',$this->logid);
 				   $this->db->where('fuid',$fuid);
 				   $this->db->update('recommend', $data);
 			   }
 			   json_form_yes('保存成功!');
-		   }
-		   else
-		   {
+		   }else{
 			   json_form_no('请先完整填写信息!');
 		   }
 		}
@@ -133,18 +136,16 @@ class Friends extends E_Controller {
 	function request()
 	{
 		$cmd = $this->input->get("cmd");
-		$id  = $this->input->getnum("id");
+		$id  = is_num($this->input->get("id"));
 		//删除
-		if($cmd=="del"&&$id!=false)
-		{
+		if($cmd=="del"&&$id!=false){
 			//$data[""] = 
 			//$this->db->where('id',$id);
 			//$this->db->where('uid',$uid);
 			//$this->db->update('cases', $data); 
-		}
+			}
 		//拉黑
-		if($cmd=="black"&&$id!=false)
-		{
+		if($cmd=="black"&&$id!=false){
 			$data["isblack"] = 1; 
 			$this->db->where('id',$id);
 			$this->db->where('uid',$this->logid);
@@ -161,8 +162,8 @@ class Friends extends E_Controller {
 		//获取分页列表sql
 		$listsql=$this->Friends_Model->listsql_request($this->logid);
 		//获取列表数据
-		$this->data["list"] = $this->paging->show($listsql);
-		//输出到视窗
+		$this->data["list"] = $this->Paging->show($listsql);
+		/*输出到视窗*/
 		$this->load->view_euser('friends/request',$this->data);
 	}
 	
@@ -170,17 +171,16 @@ class Friends extends E_Controller {
 	function black()
 	{
 		//删除数据
-		$del_id = $this->input->getnum("del_id");
-		if($del_id!=false)
-		{
-			$this->Friends_Model->del_black($del_id,$this->logid);
+		$del_id = is_num($this->input->get("del_id"));
+		if($del_id!=false){
+		   $this->Friends_Model->del_black($del_id,$this->logid);
 		}
 		
 		//获取分页列表sql
 		$listsql=$this->Friends_Model->listsql_black($this->logid);
 		//获取列表数据
-		$this->data["list"] = $this->paging->show($listsql);
-		//输出到视窗
+		$this->data["list"] = $this->Paging->show($listsql);
+		/*输出到视窗*/
 		$this->load->view_euser('friends/black',$this->data);
 	}
 

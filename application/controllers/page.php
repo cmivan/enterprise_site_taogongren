@@ -2,25 +2,38 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Page extends QT_Controller {
+	
+	public $data;  //用于返回页面数据
+	public $logid = 0;
 
 	function __construct()
 	{
 		parent::__construct();
 
-		//css样式
+		/*初始化加载application\core\MY_Controller.php
+		这里的加载必须要在产生其他 $data 数据前加载*/
+
+		//基础数据
+		$this->data  = $this->basedata();
+		//初始化用户id
+		$this->logid = $this->data["logid"];
+		
+		
+		/*<><><>css样式<><><>*/
 		$this->data['cssfiles'][] = 'style/mod_page.css';
-		//Js
+		/*<><><>Js<><><>*/
 		$this->data['jsfiles'][]  = 'js/mod_page.js';
+		
 	}
 
 	
 	function error_404()
 	{
-		//加载模型
+		/*加载模型*/
 	    $this->load->model('Projacts');
-		//工种项目
+		/*工种项目*/
 		$this->data['industrys'] = $this->Projacts->industrys();
-		//输出到视窗
+		/*输出到视窗*/
 		$this->load->view('page/error_404',$this->data);
 	}
 	
@@ -28,9 +41,6 @@ class Page extends QT_Controller {
     #关于淘工人
 	function about()
 	{
-		//【缓存技术】(注意：使用后，将会导致页面刷新后不更新的情况。故慎用!)
-		$this->output->cache(20);
-		
 		#英雄榜
 	    $this->data['user_yxb'] = $this->User_Model->user_yxb(0);
 	    $this->data['team_yxb'] = $this->User_Model->user_yxb(2);
@@ -41,8 +51,6 @@ class Page extends QT_Controller {
     #使用协议
 	function agreement()
 	{
-		$this->output->cache(20);
-		
 		#英雄榜
 	    $this->data['user_yxb'] = $this->User_Model->user_yxb(0);
 	    $this->data['team_yxb'] = $this->User_Model->user_yxb(2);
@@ -53,8 +61,6 @@ class Page extends QT_Controller {
     #支付方式
 	function payment()
 	{
-		$this->output->cache(20);
-		
 		#英雄榜
 	    $this->data['user_yxb'] = $this->User_Model->user_yxb(0);
 	    $this->data['team_yxb'] = $this->User_Model->user_yxb(2);
@@ -67,8 +73,6 @@ class Page extends QT_Controller {
     #版权声明
 	function statement()
 	{
-		$this->output->cache(20);
-		
 		#英雄榜
 	    $this->data['user_yxb'] = $this->User_Model->user_yxb(0);
 	    $this->data['team_yxb'] = $this->User_Model->user_yxb(2);
@@ -79,8 +83,6 @@ class Page extends QT_Controller {
     #帮助中心
 	function help()
 	{
-		$this->output->cache(20);
-		
 		#英雄榜
 	    $this->data['user_yxb'] = $this->User_Model->user_yxb(0);
 	    $this->data['team_yxb'] = $this->User_Model->user_yxb(2);
@@ -92,7 +94,7 @@ class Page extends QT_Controller {
     #发送站内消息
 	function box_sendmsg()
 	{
-		$uid = $this->input->getnum("uid");
+		$uid = is_num($this->input->get("uid"));
 		if($uid != false)
 		{
 		   $this->data["uid"]  = $uid;
@@ -103,9 +105,7 @@ class Page extends QT_Controller {
 		   $this->data['formTO']->backurl = '';
 		
 		   $this->load->view('page/box_sendmsg',$this->data);	
-		}
-		else
-		{
+		}else{
 		   json_echo("很遗憾,未能正确获取用户信息!");
 		}
 	}
@@ -113,17 +113,15 @@ class Page extends QT_Controller {
     #获取手机号码
 	function box_getmobile()
 	{
-		$uid = $this->input->getnum("uid");
-		$gid = $this->input->getnum("gid");
+		$uid = is_num($this->input->get("uid"));
+		$gid = is_num($this->input->get("gid"));
 		if($uid != false&&$gid != false)
 		{
 		   $this->data["uid"]  = $uid;
 		   $this->data["gid"]  = $gid;
 		   $this->data["links"] = $this->User_Model->links($uid);
 		   $this->load->view('page/box_getmobile',$this->data);	
-		}
-		else
-		{
+		}else{
 		   json_echo("很遗憾,未能正确获取用户信息!");
 		}
 	}
@@ -131,14 +129,12 @@ class Page extends QT_Controller {
     #联系淘工人
 	function contact()
 	{
-		$this->output->cache(20);
 		$this->load->view('page/contact',$this->data);
 	}
 
     #意见反馈
 	function feedback()
 	{
-		$this->output->cache(20);
 		/*表单配置*/
 		$this->data['formTO']->url = 'action/feedback';
 		$this->data['formTO']->backurl = '';
@@ -169,28 +165,23 @@ class Page extends QT_Controller {
     #登录
 	function login()
 	{
-		$this->output->cache(20);
 		$this->load->view('page/login',$this->data);
 	}
 
     #工程项目
 	function projects($industryid=0)
 	{
-		$this->output->cache(20);
-		
 		/*加载模型*/
 	    $this->load->model('Projacts');
 		
 		//被选中的项目id
-		$industryid = get_num($industryid);
-		if($industryid)
-		{
-			$this->data['industryid'] = $industryid;
-		}
+		$industryid = is_num($industryid);
+		if($industryid){ $this->data['industryid'] = $industryid; }
 
 		/*工种项目*/
 		$this->data['projact'] = $this->Projacts->projact();
-
+		$this->data['industrys'] = $this->Projacts->industrys();
+		
 		$this->load->view('page/projects',$this->data);
 	}
 

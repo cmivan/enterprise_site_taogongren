@@ -1,17 +1,21 @@
+<?php $this->load->view('public/header'); ?>
 <script language="javascript" type="text/javascript">
 $(function(){
-  $('.edit_box_order_project').hover(
-	   function(){$(this).attr('class','edit_box_order_project_hover');},
-	   function(){$(this).attr('class','edit_box_order_project');
-	   });
-});
+	$('.edit_box_order_project').hover(
+	     function(){$(this).attr('class','edit_box_order_project_hover');},
+	     function(){$(this).attr('class','edit_box_order_project');
+		 });
+ });
 </script>
 
 <?php /*?>加载评分所需的JS<?php */?>
 <?php echo $this->Common_Model->evaluate_js($c_url,'op');?>
 
-<div class="mainbox" box="content_box">
-<?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"><?php echo Get_User_Nav($thisnav,$c_url); ?></div>
+</head><body><?php $this->load->view('public/top'); ?>
+<div class="main_width"><div class="body_main">
+<?php /*?>管理页面的框架分布<?php */?><div class="my_left"><div class="my_left_nav"><?php $this->load->view($c_url.'leftnav'); ?><div class="clear"></div></div></div>
+<div class="my_right"><div class="mainbox" box="content_box">
+<?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"><?php echo c_nav($thisnav,$c_url); ?></div>
 <div class="mainbox_box"><?php $this->load->view($c_url.'orders/ordertip'); ?>
 <div class="content">
 <?php
@@ -40,5 +44,7 @@ if(!empty($list)){
 <?php }}else{ echo '暂无信息!'; }?>
 
 <div class="clear"></div></div>
-<?php $this->paging->links(); ?>
+<?php $this->Paging->links(); ?>
+<div class="clear"></div></div></div></div>
 <div class="clear"></div></div></div>
+<?php $this->load->view('public/footer');?>

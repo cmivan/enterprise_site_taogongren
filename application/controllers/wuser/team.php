@@ -2,42 +2,53 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Team extends W_Controller {
-
+	
+	public $data;  //用于返回页面数据
+	public $logid = 0;
 	public $tid = 0;
 
 	function __construct()
 	{
 		parent::__construct();
 
+		/*初始化加载application\core\MY_Controller.php
+		这里的加载必须要在产生其他 $this->data 数据前加载*/
+
+		//基础数据
+		$this->data = $this->basedata();
+		//初始化用户id
+		$this->logid = $this->data["logid"];
 		//分页模型
-		$this->load->library('Paging');
-		$this->load->model('Team_Model');
+		$this->load->model('Paging');
+		
 		/*初始化团队id*/
-		$this->tid = get_num( $this->User_Model->one2team_id($this->logid) ,0 );
+		$this->tid = is_num($this->User_Model->one2team_id($this->logid),0);
 		
 		//初始化页面导航
-		if($this->tid)
-		{
+		if($this->tid){
 			//已创建团队
-			$this->data["thisnav"] = array(
-						array('title' => '我的团队','link' => 'index'),
-						array('title' => '团队头像','link' => 'face'),
-						/*
-						,array('title' => '团队案例','link' => 'cases','tip' => '点击进入"案例展示"管理页面'),
-						array('title' => '团队证书','link' => 'certificate','tip' => '点击进入"资质证书"管理页面'),
-						*/
-						array('title' => '团队成员','link' => 'member'),
-						array('title' => '','link' => ''),
-						array('title' => '我加入的团队','link' => 'my_join')
-						);
-		}
-		else
-		{
+			$this->data["thisnav"]["nav"][0]["title"] = "我的团队";
+			$this->data["thisnav"]["nav"][0]["link"]  = "index";
+			$this->data["thisnav"]["nav"][1]["title"] = "团队头像";
+			$this->data["thisnav"]["nav"][1]["link"]  = "face";
+//			$this->data["thisnav"]["nav"][2]["title"] = "团队案例";
+//			$this->data["thisnav"]["nav"][2]["link"]  = "cases";
+//			$this->data["thisnav"]["nav"][2]["tip"]   = "点击进入“案例展示”管理页面";
+//			$this->data["thisnav"]["nav"][3]["title"] = "团队证书";
+//			$this->data["thisnav"]["nav"][3]["link"]  = "certificate";
+//			$this->data["thisnav"]["nav"][3]["tip"]   = "点击进入“资质证书”管理页面";
+			$this->data["thisnav"]["nav"][4]["title"] = "团队成员";
+			$this->data["thisnav"]["nav"][4]["link"]  = "member";
+			$this->data["thisnav"]["nav"][5]["title"] = "";
+			$this->data["thisnav"]["nav"][5]["link"]  = "";
+			$this->data["thisnav"]["nav"][6]["title"] = "我加入的团队";
+			$this->data["thisnav"]["nav"][6]["link"]  = "my_join";
+		}else{
 			//没创建团队
-			$this->data["thisnav"] = array(
-						array('title' => '我要创建团队','link' => 'index'),
-						array('title' => '我加入的团队','link' => 'my_join')
-						);
+			$this->data["thisnav"]["nav"][0]["title"] = "我要创建团队";
+			$this->data["thisnav"]["nav"][0]["link"]  = "index";
+			$this->data["thisnav"]["nav"][1]["title"] = "我加入的团队";
+			$this->data["thisnav"]["nav"][1]["link"]  = "my_join";
 		}
 	}
 	
@@ -50,25 +61,14 @@ class Team extends W_Controller {
 		/*是否创建团队而赠送工币*/
 		$this->data['create_2gift'] = activity_create2gift($this->tid);
 
-		/*css样式*/
+		/*<><><>css样式<><><>*/
 		$this->data['cssfiles'][] = '';
-		/*Js*/
+		/*<><><>Js<><><>*/
 		$this->data['jsfiles'][]  = 'js/city_select_option.js';
 		
-		
-		if($this->tid)
-		{
-			/*表单配置*/
-			$this->data['formTO']->url = $this->data["c_urls"].'/go_save_team';
-			$this->data['formTO']->backurl = 'null';
-		}
-		else
-		{
-			/*表单配置*/
-			$this->data['formTO']->url = $this->data["c_urls"].'/go_save_team';
-			$this->data['formTO']->backurl = '';
-		}
-
+		/*表单配置*/
+		$this->data['formTO']->url = $this->data["c_urls"].'/go_save_team';
+		$this->data['formTO']->backurl = 'null';
 		
 		/*初始化数据*/
 		$this->data['name'] = '';
@@ -82,14 +82,13 @@ class Team extends W_Controller {
 		$this->data['p_id'] = $this->User_Model->p_id($this->logid);
 		$this->data['c_id'] = $this->User_Model->c_id($this->logid);
 		$this->data['a_id'] = $this->User_Model->a_id($this->logid);
-		$this->data['ps'] = $this->Place_Model->provinces();
-		$this->data['cs'] = $this->Place_Model->citys($this->data['p_id']);
-		$this->data['as'] = $this->Place_Model->citys($this->data['c_id']);
+		$this->data['ps'] = $this->Place->provinces(0);
+		$this->data['cs'] = $this->Place->citys($this->data['p_id']);
+		$this->data['as'] = $this->Place->citys($this->data['c_id']);
 
 		/*分析内容是否为空*/
 		$info = $this->User_Model->team_info($this->logid);
-		if(!empty($info))
-		{
+		if(!empty($info)){
 			$this->data['name'] = $info->name;
 			$this->data['photoID'] = $info->photoID;
 			$this->data['addtime'] = $info->addtime;
@@ -101,12 +100,13 @@ class Team extends W_Controller {
 			$this->data['p_id'] = $info->p_id;
 			$this->data['c_id'] = $info->c_id;
 			$this->data['a_id'] = $info->a_id;
-			$this->data['cs'] = $this->Place_Model->citys($info->p_id);
-			$this->data['as'] = $this->Place_Model->areas($info->c_id);
+			$this->data['cs'] = $this->Place->citys($info->p_id);
+			$this->data['as'] = $this->Place->areas($info->c_id);
 		}
 		
 		/*邀请链接*/
 		$this->data['inviter_url'] = activity_inviter_url($this->logid);
+		
 		$this->load->view($this->data["c_urls"].'/index',$this->data);
 	}
 	
@@ -114,7 +114,7 @@ class Team extends W_Controller {
 	//管理头像
 	function face()
 	{
-		$tid = get_num($this->tid,'404');
+		$tid = is_num($this->tid,'404');
 		$photoID = $this->User_Model->photoID($tid);
 		$this->data["photoID"] = $photoID;
 		$this->data["face"] = $this->User_Model->face($photoID);
@@ -135,9 +135,9 @@ class Team extends W_Controller {
 	
 	function member()
 	{
-		$tid = get_num($this->tid,'404');
-		$listsql = $this->Team_Model->member_listsql($tid);
-		$this->data["list"] = $this->paging->show($listsql,10);
+		$tid = is_num($this->tid,'404');
+		$sql = "select id,name,addtime from `user` where id in (select uid from `team_user` where tid=".$tid.")";
+		$this->data["list"] = $this->Paging->show($sql,10);
 		/*输出到视窗*/
 		$this->load->view($this->data["c_urls"].'/member',$this->data);
 	}
@@ -145,8 +145,9 @@ class Team extends W_Controller {
 	
 	function my_join()
 	{
-		$listsql = $this->Team_Model->myjoin_listsql($this->logid);
-		$this->data["list"] = $this->paging->show($listsql,10);
+		$sql = "(select tid from `team_user` where uid=".$this->logid." and checked=1)";
+		$sql = "select id,name,addtime from `user` where id in ".$sql." and classid=2";
+		$this->data["list"] = $this->Paging->show($sql,10);
 		/*输出到视窗*/
 		$this->load->view($this->data["c_urls"].'/my_join',$this->data);
 	}
@@ -166,12 +167,12 @@ class Team extends W_Controller {
 		 $classid = 2;  //0工人，1雇主，2为团队
 		 //接收参数
 		 $data['name'] = noHtml($this->input->post('name'));
-		 $data['mobile'] = get_num($this->User_Model->mobile($uid));
+		 $data['mobile'] = is_num($this->User_Model->mobile($uid));
 		 $data['password'] = pass_user('******'.$data['mobile']);
-		 //$data['photoID'] = $this->input->postnum('photoID');
-		 $data['p_id'] = $this->input->postnum('p_id');
-		 $data['c_id'] = $this->input->postnum('c_id');
-		 $data['a_id'] = $this->input->postnum('a_id');
+		 //$data['photoID'] = is_num($this->input->post('photoID'));
+		 $data['p_id'] = is_num($this->input->post('p_id'));
+		 $data['c_id'] = is_num($this->input->post('c_id'));
+		 $data['a_id'] = is_num($this->input->post('a_id'));
 		 $data['address'] = noHtml($this->input->post('address'));
 		 $data['note']    = noHtml($this->input->post('note'));
 		 $data['team_ckbj'] = noHtml($this->input->post('team_ckbj'));
@@ -188,24 +189,19 @@ class Team extends W_Controller {
 		 if($data['team_ckbj']==''){ json_form_no('请填写参考报价!'); }
 
 		 $TD_ok=false; //判读赠送团队创建者的条件是否满足
-		 if($data['name']!=''&&$data['p_id']&&$data['c_id']&&$data['address']!=''&&$data['note']!=''&&$data['team_ckbj']!=''&&$data['team_fwxm']!=''&&$data['team_fwdq']!=''){ $TD_ok=true; }
+		 if($data['name']!=""&&$data['p_id']&&$data['c_id']&&$data['address']!=""&&$data['note']!=""&&$data['team_ckbj']!=""&&$data['team_fwxm']!=""&&$data['team_fwdq']!=""){ $TD_ok=true; }
 		  
 		 //判断是否已经创建该团队
-		 if( $this->Team_Model->is_create_team($uid,$classid) )
-		 {
+		 $rsnum = $this->db->query("select id from `user` where uid=$uid and classid=$classid")->num_rows();
+		 if($rsnum>0){
 			 //更新数据
 			 $this->db->where('uid', $uid);
-			 if($this->db->update('user',$data))
-			 {
+			 if($this->db->update('user',$data)){
 				 json_form_yes('更新成功!'); /*.is_presented($TD_ok)*/
-			 }
-			 else
-			 {
+			 }else{
 				 json_form_no('更新失败!');
 			 }
-		 }
-		 else
-		 {
+		 }else{
 			  //写入数据
 			  $data['qq']  = '0';
 			  $data['sex'] = '0';
@@ -216,14 +212,7 @@ class Team extends W_Controller {
 			  $data['addtime'] = dateTime();
 			  $data['classid'] = 2;
 			  $data['uid'] = $uid;
-			  if($this->db->insert('user',$data))
-			  {
-				  json_form_yes('创建成功!');
-			  }
-			  else
-			  {
-				  json_form_no('创建失败!');
-			  }
+			  if($this->db->insert('user',$data)){ json_form_yes('创建成功!'); }else{ json_form_no('创建失败!'); }
 		 }
 	 }
 	 
@@ -231,7 +220,8 @@ class Team extends W_Controller {
 	/*活动期间,完成团队信息后可以获取赠送金币*/
 	function teamok2gift()
 	{
-		activity_teamok_2gift($this->logid,$this->tid);
+		$uid = is_num($this->tid);
+		if($uid){ activity_teamok_2gift($uid); }
 	}	 
 	
 

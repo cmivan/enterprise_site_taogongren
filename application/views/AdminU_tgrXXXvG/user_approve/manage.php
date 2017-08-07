@@ -59,8 +59,13 @@ if(!empty($list)){
 	foreach($list as $rs){
 		$delnum++;
 		
-		$approve1 = img_approve($this,$rs->photo);
-		$approve2 = img_approve($this,$rs->photo2);
+		$photo1 = str_replace('views/tg_pic_up/','',$rs->photo);
+		$photo2 = str_replace('views/tg_pic_up/','',$rs->photo2);
+		
+		$this->db->query("update yz_sm set photo='".$photo1."', photo2='".$photo2."' where id=".$rs->id);
+		
+		$approve1 = img_approve($rs->photo);
+		$approve2 = img_approve($rs->photo2);
 ?> 
 <tr class="forumRow">
 <td align="center"><?php echo $rs->id;?></td>
@@ -94,7 +99,7 @@ if(!empty($list)){
   <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" id="forum3">
   <tr>
   <td width="10">&nbsp;</td>
-  <td><?php $this->paging->links(); ?></td>
+  <td><?php $this->Paging->links(); ?></td>
   </tr></table>
 </TD></tr>
 <?php }else{?>

@@ -1,5 +1,12 @@
+<?php $this->load->view('public/header'); ?>
+
+</head><body><?php $this->load->view('public/top'); ?>
+<div class="main_width"><div class="body_main">
+<!--管理页面的框架分布--><div class="my_left"><div class="my_left_nav"><?php $this->load->view($c_url.'leftnav'); ?><div class="clear"></div></div></div>
+
+<div class="my_right">
 <div class="mainbox" box="content_box">
-<div class="mainbox_nav"><a href="javascript:void(0);" cmd='null' class="on">管理我的投标</a></div>
+<div class="mainbox_nav"><a href="javascript:void(0);" class="on">管理我的投标</a></div>
 <div class="mainbox_box">
 <div class="content">
 <table width="100%" border="0" cellpadding="4" cellspacing="1"><tr class="edit_item_frist">
@@ -23,5 +30,7 @@ if($zt==false){
 ?></td></tr><tr><td colspan="6" class="yzpage_line"></td></tr>
 <?php }}else{?><tr class="edit_item_tr"><td colspan="7" class="edit_item_none">暂无信息</td></tr><tr><td colspan="6" class="yzpage_line"></td></tr><?php }?></table>
 <div class="clear"></div></div>
-<?php $this->paging->links(); ?><div class="clear"></div>
+<?php $this->Paging->links(); ?><div class="clear"></div>
 </div></div>
+</div>
+<div class="clear"></div></div></div><?php $this->load->view('public/footer');?>

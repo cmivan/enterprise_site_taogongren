@@ -2,6 +2,10 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Yeepay extends E_Controller {
+	
+	public $data;  //用于返回页面数据
+	public $logid = 0;
+
 
 	public $p1_MerId;
 	public $p0_Cmd;
@@ -11,16 +15,24 @@ class Yeepay extends E_Controller {
 	{
 		parent::__construct();
 
+		/*初始化加载application\core\MY_Controller.php
+		这里的加载必须要在产生其他 $this->data 数据前加载*/
+
+		//基础数据
+		$this->data = $this->basedata();
+		//初始化用户id
+		$this->logid = $this->data["logid"];
+		
 		$this->load->helper('yeepay');
 		$this->p1_MerId = $this->config->item('YeePay_Id');
 		$this->p0_Cmd   = $this->config->item('YeePay_Cmd');
 		$this->p9_SAF   = $this->config->item('YeePay_Saf');
+		
 	}
 
 
 	function req()
 	{
-		$this->load->model('Records_temp_Model');
 		
 		#	商家设置用户购买商品的支付信息.
 		##易宝支付平台统一使用GBK/GB2312编码方式,参数如用到中文，请注意转码
@@ -66,33 +78,17 @@ class Yeepay extends E_Controller {
 		$hmac = getReqHmacString($p2_Order,$p3_Amt,$p4_Cur,$p5_Pid,$p6_Pcat,$p7_Pdesc,$p8_Url,$pa_MP,$pd_FrpId,$pr_NeedResponse);
 
 		//add by cm.ivan ，写入到临时充值表
-		if(is_num($p3_Amt)==false)
-		{
+		if(is_num($p3_Amt)==false){
 		   json_echo("<script>alert('请输入整数');window.close();</script>");
-		}
-		elseif($p6_Pcat!="S"&&$p6_Pcat!="T")
-		{
+		}elseif($p6_Pcat!="S"&&$p6_Pcat!="T"){
 		   json_echo("<script>alert('充值的类型有误');window.close();</script>");
-		}
-		else
-		{
-			if( $this->Records_temp_Model->is_recorded( $this->logid , $p2_Order ) )
-			{
+		}else{
+			$rsnum = $this->db->query("select id from `rating_temp` where uid='".$this->logid."' and p2_Order='".$p2_Order."' LIMIT 1")->num_rows();
+			if($rsnum>0){
 				json_echo('<script>alert("该信息已提交,请不要重复提交!");window.close();</script>');
-			}
-			else
-			{
-				//写入充值临时表
-				$data = array(
-					  'p2_Order' => $p2_Order,
-					  'p3_Amt' => $p3_Amt,
-					  'p4_Cur' => $p4_Cur,
-					  'cost_type' => $p6_Pcat,
-					  'uid' => $this->logid,
-					  'addtime' => dateTime()
-					  );
-			    $this->Records_temp_Model->record_temp_add($data);
-
+			}else{
+				$this->db->query("insert into `rating_temp` (p2_Order,p3_Amt,p4_Cur,cost_type,uid,addtime) value('".$p2_Order."','".$p3_Amt."','".$p4_Cur."','".$p6_Pcat."','".$this->logid."','".time()."')");
+				
 				$this->data['reqURL_onLine'] = $reqURL_onLine;
 				$this->data['p0_Cmd'] = $this->p0_Cmd;
 				$this->data['p1_MerId'] = $this->p1_MerId;
@@ -112,8 +108,13 @@ class Yeepay extends E_Controller {
 				/*输出到视窗*/
 				$this->load->view($this->data["c_url"].'wallet/yeepay',$this->data);
 			}
+
 		}
+		
+
 	}
+
+
 
 }
 

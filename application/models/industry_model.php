@@ -16,34 +16,12 @@ class Industry_Model extends CI_Model {
     function industrys($arrs='')
     {
 		$arr = getarray($arrs);
-		$this->db->select('id,title');
-		$this->db->from('industry');
-		$this->db->where('industryid',0);
-		$this->db->order_by('orderid','asc');
-		$this->db->order_by('id','asc');
-		if(!empty($arr))
-		{
-			$this->db->where_in('id',$arr);
+		if(empty($arr)){
+			return $this->db->query("select id,title from `industry` where industryid=0 order by id asc")->result();
+		}else{
+			return $this->db->query("select id,title from `industry` where (industryid=0 and id in (".$arr.")) order by id asc")->result();
 		}
-		return $this->db->get()->result();
-    }
-    function industrys_helper($industrysObj='',$keyword='')
-    {
-		$industrys = '';
-		if(!empty($industrysObj))
-		{
-			$num = 0;
-			foreach($industrysObj as $item)
-			{
-				$num++;
-				if( $num > 1 ){ $industrys.= '、'; }
-				$industrys.= '<span>' .$item->title. '</span>';
-			}
-		}
-		if(!empty($keyword)){ $industrys = keycolor( $industrys , $keyword); }
-		return $industrys;
-    }
-
+    }	
 
 
 /**
@@ -51,9 +29,7 @@ class Industry_Model extends CI_Model {
  */
     function industryes_num($industryid=0)
     {
-    	$this->db->from('industry');
-    	$this->db->where('industryid',$industryid);
-    	return $this->db->count_all_results();
+		return $this->db->query("select id from `industry` where industryid=".$industryid)->num_rows();
     }
 	
 
@@ -63,19 +39,11 @@ class Industry_Model extends CI_Model {
  */
     function industryes_view($id=0,$T=0)
     {
-		$this->db->select('id,title');
-    	$this->db->from('industry');
-		$this->db->where('id',$id);
-		if($T==0)
-		{
-			$this->db->where('industryid',0);
+		if($T==0){
+			return $this->db->query("select title from `industry` where industryid=0 and id=".$id)->row();
+		}else{
+			return $this->db->query("select title,classid,industryid from `industry` where industryid<>0 and id=".$id)->row();
 		}
-		else
-		{
-			$this->db->select('classid,industryid');
-			$this->db->where('industryid !=',0);
-		}
-		return $this->db->get()->row();
     }
 	
 	
@@ -84,35 +52,25 @@ class Industry_Model extends CI_Model {
  */
     function industryes_name($id=0)
     {
-    	$this->db->select('title');
-    	$this->db->from('industry');
-    	$this->db->where('id',$id);
-    	$this->db->limit(1);
-    	$row = $this->db->get()->row();
-		if(!empty($row))
-		{
-			return $row->title;
+		$Irs = $this->db->query("select title from `industry` where id=".$id)->row();
+		if(!empty($Irs)){
+			return $Irs->title;
+		}else{
+			return '';
 		}
-		return '';
     }
 	
 	
-
 /**
  * 删除工种 或 技能项目
  */
     function industrys_del($id=0,$T=0)
     {
-		$this->db->where('id',$id);
-		if($T==0)
-		{
-			$this->db->where('industryid =',0);
+		if($T==0){
+			return $this->db->query("delete from `industry` where industryid=0 and id=".$id);
+		}else{
+			return $this->db->query("delete from `industry` where industryid!=0 and id=".$id);
 		}
-		else
-		{
-			$this->db->where('industryid !=',0);
-		}
-		return $this->db->delete('industry'); 
     }
 	
 /**
@@ -120,15 +78,7 @@ class Industry_Model extends CI_Model {
  */
     function industry_class_id()
 	{
-    	$this->db->select('id');
-    	$this->db->from('industry_class');
-    	$this->db->order_by('id','asc');
-    	$this->db->limit(1);
-    	$row = $this->db->get()->row();
-		if(!empty($row))
-		{
-			return $row->id;
-		}
+		return $this->db->query("select * from industry_class order by id asc LIMIT 1")->row();
 	}	
   
 
@@ -137,10 +87,7 @@ class Industry_Model extends CI_Model {
  */
     function industry_class()
     {
-    	$this->db->select('id,title');
-    	$this->db->from('industry_class');
-    	$this->db->order_by('id','asc');
-    	return $this->db->get()->result();
+		return $this->db->query("select * from industry_class order by id asc")->result();
     }
 
 
@@ -150,118 +97,62 @@ class Industry_Model extends CI_Model {
  */
     function class_industrys($classid,$industryid)
 	{
-    	$this->db->select('id,title');
-    	$this->db->from('industry');
-    	$this->db->where('classid',$classid);
-    	$this->db->where('industryid',$industryid);
-    	return $this->db->get()->result();
+		return $this->db->query("select id FROM `industry` WHERE `classid` = ".$classid." and `industryid` = ".$industryid)->result();
     }	
   
 	
 /**
  * 返回用户添加技能数
  */
-    function skills_count($uid=0)
+    function skills_count($uid)
     {
-		$this->db->from('skills');
-    	$this->db->where('workerid',$uid);
-    	return $this->db->count_all_results();
+		return $this->db->query("select industryid from skills where workerid=".$uid." order by id asc")->num_rows();
     }	
-
+  
   
 /**
  * 返回用户擅长工种
  */
-    function goodat_industrys($uid=0)
-    {
-/*	    $this->db->select('I.id,I.title');
-    	$this->db->from('industry as I');
-    	$this->db->join('industry as IT','I.id = IT.industryid','left');
-		$this->db->join('skills as S','IT.id = S.industryid','left');
-    	$this->db->where('S.workerid',$uid);
-    	$this->db->group_by('I.id');*/
-	    $this->db->select('industry.id,industry.title');
-    	$this->db->from('industry');
-		$this->db->join('skills','skills.industrys = industry.id','left');
-    	$this->db->where('skills.workerid',$uid);
-    	$this->db->group_by('industry.id');
-		return $this->db->get()->result();
-		
-	}	
+  function goodat_industrys($uid)
+  {
+	 return $this->db->query("select * from industry where id in (select industryid from (select I.industryid from skills as S INNER JOIN industry as I where I.id=S.industryid and S.workerid=".$uid." GROUP by I.industryid)tbt)")->result();
+  }	
 
 
 /**
  * 返回用户擅长项目种类(安装装修维修)
  */
-    function goodat_classes($uid=0)
-    {
-	    $this->db->select('industry.classid');
-    	$this->db->from('skills');
-    	$this->db->join('industry','industry.id = skills.industryid','left');
-    	$this->db->where('skills.workerid',$uid);
-    	$this->db->group_by('industry.classid');
-		$sql_1 = $this->db->getSQL();
-		$sql_1 = 'SELECT classid FROM ('.$sql_1.')tbt';
-		$this->db->select('*');
-    	$this->db->from('industry_class');
-		$this->db->where('id IN ('.$sql_1.')');
-		//$sql_2 = $this->db->getSQL();
-		//return $this->db->query($sql_2)->result();
-		return $this->db->get()->result();
-	}	
+  function goodat_classes($uid)
+  {
+	 return $this->db->query("select * from industry_class where id in (select classid from (select I.classid from skills as S INNER JOIN industry as I where I.id=S.industryid and S.workerid=".$uid." GROUP by I.classid)tbt)")->result();
+  }	
 
 
 /**
- * 返回用户某种类下擅长的技能
+ * 返回用户某种类下擅长的工种
  */
-     function goodat_skills($uid,$num=10)
-     {
-		 $this->db->select('industry.title,skills.industryid');
-    	 $this->db->from('industry');
-    	 $this->db->join('skills','industry.id = skills.industryid','left');
-    	 $this->db->where('skills.workerid',$uid);
-    	 $this->db->order_by('industry.id','asc');
-    	 $this->db->limit($num);
-    	 return $this->db->get()->result();
-     }	
+  function goodat_skills($uid)
+  {
+	 return $this->db->query("select I.title from industry I left join skills S on I.id=S.industryid where S.workerid=".$uid." order by I.id asc LIMIT 10")->result();
+  }	
   
 
 /**
  * 返回用户某种类下擅长的工种
  */
-     function goodat_class_industrys($classid,$uid)
-     {
-		 $this->db->select('industry.industryid');
-    	 $this->db->from('skills');
-    	 $this->db->join('industry','industry.id = skills.industryid','left');
-    	 $this->db->where('industry.classid',$classid);
-    	 $this->db->where('skills.workerid',$uid);
-    	 $this->db->group_by('industry.id');
-		 $sql_1 = $this->db->getSQL();
-		 $sql_1 = 'SELECT industryid FROM ('.$sql_1.')tbt';
-		 $this->db->select('*');
-    	 $this->db->from('industry');
-		 $this->db->where('id IN ('.$sql_1.') AND industryid=0');
-		 //$sql_2 = $this->db->getSQL();
-		 //return $this->db->query($sql_2)->result();
-		 return $this->db->get()->result();
-     }	
+  function goodat_class_industrys($classid,$uid)
+  {
+	 return $this->db->query("select * from industry where id in (select industryid from (select I.industryid from skills as S INNER JOIN industry as I where I.id=S.industryid and I.classid=".$classid." and S.workerid=".$uid." GROUP by I.industryid)tbt)")->result();
+  }	
 
 
 /**
  * 返回用户某种类下的某工种下的擅长技能
  */
-     function goodat_class_industry_skills($classid,$industryid,$uid)
-     {
-		 $this->db->select('skills.id,skills.price,skills.note,industry.title');
-    	 $this->db->from('skills');
-    	 $this->db->join('industry','skills.industryid=industry.id','left');
-    	 $this->db->where('skills.workerid',$uid);
-    	 $this->db->where('industry.industryid',$industryid);
-    	 $this->db->where('industry.classid',$classid);
-    	 $this->db->order_by('skills.id','asc');
-    	 return $this->db->get()->result();
-     }	
+  function goodat_class_industry_skills($classid,$industryid,$uid)
+  {
+	 return $this->db->query("select S.id,S.price,S.note,I.title from skills S left join industry I on S.industryid=I.id where S.workerid=".$uid." and I.industryid=".$industryid." and I.classid=".$classid." order by id asc")->result();
+  }	
 
 }
 ?>

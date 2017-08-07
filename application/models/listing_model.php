@@ -12,81 +12,58 @@ class Listing_Model extends CI_Model {
 /**
  * 返回列表sql语句,用于分页
  */
-  function listsql($uid)
+  function listsql($logid)
   {
-	  $this->db->select('*');
-	  $this->db->from('listing');
-	  $this->db->where('uid',$uid);
-	  $this->db->order_by('id','desc');
-	  //返回SQL
-	  return $this->db->getSQL();
+	  return "select * from listing where uid=".$logid." order by id desc"; 
   }	
   
 /**
  * 返回工人页面列表sql语句
  */
-  function User_Listing($uid)
+  function User_Listing($logid)
   {
-	  $this->db->select('*');
-	  $this->db->from('listing');
-	  $this->db->where('uid',$uid);
-	  $this->db->order_by('id','desc');
-	  $this->db->limit(10);
-	  return $this->db->get()->result();
+	  return $this->db->query("select * from listing where uid=".$logid." order by id desc limit 10")->result();
   }	
 	
 	
 /**
  * 返回返回招聘或者是求职
  */
-  function view($id=0,$uid=0)
+  function view($id=0,$logid=0)
   {
-	  $this->db->select('*');
-	  $this->db->from('listing');
-	  $this->db->where('uid',$uid);
-	  $this->db->where('id',$id);
-	  $this->db->limit(1);
-	  return $this->db->get()->row();
+	  return $this->db->query("select * from `listing` where uid=".$logid." and id=".$id)->row();
   }	
 
 	
 /**
  * 返回返回招聘或者是求职
  */
-  function save($id=0,$uid=0)
+  function save($id=0,$logid=0)
   {
-	  $thisdata=array(
-	  "note" => noHtml($this->input->post("note",true)),
-	  "diqu" => noHtml($this->input->post("diqu",true)),
-	  "mytime" => $this->input->post("mytime",true),
-	  "addtime" => dateTime(),
-	  "uid" => $uid
-	  );
+	  
+		$thisdata=array(
+		"note" => noHtml($this->input->post("note",true)),
+		"diqu" => noHtml($this->input->post("diqu",true)),
+		"mytime" => $this->input->post("mytime",true),
+		"addtime" => date("Y-m-d H:i:s",time()),
+		"uid" => $logid
+		);
 
-	  //检测数据
-	  if($thisdata["mytime"]=='')
-	  {
-		  json_form_no('请先填写日期!');
-	  }
-	  if($thisdata["diqu"]=='')
-	  {
-		  json_form_no('请先填写地区!');
-	  }
-	  if($thisdata["note"]=='')
-	  {
-		  json_form_no('请先填写内容!');
-	  }
+		//检测数据
+		if($thisdata["mytime"]==""){echo '{"cmd":"n","info":"请先填写日期！"}';exit;}
+		if($thisdata["diqu"]==""){echo '{"cmd":"n","info":"请先填写地区！"}';exit;}
+		if($thisdata["note"]==""){echo '{"cmd":"n","info":"请先填写内容！"}';exit;}
+		
 
-	  if(is_num($id))
-	  {
-		  $this->db->where('id', $id);
-		  $this->db->update('listing', $thisdata); 
-	  }
-	  else
-	  {
-		  $this->db->insert('listing', $thisdata); 
-	  }
-	  json_form_yes('保存成功!');
+		if($id!=""&&is_numeric($id))
+		{
+			$this->db->where('id', $id);
+			$this->db->update('listing', $thisdata); 
+		}else{
+			$this->db->insert('listing', $thisdata); 
+		}
+		
+		echo '{"cmd":"y","info":"保存成功！"}';exit;
   }
   
   
@@ -94,11 +71,9 @@ class Listing_Model extends CI_Model {
 /**
  * 删除数据
  */
-  function del($id=0,$uid=0)
+  function del($id=0,$logid=0)
   {
-	  $this->db->where('uid', $uid);
-	  $this->db->where('id', $id);
-	  return $this->db->delete('listing'); 
+	  $this->db->query("delete from `listing` where uid=".$logid." and id=".$id);
   }
 
 

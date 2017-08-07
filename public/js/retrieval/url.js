@@ -1,17 +1,17 @@
 //返回当前搜素参数的url形式
 //记录当前的城市
-var on_c_id='';
+var on_cityid='';
 //返回所选的说有内容
 function searchkeys(){
 		//选择的城市
-		var c_id=$(".city_select #title").find("a").attr("id");
-		    goUrl="c_id="+c_id;
+		var cityid=$(".city_select #title").find("a").attr("id");
+		    goUrl="cityid="+cityid;
 		//不切换城市时,选择的地区
-		var a_id=$(".city_select #areas").find("a.on").attr("id");
-		    goUrl = goUrl+"&a_id="+a_id;
+		var areaid=$(".city_select #areas").find("a.on").attr("id");
+		    goUrl = goUrl+"&areaid="+areaid;
 		//选择的类型(工人/团队)
-		var search_usertype=$("#search_usertype").find("a.on").attr("id");
-		    goUrl = goUrl+"&usertype="+search_usertype;
+		var search_team_or_men=$("#search_team_or_men").find("a.on").attr("id");
+		    goUrl = goUrl+"&team_or_men="+search_team_or_men;
 		//选择的工种
 		var search_industry="";
 	        $("#search_industry").find("a.on").each(function(){
@@ -24,5 +24,7 @@ function searchkeys(){
 			
 		if(goUrl!=""){goUrl = goUrl+"&keyword=";}
 		goUrl = encodeURI(goUrl);
-		return '?' + goUrl;
+		
+		return goUrl;
+		//alert("搜素条件：\r\n\r\n"+ss);	
 	}

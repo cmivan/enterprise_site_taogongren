@@ -1,5 +1,5 @@
 <?php
-#文章信息
+#淘工会信息
 
 class Articles_Model extends CI_Model {
 
@@ -8,89 +8,58 @@ class Articles_Model extends CI_Model {
         parent::__construct();
     }
 	
-    /*返回sql(用于工会页面 /articles 列表数据)*/
+	//返回sql(用于工会页面 /articles 列表数据)
 	function get_sql($typeid=0)
 	{
-		$this->db->select('articles.id,articles.title,articles.type_id,articles.time,articles_type.t_id,articles_type.t_title,articles_type.t_order_id');
-		$this->db->from('articles');
-		$this->db->join('articles_type','articles.type_id = articles_type.t_id','left');
-		$this->db->order_by('articles.id','desc');
-		if(is_num($typeid))
-		{
-			$this->db->where('articles.type_id', $typeid);
+		if(is_num($typeid)){
+			return "select A.id,A.title,A.type_id,A.time,B.t_id,B.t_title,B.t_order_id from articles A left join articles_type B on A.type_id=B.t_id where A.type_id=".$typeid." order by A.id desc";
+		}else{
+			return "select A.id,A.title,A.type_id,A.time,B.t_id,B.t_title,B.t_order_id from articles A left join articles_type B on A.type_id=B.t_id order by A.id desc";
 		}
-		//返回SQL
-		return $this->db->getSQL();
 	}
 	
-	/*返回分类*/
+	//返回分类
 	function get_types()
 	{
-	    $this->db->select('t_id,t_title,t_order_id');
-    	$this->db->from('articles_type');
-    	$this->db->order_by('t_order_id','desc');
-    	$this->db->order_by('t_id','desc');
-    	return $this->db->get()->result();
+		return $this->db->query("select t_id,t_title,t_order_id from articles_type order by t_order_id desc,t_id desc")->result();
 	}
 	
-	/*返回分类数目*/
+	//返回分类数目
 	function get_types_num()
 	{
-    	return $this->db->count_all_results('articles_type');
+		return $this->db->query("select t_id from articles_type")->num_rows();
 	}
 
-	/*返回分类*/
+	//返回分类
 	function get_type($id)
 	{
-	    $this->db->select('t_id,t_title,t_order_id');
-    	$this->db->from('articles_type');
-    	$this->db->where('t_id',$id);
-    	return $this->db->get()->row();
+		return $this->db->query("select t_id,t_title,t_order_id from articles_type where t_id=".$id)->row();
 	}
 	
-	/*文章点击+1*/
+	//文章点击+1
 	function hit($id=0)
 	{
-    	$this->db->set('visited', 'visited+1', FALSE);
-    	$this->db->where('id', $id);
-    	return $this->db->update('articles',array());
+		$this->db->query("update articles set visited=visited+1 where id=".$id);
 	}
 	
-	/*返回分类*/
-	function list_hot($num=10)
-	{
-	    $this->db->select('id,title,visited');
-    	$this->db->from('articles');
-    	$this->db->order_by('visited','desc');
-		$this->db->limit($num);
-    	return $this->db->get()->result();
-	}
-
-	/*返回文章内容详情*/
+	//返回文章内容详情
 	function view($id=0)
 	{
-	    $this->db->select('articles.title,articles.type_id,articles.time,articles.visited,articles.content,articles_type.t_id,articles_type.t_title');
-    	$this->db->from('articles');
-    	$this->db->join('articles_type','articles.type_id = articles_type.t_id','left');
-    	$this->db->where('articles.id',$id);
-    	$this->db->limit(1);
-    	return $this->db->get()->row();
+		return $this->db->query("select A.title,A.type_id,A.time,A.visited,A.content,B.t_id,B.t_title from articles A left join articles_type B on A.type_id=B.t_id where A.id=".$id)->row();
 	}
 	
 	
 	//删除文章内容
 	function del($id)
 	{
-    	$this->db->where('id', $id);
-    	return $this->db->delete('articles'); 
+		return $this->db->query("delete from articles where id=".$id);
 	}
 	
-	/*删除分类*/
+	//删除分类
 	function del_type($id)
 	{
-    	$this->db->where('t_id', $id);
-    	return $this->db->delete('articles_type'); 
+		return $this->db->query("delete from articles_type where t_id=".$id);
 	}
-
+	
 }
 ?>

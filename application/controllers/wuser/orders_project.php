@@ -2,41 +2,49 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Orders_project extends W_Controller {
-
+	
+	public $data;  //用于返回页面数据
+	public $logid = 0;
 	public $id;
 
 	function __construct()
 	{
 		parent::__construct();
 
-		$this->load->library('Paging');
+		/*初始化加载application\core\MY_Controller.php
+		这里的加载必须要在产生其他 $this->data 数据前加载*/
+
+		//基础数据
+		$this->data = $this->basedata();
+		//初始化用户id
+		$this->logid = $this->data["logid"];
+		
+		$this->load->model('Paging');
 		$this->load->model('Orders_Model');
-		
-		$this->load->model('Orders_project_Model');
-		//用于工人、团队、公司，必须设置为0
-		$this->Orders_simple_Model->user_type = 0;
-		
 		$this->load->model('Common_Model');
 		
 		$this->load->helper('orders');
+		
 		$this->lang->load('order', 'cn');
 
-		//初始化页面导航
-		$this->data["thisnav"] = array(
-		            array('title' => '上门单','link' => 'orders_door'),
-					array('title' => '简化单','link' => 'orders_simple'),
-					array('title' => '工程单','link' => 'orders_project')
-		            );
-
+		//初始化页面导航,当前导航设置
+		$this->data["thisnav"]["nav"][0]["title"] = "上门单";
+		$this->data["thisnav"]["nav"][0]["link"]  = "orders_door";
+		$this->data["thisnav"]["nav"][1]["title"] = "简化单";
+		$this->data["thisnav"]["nav"][1]["link"]  = "orders_simple";
+		$this->data["thisnav"]["nav"][2]["title"] = "工程单";
+		$this->data["thisnav"]["nav"][2]["link"]  = "orders_project";
+		//当前控制器名称
+		$this->data["thisnav"]["on"] = $this->uri->segment(2);
+		if($this->data["thisnav"]["on"]==""){$this->data["thisnav"]["on"]=$this->data["thisnav"]["nav"][0]["link"];}
 	}
 	
 	
 	
 	function index()
 	{
-		$listsql = $this->Orders_project_Model->user_orders_sql( $this->logid );
-	    $this->data["list"] = $this->paging->show($listsql,10);
-		//输出到视窗
+	    $this->data["list"] = $this->Paging->show("select * from `order_project` where uid_2=".$this->logid." order by id desc",5);
+		/*输出到视窗*/
 		$this->load->view_wuser('orders/project',$this->data);
 	}
 	
@@ -44,15 +52,14 @@ class Orders_project extends W_Controller {
 	
 	function view($id=0)
 	{
-		$id = get_num($id,'404');
+		$id = is_num($id,'404');
 		$this->lang->load('order', 'cn');
 		
 		//页面上的操作(删除或审核)
 		$action = $this->input->get('action');
-		if($action!='')
-		{
+		if($action!=''){
 			$this->id = $id;
-			$pid = $this->input->getnum('pid');
+			$pid = is_num($this->input->get('pid'));
 			switch ($action)
 			{
 				//删除报价
@@ -62,18 +69,18 @@ class Orders_project extends W_Controller {
 			}
 		}
 
-		//读取订单基本信息
-	    $orders_view = $this->Orders_project_Model->user_orders_view( $this->logid , $id );
-		if(!empty($orders_view))
-		{
+
+		//读取订单基本信息 <><><>
+	    $view = $this->db->query("select * from order_project 
+											   where uid_2=".$this->logid." and id=".$id." order by id desc")->row();
+		if(!empty($view)){
 			$this->data["id"] = $id;
-			$this->data["view"] = $orders_view;
-			$order2uid = $orders_view->uid; 
+			$this->data["view"] = $view;
+			$order2uid = $view->uid; 
 			$this->data['user_links'] = $this->User_Model->links($order2uid);
-			$this->data['note'] = $orders_view->note;
-			$this->data['addtime'] = $orders_view->addtime;
-			//相应的任务id
-			$r_rid = $orders_view->retrieval_id;
+			$this->data['note'] = $view->note;
+			$this->data['addtime'] = $view->addtime;
+			$r_rid = $view->retrieval_id;  //相应的任务id
 		}
 			
 		//返回订单中是否有新的报价项目
@@ -89,9 +96,9 @@ class Orders_project extends W_Controller {
 		$this->data['price_num']  = $price_q->num_rows(); //获取数据库总数量
 
 		//获取合同信息
-		$this->data['deal_view'] = $this->Orders_project_Model->user_orders_deal( $id );
-
-		//判断是否已经(添加并双方确认)了合同信息
+		$this->data['deal_view']  = $this->db->query("select * from `order_project_deal` where o_id=".$id." LIMIT 1")->row();
+		
+		#判断是否已经(添加并双方确认)了合同信息
 		$this->data['dealok'] = $this->Orders_Model->order_project_deal_stat($id);
 		
 		//根据合同步骤状态获取当前合同的状态(是否完成)
@@ -104,73 +111,58 @@ class Orders_project extends W_Controller {
 		$this->data['order_stat_btu'] = order_stat($this->data['ostat'],$isevaluate,$id);	
 
 		//获取该合同的步骤信息
-		$this->data['deal_steps'] = $this->Orders_project_Model->user_orders_steps( $id );
+		$this->data['deal_steps'] = $this->db->query("select * from `order_project_step` where o_id=".$id." order by stepNO asc")->result();
 
-		//输出到视窗
+		/*输出到视窗*/
 		$this->load->view_wuser('orders/project_view',$this->data);
 	}
 	
 	
-	//合同详细信息
+	/*合同详细信息*/
 	function deal($id)
 	{
-		$id = get_num($id,'404');
-		$orders_view = $this->Orders_project_Model->user_orders_view( $this->logid , $id );
-		if(!empty($orders_view))
-		{
-			$this->data["project_view"] = $orders_view;
-		    $this->data["uid"] = $orders_view->uid;
-		    $this->data["uid_2"] = $orders_view->uid_2;
-		    $this->data["yaoqiu_note"] = $orders_view->note;
+		$id = is_num($id,'404');
+		$project_view = $this->db->query("select * from order_project where id=$id and uid_2=".$this->logid." limit 1")->row();
+		if(!empty($project_view)){
+		   $this->data["project_view"] = $project_view;
+		   $this->data["uid"]   = $project_view->uid;
+		   $this->data["uid_2"] = $project_view->uid_2;
+		   $this->data["yaoqiu_note"]=$project_view->note;
 		   
-		    //判断是否已经同意所有报价
-			$this->db->from('order_quote');
-			$this->db->where('o_id',$id);
-			$this->db->where('u_ok !=',1);
-			$count = $this->db->get()->num_rows();
-		    if($count>0)
-			{
-				$this->data["deal_show"] = false;
-			}
-			else
-			{
-				$this->data["deal_show"] = true;
-			}
+		   #判断是否已经同意所有报价
+		   $count = $this->db->query("select * from `order_quote` where o_id=$id and u_ok<>1")->num_rows();
+		   if($count>0){$this->data["deal_show"] = false;}else{$this->data["deal_show"] = true;}
 		}
 		
-		//读取合同信息
-		if(is_num($id))
-		{
-		   $deal_view = $this->Orders_project_Model->user_orders_deal( $id );
-		   if($deal_view)
-		   {
-			  //获取合同基本数据
-			  $this->data["id"] = $id;
-			  $this->data["title"] = $deal_view->title;
-			  $this->data["yaoqiu"] = $deal_view->yaoqiu;
-			  $this->data["other"] = $deal_view->other;
-			  $this->data["total_money"] = $deal_view->total_money;
-			  $this->data["cy_money"] = $deal_view->cy_money;
-			  
-			  //获取合同阶段数据(数组形式)
-			  $moneyArr = array();
-			  $daysArr = array();
-			  $contentArr = array();
-			  $deal_steps = $this->Orders_project_Model->user_orders_steps( $id );
-			  foreach($deal_steps as $step)
-			  {
-				  $moneyArr[] = $step->money;
-				  $daysArr[] = $step->days;
-				  $contentArr[] = $step->content;
+		#读取合同信息
+		if(is_num($id)){
+		   $row = $this->db->query("select * from `order_project_deal` where o_id=$id LIMIT 1")->row();
+		   if($row){
+			  #获取合同基本数据
+			  $this->data["id"]     = $id;
+			  $this->data["title"]  = $row->title;
+			  $this->data["yaoqiu"] = $row->yaoqiu;
+			  $this->data["other"]  = $row->other;
+			  $this->data["total_money"] = $row->total_money;
+			  $this->data["cy_money"] = $row->cy_money;
+			  #获取合同阶段数据(数组形式)
+			  $moneyArr  =array();
+			  $daysArr   =array();
+			  $contentArr=array();
+			  $row1 = $this->db->query("select * from `order_project_step` where o_id=$id order by stepNO asc")->result();
+			  foreach($row1 as $rs1){
+				 $moneyArr[]  = $rs1->money;
+				 $daysArr[]   = $rs1->days;
+				 $contentArr[]= $rs1->content;
 			  }
-			  $this->data["money"] = $moneyArr;
-			  $this->data["days"] = $daysArr;
+			  $this->data["money"]   = $moneyArr;
+			  $this->data["days"]    = $daysArr;
 			  $this->data["content"] = $contentArr;
-			  $this->data["countItem"] = count($moneyArr);
+			  $this->data["countItem"]=count($moneyArr);
 		   }
 		}
 		
-		//输出到视窗
+		/*输出到视窗*/
 		$this->load->view_wuser('orders/project_deal_view',$this->data);
 	}
 	
@@ -179,52 +171,35 @@ class Orders_project extends W_Controller {
 	/*选择订单报价框*/
 	function deal_not_ok_msg()
 	{
+		$logid = $this->logid;
+		
 		/*提交保存操作*/
 		$go = $this->input->post('go');
 		if($go=='yes')
 		{
-			$id = $this->input->postnum('id');
+			$id = is_num($this->input->post('id'));
 			$note = noHtml($this->input->post('note'));
-			if($id==false)
-			{
-				json_form_no($this->lang->line('system_tip_busy'));
-			}
-			elseif($note=='')
-			{
-				json_form_no('请填写不同意合同内容的理由!');
-			}
+			if($id==false){ json_form_no($this->lang->line('system_tip_busy')); }
+			if($note==''){ json_form_no('请填写不同意合同内容的理由!'); }
 			
-		    //保证用户有权限操作
-		    $this->db->select('order_project.id');
-			$this->db->from('order_project');
-			$this->db->join('order_project_deal','order_project.id=order_project_deal.o_id','left');
-			$this->db->where('order_project.id', $id);
-			$this->db->where('order_project.uid_2', $this->logid);
-			
-			$where_on[] = array('order_project.u_ok !=' => 1);
-			$where_on[] = array('order_project_deal.u_ok_2 !=' => 1);
-			$this->db->where_on( $where_on );
-			//$this->db->where('(' . $this->db->dbprefix('order_project.u_ok') . ' !=1 or ' . $this->db->dbprefix('order_project_deal.u_ok_2') . ' !=1)');
-			$rsnum = $this->db->count_all_results();
-			if($rsnum>0)
-			{
-				//有操作权限则写入回复
-				$this->db->set('feed',$note);
-				$this->db->set('u_ok_2',2);
-				$this->db->where('o_id',$id);
-				$this->db->update('order_project_deal');
+		    #保证用户有权限操作
+		    $rsnum = $this->db->query("select OP.id from `order_project` OP left join `order_project_deal` OPD on OP.id=OPD.o_id where OP.id=$id and OP.uid_2=$logid and (OPD.u_ok<>1 or OPD.u_ok_2<>1)")->num_rows();
+		    if($rsnum>0){ #有操作权限则写入回复
+				$this->db->query("update `order_project_deal` set `feed`='$note',`u_ok_2`=2 where o_id=$id");
 				json_form_yes('意见发送成功!');
+		    }else{
+				json_form_no($this->lang->line('system_tip_busy'));
 		    }
-			json_form_no($this->lang->line('system_tip_busy'));
+			exit;
 		}
 		
-		$this->data['id'] = $this->input->getnum('id','404');
+		$this->data['id'] = is_num($this->input->get('id'),'404');
 		
-		//表单配置
+		/*表单配置*/
 		$this->data['formTO']->url = $this->data["c_urls"].'/deal_not_ok_msg';
 		$this->data['formTO']->backurl = '';
 		
-		//输出到视窗
+		/*输出到视窗*/
 		$this->load->view_wuser('orders/deal_not_ok_msg',$this->data);
 	}
 	
@@ -233,131 +208,93 @@ class Orders_project extends W_Controller {
 	/*订单报价框*/
 	function add_price($id=0)
 	{
-		$id = get_num($id,'404');
+		$logid = $this->logid;
+		$id    = is_num($id,'404');
 		$this->data['id'] = $id;
 
 		//获取当前编辑报价项的信息
-		$p_editid = $this->input->postnum("edit_id");
-		if( $p_editid==false )
-		{
-			$p_editid = $this->input->getnum("edit_id");
-		}
+		$p_editid   = is_num($this->input->post("edit_id"));
+		if($p_editid==false){ $p_editid = is_num($this->input->get("edit_id")); }
 		
-		$p_title = noHtml($this->input->post("project"));
-		$p_num = $this->input->post("num");
-		$p_units = noHtml($this->input->post("units"));
-		$p_r_price = $this->input->postnum("r_price");
-		$p_c_price = $this->input->postnum("c_price");
+		$p_title    = noHtml($this->input->post("project"));
+		$p_num      = $this->input->post("num");
+		$p_units    = noHtml($this->input->post("units"));
+		$p_r_price  = is_num($this->input->post("r_price"));
+		$p_c_price  = is_num($this->input->post("c_price"));
 		$p_allprice = $this->input->post("allprice");
-		$p_note = noHtml($this->input->post("p_note"));
+		$p_note     = noHtml($this->input->post("p_note"));
 		$ip = ip();
 
-		if( $this->input->post('go')=="yes" )
-		{
+		if($this->input->post('go')=="yes"){
 			//数据验证
-			if($p_title==''){
+			if($p_title==""){
 			   $backinfo="请填写项目名称!";
-			}elseif($p_num==''){
+			}elseif($p_num==""){
 			   $backinfo="请填写数量!";
 			}elseif(is_num($p_num)==false||$p_num<=0){
 			   $backinfo="数量应该为正整数!";
-			}elseif($p_units==''){
+			}elseif($p_units==""){
 			   $backinfo="数量至少为1 !";
-			}elseif($p_r_price==''){
+			}elseif($p_r_price==""){
 			   $backinfo="请填写人工单价!";
 			}elseif(is_num($p_r_price)==false||$p_r_price<=0){
 			   $backinfo="人工单价应为正整数!";
-			}elseif($p_c_price==''){
+			}elseif($p_c_price==""){
 			   $backinfo="请填写材料单价!";
 			}elseif(is_num($p_c_price)==false||$p_c_price<0){
 			   $backinfo="材料单价应为非负整数!";
-			}
-			else
-			{
-			   //开始写入数据
-			   $proMD5 = md5($id.$p_title.$p_num.$p_units.$p_r_price.$p_c_price.$p_note);
-			   
-			   //保证用户有权限操作
-			   $this->db->select('id');
-			   $this->db->from('order_project');
-			   $this->db->where('id', $id);
-			   $this->db->where('uid_2', $this->logid);
-			   if( $this->db->count_all_results() > 0 )
-			   {
-				   $backinfoTip = "该项报价已经报价单中,请不要重复添加!";
-				   if ( is_num($p_editid) )
-				   {
-					   $this->db->where('id',$p_editid);
-					   $backinfoTip = "您未对该项报价进行任何修改!"; 
-				   }
-				   
-				   $this->db->select('id');
-				   $this->db->from('order_quote');
-				   $this->db->where('o_id', $id);
-				   $this->db->where('proMD5', $proMD5);
-				   //判断该项报价是否已经添加(未添加则可以添加)
-				   if( $this->db->count_all_results() <= 0 )
-				   {
-					   $data = array(
-							  'o_id' => $id,
-							  'u_ok' => 0,
-							  'project' => $p_title,
-							  'num' => $p_num,
-							  'units' => $p_units,
-							  'c_price' => $p_c_price,
-							  'r_price' => $p_r_price,
-							  'note' => $p_note,
-							  'addtime' => dateTime(),
-							  'ip' => ip(),
-							  'proMD5' => $proMD5
-							  );
-					   //不存在该项信息，允许写入相关报价
-					   if($p_editid==false)
-					   {
-						   $qrs = $this->db->insert('order_quote',$data);
-					   }
-					   else
-					   {
-						   $this->db->where('id',$p_editid);
-						   $this->db->where('u_ok !=', 1);
-						   $qrs = $this->db->update('order_quote',$data);
-					   }
-					   if($qrs)
-					   {
-						   json_form_yes('保存成功!');
-					   }
-					   json_form_no('操作可能失败!');
-				   }
-				   else
-				   {
-					   $backinfo = $backinfoTip;
-				   } 
+			}else{
+				
+			   if(is_num($p_editid)==false){
+				  $litSql = "";
+				  $backinfoTip = "该项报价已经报价单中,请不要重复添加!";
+			   }else{
+				  $litSql = " and id=".$p_editid; //限制为当前编辑的内容
+				  $backinfoTip = "您未对该项报价进行任何修改!"; 
 			   }
+			   
+			   #开始写入数据
+			   $proMD5=md5($id.$p_title.$p_num.$p_units.$p_r_price.$p_c_price.$p_note);
+			   #保证用户有权限操作
+			   $rownum = $this->db->query("select id from `order_project` where id=$id and uid_2=$logid")->num_rows();
+			   if($rownum>0){
+				  #判断该项报价是否已经添加(未添加则可以添加)
+				  $rownum2 = $this->db->query("select id from `order_quote` where o_id=$id and proMD5='".$proMD5."'".$litSql)->num_rows();
+				  if($rownum2<=0){
+					 #不存在该项信息，允许写入相关报价
+					 if($p_editid==false){
+						$sql="INSERT INTO `order_quote` (`o_id` ,`u_ok` ,`project` ,`num` ,`units` ,`c_price` ,`r_price` ,`note` ,`addtime` ,`ip` ,`proMD5`) VALUES ('$id', '0', '$p_title', '$p_num', '$p_units', '$p_c_price', '$p_r_price', '$p_note', '".dateTime()."', '".$ip."', '$proMD5')";
+					 }else{
+						$sql="update `order_quote` set `u_ok`=0,`project`='$p_title',`num`=$p_num,`units`='$p_units',`c_price`=$p_c_price,`r_price`=$p_r_price,`note`='$p_note',`proMD5`='$proMD5' where id=$p_editid and `u_ok`<>1";
+					 }
+					 $qrs = $this->db->query($sql);
+					 if($qrs){
+						 json_form_yes('保存成功!');
+					 }else{
+						 json_form_no('操作可能失败!');
+					 }
+				  }else{
+					  $backinfo = $backinfoTip;
+				  } 
+			   }
+			   
 			   json_form_no($backinfo);
 			}
 		}
 		
 		
 		#编辑状态，读取相应的内容
-		if( $p_editid )
-		{
-			$this->db->select('order_quote.*');
-			$this->db->from('order_project');
-			$this->db->join('order_quote','order_project.id = order_quote.o_id','left');
-			$this->db->where('order_quote.id',$p_editid);
-			$this->db->where('order_project.uid_2', $this->logid);
-			$this->db->where('order_quote.u_ok !=',1);
-			$rsview = $this->db->get()->row();
-		    if(!empty($rsview))
-		    {
-				//$id = $rsview->id;
-				if($p_title==''){$p_title=$rsview->project;}
-				if($p_num==''){$p_num=$rsview->num;}
-				if($p_units=='')  {$p_units=$rsview->units;}
-				if($p_r_price==''){$p_r_price=$rsview->r_price;}
-				if($p_c_price==''){$p_c_price=$rsview->c_price;}
-				if($p_note=='') {$p_note=$rsview->note;}
-		    }
+		if($p_editid){
+		   $rsview = $this->db->query("select OQ.* from `order_project` OP left join `order_quote` OQ on OP.id=OQ.o_id where OQ.id=$p_editid and OP.uid_2=$logid and OQ.u_ok<>1")->row();
+		   if(!empty($rsview)){
+			  //$id = $rsview->id;
+			  if($p_title==""){$p_title=$rsview->project;}
+			  if($p_num==""){$p_num=$rsview->num;}
+			  if($p_units=="")  {$p_units=$rsview->units;}
+			  if($p_r_price==""){$p_r_price=$rsview->r_price;}
+			  if($p_c_price==""){$p_c_price=$rsview->c_price;}
+			  if($p_note=="") {$p_note=$rsview->note;}
+		   }
 		}
 
 		$this->data["p_editid"]   = $p_editid;
@@ -370,84 +307,64 @@ class Orders_project extends W_Controller {
 		$this->data["p_note"]     = $p_note;
 
 		//获取工程单基本信息
-		$this->data['pro_view'] = $this->Orders_project_Model->user_orders_view( $this->logid , $id );
+		$this->data['pro_view'] = $this->db->query("select * from `order_project` where uid_2=$logid and id=$id")->row();
 		$this->data['allprice'] = $this->Orders_Model->order_project_allprice($id);
 
-		//表单配置
+		/*表单配置*/
 		$this->data['formTO']->url = $this->data["c_urls"].'/add_price/'.$id;
 		$this->data['formTO']->backurl = $this->data["c_urls"].'/view/'.$id;
 		
-		//输出到视窗
+		/*输出到视窗*/
 		$this->load->view_wuser('orders/project_add_price',$this->data);
 	}
 	
-
+	
+	
+	
 	
 	/*选择报价项目框*/
 	function project_industrys()
 	{
-		$this->load->model('Industry_Model');
-		$industryid = $this->input->getnum("industryid");
-		if( $industryid )
-		{
-			$this->data["Irs"] = $this->Industry_Model->industryes_view( $industryid , 1 );
+		/*输出到视窗*/
+		$industryid = is_num($this->input->get("industryid"));
+		if($industryid){
+		  $this->data["Irs"] = $this->db->query("select title,units,r_price,c_price,note from industry where industryid<>0 and id=$industryid")->row();
 		}
-		
-		//获取工种
-		$this->data["industrys"] = $this->Industry_Model->industrys();
-		$this->data["industry_class"] = $this->Industry_Model->industry_class();
-		//输出到视窗
 		$this->load->view_wuser('orders/project_industrys',$this->data);
 	}
 	
 	
-
+	
+	
+	
+	//<><><><><><><><><><><><><><>
 	
 	/*用户确认合同(需要限定权限)*/
 	function deal_ok()
 	{
-		$id = $this->id;
-		if( is_num($pid) )
-		{
-			//保证用户有权限操作
-			$this->db->select('order_project.id');
-			$this->db->from('order_project');
-			$this->db->join('order_project_deal','order_project.id = order_project_deal.o_id','left');
-			$this->db->where('order_project.id',$id);
-			$this->db->where('order_project.uid_2', $this->logid);
-			$this->db->where('order_project_deal.u_ok',1);
-			if( $this->db->count_all_results() > 0 )
-		    {
-				$this->db->set('u_ok_2', 1);
-				$this->db->set('oktime', dateTime());
-				$this->db->where('u_ok_2 !=', 1);
-				$this->db->where('u_ok', 1);
-				$this->db->where('o_id', $id);
-				$this->db->update('order_project_deal');
-				header("Location:".reUrl("action=null"));exit;
-		    }
+		$id = is_num($this->id);
+		if($id){
+		   #保证用户有权限操作
+		   $qnum = $this->db->query("select OP.id from `order_project` OP left join `order_project_deal`
+								  OPD on OP.id=OPD.o_id where OP.id=".$id." and OP.uid_2=".$this->logid." and OPD.u_ok=1")->num_rows();
+		   if($qnum>0){
+			  $this->db->query("update `order_project_deal` set u_ok_2=1,oktime='".dateTime()."' where u_ok_2<>1 and u_ok=1 and o_id=".$id);
+			  header("Location:".reUrl("action=null"));exit;
+		   }
 		}
 	}
 	
 	/*用户删除合同(需要限定权限)*/
 	function price_del($pid=0)
 	{
-		if( is_num($pid) )
-		{
-			//保证用户有权限操作
-			$this->db->select('order_project.id');
-			$this->db->from('order_project');
-			$this->db->join('order_quote','order_project.id = order_quote.o_id','left');
-			$this->db->where('order_quote.id',$pid);
-			$this->db->where('order_project.uid_2', $this->logid);
-			$this->db->where('order_quote.u_ok !=',1);
-			if( $this->db->count_all_results() > 0 )
-			{
-				$this->db->where('u_ok !=', 1);
-				$this->db->where('id =', $pid);
-				$this->db->delete('order_quote');
-				header("Location:".reUrl("action=null&pid=null"));exit;
-			}
+		if($pid){
+		   #保证用户有权限操作
+		   $qnum = $this->db->query("select OP.id from `order_project` OP left join `order_quote`
+										  OQ on OP.id=OQ.o_id where OQ.id=".$pid." and OP.uid_2=".$this->logid." and OQ.u_ok<>1")->num_rows();
+		   if($qnum>0){
+			  $this->db->query("delete from `order_quote` where u_ok<>1 and id=".$pid);
+			  header("Location:".reUrl("action=null&pid=null"));exit;
+		   }
 		}
 	}
 	

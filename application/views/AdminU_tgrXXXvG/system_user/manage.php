@@ -23,11 +23,11 @@
 <form name="edit" method="post" action="">
 <table width="100%" border="0" align="center" cellpadding="3" cellspacing="1" class="forum2">
 <tr class="forumRaw edit_item_frist">
-<td align="center" colspan="2">编号</td>
-<td>&nbsp;帐号</td>
-<!--<td align="center"><?php /*?>管理权限范围<?php */?>&nbsp;</td>-->
-<td width="100" align="center" class="edit_box_edit_td">添加日期</td>
-<td width="100" align="center" class="edit_box_edit_td">操作</td>
+<td colspan="2" align="center">编号</td>
+<td class="edit_box_edit_td">&nbsp;帐号</td>
+<td align="center"><?php /*?>管理权限范围<?php */?>&nbsp;</td>
+<td align="center" class="edit_box_edit_td">添加日期</td>
+<td align="center" class="edit_box_edit_td">操作</td>
 </tr>
 	  
 	  
@@ -42,18 +42,18 @@ if(!empty($list)){
 <input type="checkbox" disabled /></td>
 <td width="40" align="center"><?php echo $rs->id;?></td>
 <td>&nbsp;<?php echo keycolor($rs->username,$keysword)?></td>
-<!--<td align="center"><?php /*?><?php echo $rs->power?><?php */?></td>-->
+<td align="center"><?php /*?><?php echo $rs->power?><?php */?>&nbsp;</td>
 <td align="center" title="<?php echo $rs->addtime;?>"><?php echo dateHi($rs->addtime);?></td>
 <td align="center">
 <input type="button" class="button" disabled value="删除" style="background:none; cursor:default; color:#999;" />
 <input type="button" class="button update" url='<?php echo site_url($s_urls.'/edit')?><?php echo reUrl('id='.$rs->id)?>' value="修改"/>
 </td></tr>
 <?php }else{?>
-<tr class="forumRow"><td width="40" align="center">
+<tr class="forumRow"><td align="center">
 <input class="del_id" name="del_id[]" type="checkbox" id="del_<?php echo $delnum;?>" value="<?php echo $rs->id;?>" /></td>
-<td width="40" align="center"><?php echo $rs->id;?></td>
+<td align="center"><?php echo $rs->id;?></td>
 <td>&nbsp;<?php echo keycolor($rs->username,$keysword)?></td>
-<!--<td align="center"><?php /*?><?php echo $rs->power?><?php */?>&nbsp;</td>-->
+<td align="center"><?php /*?><?php echo $rs->power?><?php */?>&nbsp;</td>
 <td align="center" title="<?php echo $rs->addtime;?>"><?php echo dateHi($rs->addtime);?></td>
 <td align="center">
 <input type="button" class="button delete" url='<?php echo reUrl('del_id='.$rs->id)?>' title='<?php echo $rs->username?>' value="删除" />
@@ -61,11 +61,11 @@ if(!empty($list)){
 </td></tr>
 <?php }}?>
 <tr class="forumRaw"><td align="center"><input id="del_checkbox" type="checkbox" /></TD>
-<td colspan="7">
+<td colspan="5">
 <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" id="forum3">
 <tr>
 <td width="80"><input type="submit" value="删除选中项" id="Submit_delsel" class="button" /></td>
-<td><?php $this->paging->links(); ?></td>
+<td><?php $this->Paging->links(); ?></td>
 </tr></table>
 </TD></tr>
 <?php }else{?>

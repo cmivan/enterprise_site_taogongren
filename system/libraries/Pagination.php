@@ -184,16 +184,21 @@ class CI_Pagination {
 		if ($CI->config->item('enable_query_strings') === TRUE OR $this->page_query_string === TRUE)
 		{
 			//ԭ
-			$this->base_url = rtrim($this->base_url).'&amp;'.$this->query_string_segment.'=';
+			//$this->base_url = rtrim($this->base_url).'&amp;'.$this->query_string_segment.'=';
+			
+			//add by:cmivan time:11.11.29
+			$this->base_url = rtrim($this->base_url);
+			if($this->base_url==''||$this->base_url=='?'){
+				$this->base_url = $this->base_url.$this->query_string_segment.'=';
+			}else{
+				$this->base_url = $this->base_url.'&amp;'.$this->query_string_segment.'=';
+			}
+			//add end
 		}
 		else
 		{
 			$this->base_url = rtrim($this->base_url, '/') .'/';
 		}
-		
-		//add by:cmivan time:11.11.29
-		$this->base_url = str_replace('?&amp;','?',$this->base_url);
-		//add end
 
 		// And here we go...
 		$output = '';

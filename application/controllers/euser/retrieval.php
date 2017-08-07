@@ -2,38 +2,48 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Retrieval extends E_Controller {
+	
+	public $data;  //用于返回页面数据
+	public $logid = 0;
 
 	function __construct()
 	{
 		parent::__construct();
 
+		/*初始化加载application\core\MY_Controller.php
+		这里的加载必须要在产生其他 $this->data 数据前加载*/
+
+		//基础数据
+		$this->data  = $this->basedata();
+		//初始化用户id
+		$this->logid = $this->data["logid"];
 		$this->load->model('Retrieval_Model');
-		$this->load->model('Industry_Model');
-		
+
 		//初始化页面导航
-		$this->data["thisnav"] = array(
-		            array('title' => '管理投标','link' => 'index'),
-					array('title' => '发布投标','link' => 'add')
-		            );
+		$this->data["thisnav"]["nav"][0]["title"] = "管理投标";
+		$this->data["thisnav"]["nav"][0]["link"]  = "index";
+		$this->data["thisnav"]["nav"][1]["title"] = "发布投标";
+		$this->data["thisnav"]["nav"][1]["link"]  = "add";
 	}
 
 	
 	function index()
 	{
 		//处理删除
-		$del_id = $this->input->getnum('del_id');
-		if($del_id)
-		{
+		$del_id = is_num($this->input->get('del_id'));
+		if($del_id){
 			$this->Retrieval_Model->del($del_id,$this->logid);
-		}
+			//删除图片
+			$this->db->query('delete from retrieval_pic where uid='.$this->logid.' and rid='.$del_id);
+			}
 	
 		//分页模型
-		$this->load->library('Paging');
+		$this->load->model('Paging');
 		//获取分页列表sql
 		$listsql=$this->Retrieval_Model->listsql($this->logid);
 		//获取列表数据
-		$this->data["list"] = $this->paging->show($listsql);
-		//输出到视窗
+		$this->data["list"] = $this->Paging->show($listsql);
+		/*输出到视窗*/
 		$this->load->view($this->data["c_url"].'retrieval/index',$this->data);
 	}
 	
@@ -41,141 +51,118 @@ class Retrieval extends E_Controller {
 	
 	function add()
 	{
-		$this->data["team_mens"] = $this->User_Model->worker_types();
-		$this->data["classids"] = $this->Industry_Model->industry_class();
-		//个人信息
+		$this->data["team_mens"] = $this->db->query("select id,title from `user_type` where type_id=0")->result();
+		$this->data["classids"]  = $this->db->query("select id,title from `industry_class` order by id asc")->result();
+		/*个人信息*/
 	    $this->data["u_place"] = $this->User_Model->info($this->logid);
-		$this->data["industrys"] = $this->Industry_Model->industrys();
+		$this->data["industrys"] = $this->db->query("select id,title from `industry` where industryid=0 order by id asc")->result();
 
-		//css样式-评级打分
+
+		/*<><><>css样式<><><>*/
+		#评级打分
 		$this->data['cssfiles'][] = 'style/page_retrieval.css';
-		//Js-下拉框选择城市
-		$this->data['jsfiles'][] = 'js/city_select_option.js';
+		/*<><><>Js<><><>*/
+		#下拉框选择城市
+		$this->data['jsfiles'][]  = 'js/city_select_option.js';
 
-		//表单配置
+		/*表单配置*/
 		$this->data['formTO']->url = $this->data["c_urls"].'/save';
 		$this->data['formTO']->backurl = $this->data["c_urls"];
 		
-		//输出到视窗
+		/*输出到视窗*/
 		$this->load->view($this->data["c_url"].'retrieval/add',$this->data);
 	}
 	
 
 	
-	function edit($id='')
+	function edit($id=0)
 	{
 		//安全处理
-		$id = get_num($id,'404');
-		$this->data["info"] = $this->Retrieval_Model->view($id);
-		if(empty($this->data["info"]))
-		{
-			show_404('/index' ,'log_error');
-		}
+		$id = is_num($id);
+		$this->data["info"]=$this->Retrieval_Model->view($id);
+		if(empty($this->data["info"])){ show_404('/index' ,'log_error'); }
 
-		$this->data["team_mens"] = $this->User_Model->worker_types();
-		$this->data["classids"] = $this->Industry_Model->industry_class();
-		//个人信息
+		$this->data["team_mens"] = $this->db->query("select id,title from `user_type` where type_id=0")->result();
+		$this->data["classids"]  = $this->db->query("select id,title from `industry_class` order by id asc")->result();
+		/*个人信息*/
 	    $this->data["u_place"] = $this->User_Model->info($this->logid);
-		$this->data["industrys"] = $this->Industry_Model->industrys();
+		$this->data["industrys"] = $this->db->query("select id,title from `industry` where industryid=0 order by id asc")->result();
 		
-		//获取图片信息
-		$this->data["pics"] = $this->Retrieval_Model->pics($id);
+		/*获取图片信息*/
+		$this->data["pics"] = $this->db->query("select id,pic from `retrieval_pic` where rid=".$id." order by id asc")->result();
 
-		//css样式-评级打分
+		/*<><><>css样式<><><>*/
+		#评级打分
 		$this->data['cssfiles'][] = 'style/page_retrieval.css';
-		//Js-下拉框选择城市
-		$this->data['jsfiles'][] = 'js/city_select_option.js';
+		/*<><><>Js<><><>*/
+		#下拉框选择城市
+		$this->data['jsfiles'][]  = 'js/city_select_option.js';
 		
-		//表单配置
+		/*表单配置*/
 		$this->data['formTO']->url = $this->data["c_urls"].'/save/'.$id;
 		$this->data['formTO']->backurl = $this->data["c_urls"];
 		
-		//输出到视窗
+		/*输出到视窗*/
 		$this->load->view($this->data["c_url"].'retrieval/edit',$this->data);
 	}
 	
 	
 	
-	function save($id='')
+	function save($id=0)
 	{
 		//安全处理
-		$id = get_num($id);
+		$id = is_num($id);
 		
 		$data['uid'] = $this->logid;
-		$data['title'] = noHtml($this->input->post('title'));
-		$data['cost'] = noHtml($this->input->post('cost'));
-		$data['team_or_men'] = $this->input->postnum('team_or_men',0);
-		$data['classid'] = $this->input->postnum('classid',0);
-		$data['p_id'] = $this->input->postnum('p_id',0);
-		$data['c_id'] = $this->input->postnum('c_id',0);
-		$data['a_id'] = $this->input->postnum('a_id',0);
-		$data['industryid'] = $this->input->post('industryid');
-		$data['endtime'] = $this->input->post('endtime');
-		$data['job_stime'] = $this->input->post('job_stime');
-		$data['job_etime'] = $this->input->post('job_etime');
-		$data['note'] = noHtml($this->input->post('note'));
-		$data['rid'] = $this->input->postnum('rid',0);
-		$pic = $this->input->post('pic');
+		$data['title'] = noHtml($this->input->post("title"));
+		$data['cost']  = noHtml($this->input->post("cost"));
+		$data['team_or_men'] = is_num($this->input->post("team_or_men"),0);
+		$data['classid']  = is_num($this->input->post("classid"),0);
+		$data['p_id'] = is_num($this->input->post("p_id"),0);
+		$data['c_id'] = is_num($this->input->post("c_id"),0);
+		$data['a_id'] = is_num($this->input->post("a_id"),0);
+		$data['industryid'] = $this->input->post("industryid");
+		$data['endtime']    = $this->input->post("endtime");
+		$data['job_stime']  = $this->input->post("job_stime");
+		$data['job_etime']  = $this->input->post("job_etime");
+		$data['note'] = noHtml($this->input->post("note"));
+		$data['rid']  = is_num($this->input->post("rid"),0);
+		$pic = $this->input->post("pic");
 		
 		//检测数据
-		if($data['title']=='')
-		{
-			json_form_no('请先填写标题!');
-		}
-		if($data['cost']!=get_num($data['cost'])||$data['cost']<=0)
-		{
-			json_form_no('请填写正确的预计费用!');
-		}
-		if(strtotime(time())>strtotime($data['endtime']))
-		{
-			json_form_no('投标结束时间已经过期!');
-		}
-		if(strtotime($data['job_stime'])>strtotime($data['job_etime']))
-		{
-			json_form_no('工期结束时间不能在开始时间前!');
-		}
-		if($data['note']=='')
-		{
-			json_form_no('请填写投标描述!');
-		}
+		if($data['title']==""){ json_form_no('请先填写标题!'); }
+		if($data['cost']!=is_num($data['cost'])||$data['cost']<=0){ json_form_no('请填写正确的预计费用!'); }
+		if(strtotime(time())>strtotime($data['endtime'])){ json_form_no('投标结束时间已经过期!'); }
+		if(strtotime($data['job_stime'])>strtotime($data['job_etime'])){ json_form_no('工期结束时间不能在开始时间前!'); }
+		if($data['note']==""){ json_form_no('请填写投标描述!'); }
 
-		if( $id )
-		{
-			//编辑
+		if($id){
+			//<><><>编辑
 			$this->db->where('id', $id);
 			$this->db->update('retrieval',$data);
-			
-			//清空原来的图片,重新录入
-			$this->Retrieval_Model->del_pic($id,$this->logid);
-			if(!empty($pic))
-			{
-				foreach($pic as $p)
-				{
-					if($p!=''&&$p!='0')
-					{
-						$pic_data['pic'] = noSql($p);
-						//$pic_data['picMD5'] = md5($p);
-						$pic_data['note']= '';
-						$pic_data['rid'] = $id;
-						$pic_data['uid'] = $this->logid;
-						$this->Retrieval_Model->add_pic($pic_data);
-					}
-				}
-			}
+			//清空原来的,重新录入
+			$this->db->query("delete from `retrieval_pic` where `rid`=".$id);
+			if(!empty($pic)){
+			  foreach($pic as $p){
+				 if($p!=""&&$p!="0"){
+					$pdata['pic'] = noSql($p);
+					//$pdata['picMD5'] = md5($p);
+					$pdata['note']= '';
+					$pdata['rid'] = $id;
+					$pdata['uid'] = $this->logid;
+					$this->db->insert('retrieval_pic',$pdata);
+				 }}}
 			//返回提示
 			json_form_yes('更新成功!');
-		}
-		else
-		{
-			//添加
+		}else{
+			
+			//<><><>添加
 			//以md5值记录任务信息，防止重复
 			$thisMD5 = arr2md5($data);
-			if( $this->Retrieval_Model->is_retrievaled($thisMD5) )
-			{
+			$num = $this->db->query("select `id` from `retrieval` where `thisMD5`='".$thisMD5."'")->num_rows();
+			if($num>0){
 				json_form_no('该投标信息已经发布过了!');
-			}
-			else
-			{
+			}else{
 				//写入数据
 				$data['addtime'] = dateTime();
 				$data['thisMD5'] = $thisMD5;
@@ -183,21 +170,16 @@ class Retrieval extends E_Controller {
 				
 				//判断是否提交图片,有则处理
 				$thisRid = $this->db->insert_id();
-				if( is_num($thisRid) && !empty($pic) )
-				{
-					foreach($pic as $p)
-					{
-						if($p!=''&&$p!='0')
-						{
-							$pic_data['pic'] = noSql($p);
-							//$pic_data['picMD5'] = md5($p);
-							$pic_data['note']= '';
-							$pic_data['rid'] = $thisRid;
-							$pic_data['uid'] = $this->logid;
-							$this->Retrieval_Model->add_pic($pic_data);
-					    }
-					}
-				}
+				if(is_num($thisRid)&&!empty($pic)){
+				  foreach($pic as $p){
+					 if($p!=''&&$p!='0'){
+						 $pdata['pic'] = noSql($p);
+						 //$pdata['picMD5'] = md5($p);
+						 $pdata['note']= '';
+						 $pdata['rid'] = $thisRid;
+						 $pdata['uid'] = $this->logid;
+						 $this->db->insert('retrieval_pic',$pdata);
+					 }}}
 				//json_echo('{"//cmd":"y","info":"发布成功！"}');	
 				//发送邮件,通知平台客服(临时)
 				#*****************************

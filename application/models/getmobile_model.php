@@ -13,24 +13,9 @@ class GetMobile_Model extends CI_Model {
  */	
 	function is_getok($logid=0,$uid=0)
 	{
-    	$this->db->where('uid', $logid);
-		$this->db->where('gid', $uid);
-    	$this->db->from('get_mobile');
-    	if($this->db->count_all_results()<=0)
-    	{
-    		return false;
-    	}
-    	return true;
+		return $this->db->query("select id from get_mobile where uid=".$logid." and gid=".$uid." LIMIT 1")->num_rows();
 	}
-	
-	
-/**
- * 增加查看记录
- */	
-	function add($data='')
-	{
-    	return $this->db->insert('get_mobile',$data);
-	}
+
 	
 	
 }

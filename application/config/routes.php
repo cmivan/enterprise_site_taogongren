@@ -44,13 +44,15 @@ $route['404_override'] = ""; //重定向404页面
 //$route['scaffolding_trigger'] = "admin";
 
 
-$route['index'] = "index/index";
+$route['index']      = "index/index";
 $route['user/(\d+)'] = "user/info/$1";
 $route['retrieval/view/(\d+)'] = "retrieval/view/$1";
 //for company
 $route['company/(\d+)'] = "company/index/$1";
 //$route['company/(\d+)/about'] = "company/index/$1/about";
 $route['company/v(\d+)_([a-z]+)'] = "company/$2/$1";
+
+
 $route['about'] = "page/about";
 $route['agreement'] = "page/agreement";
 $route['projects'] = "page/projects";

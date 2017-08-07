@@ -5,7 +5,7 @@
 <div class="my_left"><div class="my_left_nav">
 <?php $this->load->view($c_url.'leftnav'); ?>
 <div class="clear"></div></div></div><div class="my_right"><div class="mainbox" box="content_box">
-<?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"><?php echo Get_User_Nav($thisnav,$c_urls); ?> </div>
+<?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"><?php echo c_nav($thisnav,$c_urls); ?> </div>
 <div class="mainbox_box"><div class="content">
 <table width="100%" border="0" cellpadding="4" cellspacing="1">
 <tr class="edit_item_frist">
@@ -26,7 +26,7 @@
 </table>
 
 <div class="clear"></div></div>
-<?php $this->paging->links(); ?><div class="clear"></div>
+<?php $this->Paging->links(); ?><div class="clear"></div>
 </div></div>
 </div>
 

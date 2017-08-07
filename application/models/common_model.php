@@ -1,12 +1,11 @@
 <?php
 /**
  * 针对网站评论的
+ * 
  */
 
 class Common_Model extends CI_Model {
-	
-	public $fix = '|';    //数组通符
-	
+
     function __construct()
     {
         parent::__construct();
@@ -47,13 +46,7 @@ class Common_Model extends CI_Model {
  */
 	function user_evaluate_one($keyid,$uid,$T='0')
 	{
-		$this->db->select('id,note,haoping,scorarr,uid,uid_2');
-		$this->db->from('evaluate');
-		$this->db->where('oid',$keyid);
-		$this->db->where('uid',$uid);
-		$this->db->where('T',$T);
-		$this->db->limit(1);
-		return $this->db->get()->row();
+		return $this->db->query("select id,note,haoping,scorarr,uid,uid_2 from `evaluate` where oid=".$keyid." and uid=".$uid." and T='".$T."' LIMIT 1")->row();
 	}
 	
 	
@@ -69,24 +62,21 @@ class Common_Model extends CI_Model {
 	function evaluate_stat($keyid,$uid,$T='0')
 	{
 		$ers = $this->user_evaluate_one($keyid,$uid,$T);
-		if(!empty($ers))
-		{
+		if(!empty($ers)){
 			//找出被评分用户ID
 			$e_uid = $ers->uid;
-			if($e_uid==$uid)
-			{
-				$e_uid = $ers->uid_2;
-			}
-			$e_uid = get_num($e_uid,0);
+			if($e_uid==$uid){ $e_uid = $ers->uid_2; }
+			$e_uid = is_num($e_uid,0);
 			//获取对方的评分状态
 			$ers2 = $this->user_evaluate_one($keyid,$e_uid,$T);
-			if(!empty($ers2))
-			{
+			if(!empty($ers2)){
 				return 2; //双方评分
+			}else{
+				return 1; //单方评分
 			}
-			return 1; //单方评分
+		}else{
+			return 0; //没获取到评论数据,即$uid用户为评分
 		}
-		return 0; //没获取到评论数据,即$uid用户为评分
 	}
 	
 	
@@ -115,6 +105,9 @@ class Common_Model extends CI_Model {
 		$data['ip'] = ip();
 		$data['T'] = $T;
 		$this->db->insert('evaluate',$data);
+	  
+		//$this->rating_add_arr($keyid,$uid,$uid_2,$scorarr,$T);  //添加相应的评分
+	  
 		return true;
 	}
 	
@@ -128,52 +121,17 @@ class Common_Model extends CI_Model {
 	function rating_scorarr($rating_class)
 	{
 		$scorarr = '';
-		if(!empty($rating_class))
-		{
-			foreach($rating_class as $rs)
-			{
-			   $hpscor = $this->input->postnum('hiStar'.$rs->id);
-			   if($hpscor==false||$hpscor<1||$hpscor>5)
-			   {
-				   json_form_no('请给'.$rs->title.'评分!');
-			   }
-			   $scorarr.= ',' . $rs->id . $this->fix . $hpscor;
+		if(!empty($rating_class)){
+			foreach($rating_class as $rs){
+			   $hpscor = is_num($this->input->post('hiStar'.$rs->id));
+			   if($hpscor==false||$hpscor<1||$hpscor>5){ json_form_no('请给'.$rs->title.'评分!'); }
+			   $scorarr.= ','.$rs->id.'_'.$hpscor;
 			}
-		}
-		else
-		{
+		}else{
 			json_form_no('服务器繁忙,请稍后再试!');
 		}
 		return $scorarr;
 	}
-	
-	
-/**
- * 解析表单提交的星级评分并计算总分值
- * @access: public
- * @author: mk.zgc
- * @param: array，$rating_class，星级评分分类
- * @return: string
- */	
-	function rating_scor_total($scorarr='')
-	{
-		$scor_total = 0;
-		$scor_item = split(",",$scorarr);
-		foreach($scor_item as $sitem)
-		{
-			if($sitem!='' && $sitem!=0)
-			{
-				$item = split('\\' . $this->fix , $sitem);
-				//限定分数范围,防止恶意提交
-				if($item[1]>=1 && $item[1]<=5)
-				{
-					$scor_total = $scor_total + $item[1];
-				} 
-			}
-		}
-		return $scor_total;
-	}
-	
 	
 /**
  * 添加星级评分（解析数组，并录入）
@@ -186,18 +144,15 @@ class Common_Model extends CI_Model {
  * @param: String，$T ，评论类型
  * @return: bool 
  */
-	function rating_scor2arr($scorarr='')
+	function rating_scor2arr($scorarr)
 	{
 		$scorI = 0;
-		$thisdata = '';
 		$scor_item = split(",",$scorarr);
-		foreach($scor_item as $sitem)
-		{
-			if($sitem!='')
-			{
-				$item = split('\\' . $this->fix,$sitem);
+		foreach($scor_item as $sitem){
+			if($sitem!=''){
+				$item = split("_",$sitem);
 				//限定分数范围,防止恶意提交
-				if($item[1]>=1 && $item[1]<=5)
+				if(is_num($item[0])&&is_num($item[1])&&$item[1]>=1&&$item[1]<=5)
 				{
 					$thisdata[$scorI]['id'] = $item[0];
 					$thisdata[$scorI]['scor'] = $item[1];
@@ -205,51 +160,8 @@ class Common_Model extends CI_Model {
 				} 
 			}
 		}
-		if(!empty($thisdata))
-		{
-			return $thisdata;
-		}
-		return '';
-	}
-	
-	
-/**
- * 返回 指定用户 被评 某一类的 平均分数
- */
-	function rating_sroc($uid,$classid)
-	{
-		$backScor = 0; //初始化
-		$allScor  = 0; //初始化
-		if(is_numeric($uid)&&is_numeric($classid))
-		{
-			//总评论数
-			$this->load->model('Evaluate_Model');
-			$row = $this->Evaluate_Model->User_Evaluated_all( $uid , $classid . $this->fix );
-			$rownum = $row->num_rows();
-			$rowrs = $row->result();
-			if(!empty($rowrs))
-			{
-				//通过数组解析并计数所获取的星级评分结果
-				foreach($rowrs as $rs)
-				{
-					$scorarr = $rs->scorarr . ',';
-					preg_match('/,' . $classid . '\\' . $this->fix . '(\d+),/x',$scorarr,$scorall);
-					if(!empty($scorall))
-					{
-						$scor = $scorall[1];
-						if( is_numeric($scor) )
-						{
-							$allScor = $allScor + $scor;
-						}
-					}
-				}
-				if(is_numeric($rownum)&&is_numeric($allScor))
-				{
-					$backScor = $allScor / $rownum;
-				}
-			}
-        }
-	    return ceil($backScor);
+		if(!empty($thisdata)){ return $thisdata; }
+		return ;
 	}
 	
 	

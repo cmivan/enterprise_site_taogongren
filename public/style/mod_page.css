@@ -20,11 +20,6 @@
 .index_right .right_box .recommendbox .tab_box .tab li dd{float:left;width:100px;height:24px;line-height:24px;overflow:hidden;padding-left: 20px;}
 .index_right .right_box .recommendbox .tab_box .tab li dt{float:right;width: 65px;height:24px;line-height:24px;overflow: hidden;padding-right: 3px;}
 
-.index_right .right_box .recommendbox .tab_box .tab2{line-height:24px;background-image:url(../images/ico/num.gif);background-position:left top;background-repeat:no-repeat;display:none;zoom:1;}
-.index_right .right_box .recommendbox .tab_box .tab2 li{height:24px;line-height:24px;overflow:hidden;width: 195px;background-color:#CCC;display:inline;}
-.index_right .right_box .recommendbox .tab_box .tab2 li dd{float:left;width:120px;height:24px;line-height:24px;overflow:hidden;padding-left: 20px;}
-.index_right .right_box .recommendbox .tab_box .tab2 li dt{float:right;width: 45px;height:24px;line-height:24px;overflow: hidden;padding-right: 3px;}
-
 
 /*右框-广告*/
 .index_right .right_ad{margin-left: 10px;margin-bottom: 12px;}

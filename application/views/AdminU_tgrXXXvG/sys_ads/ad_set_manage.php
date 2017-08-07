@@ -94,7 +94,7 @@ if(!empty($list)){
 </td>
 </tr>
 <?php }?>
-<tr class="forumRow"><td colspan="9" align="center"><?php $this->paging->links(); ?></td></tr>
+<tr class="forumRow"><td colspan="9" align="center"><?php $this->Paging->links(); ?></td></tr>
 <?php }else{?>
 <tr class="forumRow"><td height="50" colspan="9" align="center">暂无相应内容!</td></tr>
 <?php }?>

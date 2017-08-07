@@ -17,5 +17,7 @@ if(!empty($note_adv)){
 
 <div class="tbox">
 <span class="ntel" id="tel"><?php echo $cardnum?></span>
+
 <span class="ntel" style="background:none;font-size:12px;color:#000;width:auto;">联系地址：<?php echo $address?></span>
+
 </div></dt><dd>接听时间：<?php echo $cardnum2?></dd></dl></div>

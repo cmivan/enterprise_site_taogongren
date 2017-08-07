@@ -33,14 +33,12 @@ $config['base_url']	= '/';
 |
 */
 
-
 $config['css_url'] = $config['base_url'].'public/style/'; //css文件位置
 $config['img_url'] = $config['base_url'].'public/images/'; //images文件位置
 $config['edit_url']= $config['base_url'].'public/edit/'; //编辑器位置
 $config['fla_url'] = $config['base_url'].'public/flash/'; //flash文件位置
 $config['js_url']  = $config['base_url'].'public/js/'; //js文件位置
 $config['jq_url']  = $config['js_url'].'jquery1.4.js'; //jq类库
-//$config['jq_url']  = 'http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js'; //jq类库
 
 $config['up_url'] = $config['base_url'].'public/up/';     //上传目录
 $config['face_url'] = $config['up_url']."face/";  //用户头像存放目录
@@ -52,28 +50,33 @@ $config['retrieval_url'] = $config['up_url'].'retrieval/';  //投标图片文件
 $config['uploads_url'] = $config['up_url'].'uploads/';  //其他文件上传位置
 
 
-//用户控制面板控制器路径
+/* 用户控制面板控制器路径 */
 $config['s_url'] = $config['base_url']."AdminU_tgrXXXvG/";
 $config['w_url'] = $config['base_url']."wuser/";
 $config['e_url'] = $config['base_url']."euser/";
 $config['company_url'] = $config['base_url']."company_center/";
 
 
-//初始化网站SEO设置
+/* 初始化网站SEO设置 */
 //$config['seo']['website'] = 'http://www.taogongren.com';
+/*
+$config['seo']['title']    = '淘工人网,全国装修工人大本营! http://www.taogongren.com';
+$config['seo']['keywords'] = '全国装修工人大本营,找工人,找装修工人,找室内设计师,装修,免费发布信息,装修知识,淘工人网';
+$config['seo']['description'] = '淘工人网(www.taogongren.com)项目源于对网购安装难，修缮找工难的观察，源于物价不断上升后，人们对装修省钱的追求。淘工人致力于打造一个业主直接与工人高效对接的平台，通过海量的在线工人与即时的装修信息，帮业主省钱，帮工人赚钱，让天下没有难找的工人!';
+*/
+
 $config['seo']['title']    = '装修公司_广州装修公司-淘工人装修网-全国装修工人大本营!';
 $config['seo']['keywords'] = '装修公司，广州装修公司，装修网，装饰公司';
 $config['seo']['description'] = '淘工人装修网是全国唯一一家同时提供装修公司和装修工人双服务的在线装修网站，另外还可以免费发布装修招标信息，一站采购家居建材。广州装修找广州装修公司，就上淘工人装修网，免费省钱，乐享装修。';
 
 
 
-#公共JS文件
-$config['jsfiles'][] = 'js/action.js';             #页面操作响应及处理
+#<><><><>公共JS文件<><><><><>
 $config['jsfiles'][] = 'js/main.js';
+$config['jsfiles'][] = 'js/action.js';             #页面操作响应及处理
 $config['jsfiles'][] = 'js/city_select_div.js';    #页面顶部下拉选择城市
 $config['jsfiles'][] = 'js/thickbox/thickbox.js';  #弹出框
-
-//向上滚动
+#向上滚动
 ////$config['jsfiles'][] = 'js/mod_scrolltopcontrol.js';
 //#提示tips.开始
 //$config['jsfiles'][] = 'js/poshytip/jquery.poshytip.js';
@@ -86,17 +89,16 @@ $config['jsfiles'][] = 'js/png24.js';
 #$config['jsfiles'][] = 'js/msg_tip/msg1.0.js';
 
 
-//公共样式文件
+#<><><><>公共样式文件<><><><><>
 $config['cssfiles'][] = 'style/main.css';            #站点主体
 $config['cssfiles'][] = 'style/city_select_div.css'; #页面顶部下拉选择城市
 $config['cssfiles'][] = 'js/validform/css/css.css';  #表单样式
 $config['cssfiles'][] = 'js/thickbox/thickbox.css';  #弹出框
 $config['cssfiles'][] = 'js/msg_tip/msgstyle.css';   #获取最新消息
-$config['cssfiles'][] = 'js/poshytip/msgstyle.css';   #获取最新消息
 
-//标签提示样式
-$config['plugins']['poshytip'] = 'twitter'; 
-$config['cssfiles'][] = 'images/plugins/poshytip/'.$config['plugins']['poshytip'].'/'.$config['plugins']['poshytip'].'.css';
+
+
+
 
 
 

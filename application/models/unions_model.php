@@ -8,88 +8,50 @@ class Unions_Model extends CI_Model {
         parent::__construct();
     }
 	
-    /*返回sql(用于工会页面 /unions 列表数据)*/
+	//返回sql(用于工会页面 /unions 列表数据)
 	function get_sql($typeid=0)
 	{
-		$this->db->select('unions.id,unions.title,unions.type_id,unions.time,unions_type.t_id,unions_type.t_title,unions_type.t_order_id');
-		$this->db->from('unions');
-		$this->db->join('unions_type','unions.type_id = unions_type.t_id','left');
-		$this->db->order_by('unions.id','desc');
-		if(is_num($typeid))
-		{
-			$this->db->where('unions.type_id', $typeid);
+		if(is_num($typeid)){
+			return "select A.id,A.title,A.type_id,A.time,B.t_id,B.t_title,B.t_order_id from unions A left join unions_type B on A.type_id=B.t_id where A.type_id=".$typeid." order by A.id desc";
+		}else{
+			return "select A.id,A.title,A.type_id,A.time,B.t_id,B.t_title,B.t_order_id from unions A left join unions_type B on A.type_id=B.t_id order by A.id desc";
 		}
-		//返回SQL
-		return $this->db->getSQL();
 	}
 	
-	/*返回分类*/
+	//返回分类
 	function get_types()
 	{
-	    $this->db->select('t_id,t_title,t_order_id');
-    	$this->db->from('unions_type');
-    	$this->db->order_by('t_order_id','desc');
-    	$this->db->order_by('t_id','desc');
-    	return $this->db->get()->result();
+		return $this->db->query("select t_id,t_title,t_order_id from unions_type order by t_order_id desc,t_id desc")->result();
 	}
 	
-	/*返回分类数目*/
+	//返回分类数目
 	function get_types_num()
 	{
-    	return $this->db->count_all_results('unions_type');
+		return $this->db->query("select t_id from unions_type")->num_rows();
 	}
 
-	/*返回分类*/
+	//返回分类
 	function get_type($id)
 	{
-	    $this->db->select('t_id,t_title,t_order_id');
-    	$this->db->from('unions_type');
-    	$this->db->where('t_id',$id);
-    	return $this->db->get()->row();
+		return $this->db->query("select t_id,t_title,t_order_id from unions_type where t_id=".$id)->row();
 	}
 	
-	/*文章点击+1*/
+	//文章点击+1
 	function hit($id=0)
 	{
-    	$this->db->set('visited', 'visited+1', FALSE);
-    	$this->db->where('id', $id);
-    	return $this->db->update('unions',array());
+		$this->db->query("update unions set visited=visited+1 where id=".$id);
 	}
 	
-	
-	/*返回分类*/
-	function list_hot($num=10)
-	{
-	    $this->db->select('id,title,visited');
-    	$this->db->from('unions');
-    	$this->db->order_by('visited','desc');
-		$this->db->limit($num);
-    	return $this->db->get()->result();
-	}
-	
-	/*返回文章内容详情*/
+	//返回文章内容详情
 	function view($id=0)
 	{
-	    $this->db->select('unions.title,unions.type_id,unions.time,unions.visited,unions.content,unions_type.t_id,unions_type.t_title');
-    	$this->db->from('unions');
-    	$this->db->join('unions_type','unions.type_id = unions_type.t_id','left');
-    	$this->db->where('unions.id',$id);
-    	$this->db->limit(1);
-    	return $this->db->get()->row();
+		return $this->db->query("select A.title,A.type_id,A.time,A.visited,A.content,B.t_id,B.t_title from unions A left join unions_type B on A.type_id=B.t_id where A.id=".$id)->row();
 	}
 	
-	//删除文章内容
-	function del($id)
-	{
-    	$this->db->where('id', $id);
-    	return $this->db->delete('unions'); 
-	}
-	
-	/*删除分类*/
+	//删除分类
 	function del_type($id)
 	{
-    	$this->db->where('t_id', $id);
-    	return $this->db->delete('unions_type'); 
+		return $this->db->query("delete from unions_type where t_id=".$id);
 	}
 
 }

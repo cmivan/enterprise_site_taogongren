@@ -88,7 +88,7 @@ foreach($projact as $rs){
 <?php }?>
 <div class="skills_bg bg" style="width:258px; height:185px;">&nbsp;</div></div>
 <div class="listbox"><div class="select"><div class="selclass">
-<?php foreach($rs["p_class"] as $crs){?><a href="javascript:void(0);" class="on"><?php echo $crs->title?></a><?php }?>
+<?php foreach($rs["p_class"] as $crs){?><a href="javascript:void(0);" class="on" title="<?php echo $crs->title?>" ><?php echo $crs->title?></a><?php }?>
 </div>
 <div class="more"><a target="_blank" href="<?php echo site_url("page/projects/".$rs["p_id"])?>" title="更多<?php echo $rs["p_title"]?>项目"><img src="<?php echo $img_url?>new_style/more.gif" width="35" height="18" /></a></div>
 </div>
@@ -123,6 +123,7 @@ foreach($projact as $rs){
 </div>
 <?php /*?>广告位<?php */?>
 <div id="ad_box_10" class="ad_box" style="padding:5px;padding-left:42px;"></div>
+
 <div class="hot_team"><img src="<?php echo $img_url?>new_style/hot_team_bg.jpg" width="498" height="32" /></div>
 <div class="hot_team_info">
 <?php
@@ -159,7 +160,6 @@ foreach($zb_ad as $rs){ $i++; ?>
 <?php echo cutstr($rs->title,20)?></a></div><?php };?>
 </div></div>
 
-
 <?php /*?>广告位<?php */?>
 <div class="new_right_box"><div id="ad_box_4" class="ad_box"></div></div>
 
@@ -167,9 +167,12 @@ foreach($zb_ad as $rs){ $i++; ?>
 <div class="title"><img src="<?php echo $img_url?>new_style/left_title_05.jpg" width="254" height="54" /></div>
 <div class="hot_worker">
 <?php foreach($hot_company as $rs){?>
-<div class="item"><div class="pic"><a href="<?php echo site_url("user/".$rs->id)?>"><img src="<?php echo $this->User_Model->faceS($rs->photoID)?>" /><br /><?php echo $rs->name?></a></div></div><?php }?>
+<div class="item"><div class="pic"><a href="<?php echo site_url("user/".$rs->id)?>" title="<?php echo $rs->name?>" ><img alt="<?php echo $rs->name?>" src="<?php echo $this->User_Model->faceS($rs->photoID)?>" /><br /><?php echo $rs->name?></a></div></div><?php }?>
 <div class="clear"></div>
 </div></div>
+
+<?php /*?>广告位<?php */?>
+<div class="new_right_box"><div id="ad_box_4" class="ad_box"></div></div>
 
 
 <?php if(!empty($index_case)){?>
@@ -187,7 +190,7 @@ foreach($zb_ad as $rs){ $i++; ?>
 $casenum = 0;
 foreach($index_case as $item){
 	$casenum++; ?>
-<LI><A href="<?php echo site_url('user/'.$item->uid)?>" target="_blank"><IMG width="248" height="178" src="<?php echo img_cases($this,$item->pic)?>"></A>
+<LI><A href="<?php echo site_url('user/'.$item->uid)?>" target="_blank"><IMG width="248" height="178" src="<?php echo img_cases($item->pic)?>"></A>
 <DL>
 <DT><A href="<?php echo site_url('user/'.$item->uid)?>" target="_blank"><?php echo cutstr($item->title,20)?></A></DT>
 <?php /*?><DD><?php echo cutstr($item->content,100)?></DD><?php */?>
@@ -220,14 +223,14 @@ $(function(){
 </div>
 <?php }?>
 
-<?php /*?>广告位<?php */?>
-<div class="new_right_box"><div id="ad_box_4" class="ad_box"></div></div>
+
+
 
 <div class="new_right_box">
 <div class="title"><img src="<?php echo $img_url?>new_style/left_title_06.jpg" width="254" height="54" /></div>
 <div class="hot_worker">
 <?php foreach($hot_workers as $rs){?>
-<div class="item"><div class="pic"><a href="<?php echo site_url("user/".$rs->id)?>"><img src="<?php echo $this->User_Model->faceS($rs->photoID)?>" /><br /><?php echo $rs->name?></a></div></div><?php }?>
+<div class="item"><div class="pic"><a href="<?php echo site_url("user/".$rs->id)?>" title="<?php echo $rs->name?>"><img alt="<?php echo $rs->name?>" src="<?php echo $this->User_Model->faceS($rs->photoID)?>" /><br /><?php echo $rs->name?></a></div></div><?php }?>
 <div class="clear"></div>
 </div></div>
 
@@ -238,12 +241,10 @@ $(function(){
 <div class="title"><img src="<?php echo $img_url?>new_style/left_title_08.jpg" width="254" height="56" /></div>
 <div class="hot_worker">
 <?php foreach($hot_design as $rs){?>
-<div class="item"><div class="pic"><a href="<?php echo site_url("user/".$rs->id)?>"><img src="<?php echo $this->User_Model->faceS($rs->photoID)?>" /><br /><?php echo $rs->name?></a></div></div>
+<div class="item"><div class="pic"><a href="<?php echo site_url("user/".$rs->id)?>" title="<?php echo $rs->name?>"><img alt="<?php echo $rs->name?>" src="<?php echo $this->User_Model->faceS($rs->photoID)?>" /><br /><?php echo $rs->name?></a></div></div>
 <?php }?>
 <div class="clear"></div>
-</div></div>
-
-</div>
+</div></div></div>
 <div class="clear"></div>
 </div>
 <?php /*?>广告位<?php */?>

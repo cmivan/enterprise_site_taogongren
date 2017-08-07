@@ -2,20 +2,20 @@
 if(base_url==''||base_url==null){base_url='/';}
 $(function(){
 	/*弹出框关闭按钮2(带渐变效果)*/
-   $("#TB_close").live('click',function(){Tbox_close();});
+   $("#TB_close").live("click",function(){Tbox_close();});
 	/*登录框*/
    $(".user_login").click(function(){ box_login(); });
 	/*意见反馈*/
-   $(".user_feedback").live('click',function(){ box_feedback(); });
+   $(".user_feedback").live("click",function(){ box_feedback(); });
 	/*联系我们*/
    $(".contact").click(function(){ box_contact(); });
 	/*退出管理*/
-   $(".user_login_out").live('click',function(){if(confirm('确定退出管理?')){return true;}else{return false;}});
+   $(".user_login_out").click(function(){if(confirm('确定退出管理?')){return true;}else{return false;}});
 	/*收藏本站*/
    $(".favorite").click(function(){ window.location.href = base_url + "page/favicon";});
    //绑定收藏按钮
    $("a.yz_favorites").click(function(){ JsonTo($(this),'favorite'); });
-   $(".favorites").find("a").live('click',function(){ JsonTo($(this),'favorite'); });
+   $(".favorites").find("a").live("click",function(){ JsonTo($(this),'favorite'); });
    //绑定雇佣按钮
    $("a.yz_buy").click(function(){ JsonTo($(this),'orderto'); });
    $(".order").find("a").click(function(){ JsonTo($(this),'orderto'); });
@@ -24,7 +24,7 @@ $(function(){
    //绑定加好友按钮
    $("a.yz_friend").click(function(){ JsonTo($(this),'friend'); });
    //查看手机
-   $(".get_mobile").live('click',function(){
+   $(".get_mobile").live("click",function(){
 		var uid=$(this).parents().attr("userid");
 		var gid=$(this).parents().attr("gid");
 		if(uid==parseInt(uid)){ JsonAction('action/get_mobile/'+uid+'?gid='+gid); }
@@ -35,7 +35,7 @@ $(function(){
 		if(rid==parseInt(rid)){ JsonAction('retrieval/joins?id='+rid);}
 		});
    //用户登录
-   $("#login_btu").live('click',function(){
+   $("#login_btu").live("click",function(){
 	   var u_name=$(this).parents().find("#username").val();
 	   var p_word=$(this).parents().find("#password").val();
 	   if(u_name==""){
@@ -49,7 +49,7 @@ $(function(){
 		  $.ajax({
 			  url:base_url+'action/login',
 			  type:'post',dataType:'json', data: 'username='+u_name+'&password='+p_word,
-			  success:function(j){ alert(j.info); if(j.cmd=='y'){ window.location.reload(); }
+			  success:function(j){ alert(j.info); if(j.cmd=="y"){ window.location.reload(); }
 			  }});
 		  return false;
 	   } 
@@ -59,7 +59,7 @@ $(function(){
    /*
     * 获取用户手机号码
     * */
-   $("#GM_btu").live('click',function(){
+   $("#GM_btu").live("click",function(){
 	   var thisID =$("#thisID").val();
 	   var gid=$("#thisGID").val();
 	   if(thisID!=""&&thisID!=null){
@@ -77,49 +77,11 @@ $(function(){
 			return false;
 	   } 
    });
-   
 
-   /*
-    * ajax链接,页面加载
-    * */
-	$(".ajax").live('click',function(){
-		var url = $(this).attr('url');
-		var tip = $(this).attr('tip');
-		if(tip!='' && tip!='undefined' && tip!=null){
-			if(confirm(tip)){ PageAjax(url); }
-		}else{
-			PageAjax(url);
-		}
-		return false;
-	});
-	$('#user_center a').live('click',function(){
-		var url = $(this).attr('href');
-		var cmd = $(this).attr('cmd');
-		var tip = $(this).attr('tip');
-		
-		if(cmd=='' || cmd=='undefined' || cmd==null){ cmd = 'ajax'; }
-		if(url!='' && url!='undefined' && url!=null){
-			switch(cmd)
-			{
-				case 'ajax':
-				  if(tip!='' && tip!='undefined' && tip!=null){
-					  if(confirm(tip)){ PageAjax(url); }
-				  }else{
-					  PageAjax(url);
-				  }
-				return false; break;
-				case 'null': return true; break;
-			}
-			return false;
-		}
-	});
-	
-	//加载页面头部登录信息
-	$('#userloginbox').load('/global_v1/top_login_box');
-	//绑定标签
-	bindtip();
 });
 
+//@@@---@@@---@@@---@@@---@@@---@@@---@@@---@@@---@@@---@@@---@@@---
+//<><>---<><><><>---<><><><>---<><><><>---<><><><>---<><><><>---<><>
 //@@@---@@@---@@@---@@@---@@@---@@@---@@@---@@@---@@@---@@@---@@@---
 
 //弹出框关闭函数(带渐变效果)
@@ -166,31 +128,6 @@ function JsonAction(url)
 		 }}
 	 });
 }
-
-
-function PageMark(T)
-{
-	if(T==0)
-	{
-	  $('#user_center_box_mark').fadeOut(200);
-	}else{
-	  $('#mark_load_txt').text('载入中，请稍等...');
-	  var h = $('#user_center_box').height();
-	  var w = $('#user_center_box').width();
-	  $('#user_center_box_mark').css({'height':h,'width':w}).fadeIn(0);;
-	}
-
-}
-function PageAjax(toUrl)
-{
-	GAjax(toUrl,'user_center_box');
-}
-function GAjax(toUrl,toKey)
-{
-	PageMark(1);
-	$("#" + toKey).load(toUrl,function(){ PageMark(0); });
-}
-
 
 //显示手机框
 function show_getmobile(gid)

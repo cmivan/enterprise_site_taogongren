@@ -12,45 +12,25 @@ class Friends_Model extends CI_Model {
 /**
  * 返回好友列表Sql
  */
-  function listsql_friends($uid)
+  function listsql_friends($logid)
   {
-		$this->db->select('*');
-		$this->db->from('friends');
-		$this->db->where('uid',$uid);
-		$this->db->where('isok',1);
-		$this->db->where('isblack',0);
-		$this->db->order_by('id','desc');
-		//返回SQL
-		return $this->db->getSQL();
+	 return "select * from friends where uid=".$logid." and isok=1 and isblack=0 order by id desc";
   }		
 
 /**
  * 返回好友请求
  */
-  function listsql_request($uid)
+  function listsql_request($logid)
   {
-		$this->db->select('*');
-		$this->db->from('friends');
-		$this->db->where('uid',$uid);
-		$this->db->where('isok',0);
-		$this->db->where('isblack',0);
-		$this->db->order_by('id','desc');
-		//返回SQL
-		return $this->db->getSQL();
+	 return "select * from friends where uid=".$logid." and isok=0 and isblack=0 order by id desc";
   }	
   
 /**
  * 返回黑名单列表
  */
-  function listsql_black($uid)
+  function listsql_black($logid)
   {
-		$this->db->select('*');
-		$this->db->from('friends');
-		$this->db->where('uid',$uid);
-		$this->db->where('isblack',1);
-		$this->db->order_by('id','desc');
-		//返回SQL
-		return $this->db->getSQL();
+	 return "select * from friends where uid=".$logid." and isblack=1 order by id desc";
   }	
 
 
@@ -58,93 +38,32 @@ class Friends_Model extends CI_Model {
 /**
  * 用户页面(我的好友)
  */
-  function User_Friends1($uid)
+  function User_Friends1($logid)
   {
-		$this->db->select('friends.fuid,user.name,user.photoID,user.addtime');
-		$this->db->from('friends');
-		$this->db->join('user','friends.fuid=user.id','left');
-		$this->db->where('friends.uid',$uid);
-		$this->db->where('friends.u_del',0);
-		$this->db->limit(5);
-		return $this->db->get()->result();
+	 return $this->db->query("select F.fuid,W.name,W.photoID,W.addtime from friends F left join `user` W on F.fuid=W.id where (F.uid=".$logid." and F.u_del=0) LIMIT 5")->result();
   }	
-  function User_Friends2($uid)
+  function User_Friends2($logid)
   {
-		$this->db->select('friends.uid,user.name,user.photoID,user.addtime');
-		$this->db->from('friends');
-		$this->db->join('user','friends.fuid=user.id','left');
-		$this->db->where('friends.fuid',$uid);
-		$this->db->where('friends.su_del',0);
-		$this->db->limit(5);
-		return $this->db->get()->result();
+	 return $this->db->query("select F.uid,W.name,W.photoID,W.addtime from friends F left join `user` W on F.uid=W.id where (F.fuid=".$logid." and F.su_del=0) LIMIT 5")->result();
   }
+
 
   
 /**
- * 增加好友用户
+ * 删除数据
  */
-	function add($data='')
-	{
-    	return $this->db->insert('friends',$data);
-	}
-	
-/**
- * 限制只增加一位好友用户
- */
-	function add_one($uid=0,$uid2=0)
-	{
-		if( $this->is_friends($uid,$uid2) == false )
-		{
-			$data = array(
-				  'uid' => $uid ,
-				  'fuid' => $uid2
-				  );
-			$this->add($data);
-			return true;
-		}
-		return false;
-	}
-	
-  
-  
-/**
- * 判断是否已经收藏
- */
-  function is_friends($uid=0,$uid2=0)
+  function del($id=0,$logid=0)
   {
-  	    $this->db->from('friends');
-    	$this->db->where('uid', $uid);
-		$this->db->where('fuid', $uid2);
-		
-    	if($this->db->count_all_results()<=0)
-    	{
-    		return false;
-    	}
-    	return true;
+	  $this->db->query("delete from `friends` where uid=".$logid." and isok=1 and id=".$id);
   }
 
   
 /**
  * 删除数据
  */
-  function del($id=0,$uid=0)
+  function del_black($id=0,$logid=0)
   {
-    	$this->db->where('uid', $uid);
-		$this->db->where('id', $id);
-		$this->db->where('isok', 1);
-    	return $this->db->delete('friends'); 
-  }
-
-  
-/**
- * 删除黑名单数据
- */
-  function del_black($id=0,$uid=0)
-  {
-    	$this->db->where('uid', $uid);
-		$this->db->where('id', $id);
-		$this->db->where('isblack', 1);
-    	return $this->db->delete('friends'); 
+	  $this->db->query("delete from `friends` where uid=".$logid." and isblack=1 and id=".$id);
   }
 
 }

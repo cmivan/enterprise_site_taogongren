@@ -116,7 +116,7 @@ if($rs->ok==1){
 <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" id="forum3">
 <tr>
 <td width="80"><input type="submit" value="删除选中项" id="Submit_delsel" class="button" /></td>
-<td><?php $this->paging->links(); ?></td>
+<td><?php $this->Paging->links(); ?></td>
 </tr></table>
 </TD></tr>
 <?php }else{?>

@@ -1,4 +1,6 @@
-<div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo Get_User_Nav($thisnav,$c_url); ?> </div><div class="mainbox_box"><?php $this->load->view($c_url.'orders/ordertip'); ?>
+<?php $this->load->view('public/header'); ?>
+
+</head><body><?php $this->load->view('public/top'); ?><div class="main_width"><div class="body_main"><?php /*?>管理页面的框架分布<?php */?><div class="my_left"><div class="my_left_nav"><?php $this->load->view($c_url.'leftnav'); ?><div class="clear"></div></div></div><div class="my_right"><div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo c_nav($thisnav,$c_url); ?> </div><div class="mainbox_box"><?php $this->load->view($c_url.'orders/ordertip'); ?>
 <div class="content">
 <table width="100%" border="0" cellpadding="0" cellspacing="0" ><form action="" method="post"><tr><td align="left" style="border:#CCC 1px solid;padding:25px; padding-right:12px;background-color:#f6f6f6;background-image:url(<?php echo $img_url?>ico/bgs.gif); background-repeat:repeat-x; background-position:0 -180px;"><div style="height:680px; overflow:auto;">
   <p><strong>一、工艺流程： </strong><br />
@@ -166,9 +168,11 @@
   裱糊(布)的要求：色泽一致无明显色差、花纹图案吻合、与顶角线，踢脚板拼接应紧密无缝隙，粘贴牢固、不得有漏贴、补贴和脱层，阴阳转角应棱角分明，表面无皱折，斑污，翘边防波纹起伏。&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </div></td></tr><tr><td height="45" align="center">
   <table border="0" cellpadding="0" cellspacing="0">
     <tr class="diy_link_but">
-      <td align="center"><a href="<?php echo site_url($c_url.'orders_select')?>">&nbsp;&nbsp;不同意&nbsp;&nbsp;</a></td>
+      <td align="center"><a href="javascript:history.back(1);">&nbsp;&nbsp;不同意&nbsp;&nbsp;</a></td>
       <td align="center">&nbsp;</td>
-      <td align="center"><a href="<?php echo site_url(uri_string())?>?action=deel.read.ok">&nbsp;&nbsp;我同意以上协议&nbsp;&nbsp;</a></td>
+      <td align="center"><a href="?action=deel.read.ok">&nbsp;&nbsp;我同意以上协议&nbsp;&nbsp;</a></td>
       </tr>
     </table></td></tr> </form></table>    
-<div class="clear"></div></div><div class="clear"></div></div></div>
+<div class="clear"></div></div><div class="clear"></div></div></div></div>
+<div class="clear"></div></div></div>
+<?php $this->load->view('public/footer');?>

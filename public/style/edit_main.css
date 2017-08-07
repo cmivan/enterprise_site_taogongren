@@ -3,7 +3,6 @@
 	float:left;
 	width:180px;
 	border:#CCC 1px solid;
-	display:none;
 	}
 .my_left .my_left_nav{background-color:#fff; border-bottom:#CCC 2px solid;}
 .my_left .my_left_nav a{
@@ -52,23 +51,23 @@
 /*主内容框*/	
 .mainbox_nav{
 	margin-bottom:-1px;
-	height:26px;
-	line-height:26px;
+	height:30px;
+	line-height:30px;
 	z-index:1;
 	position:relative;
 	}
 .mainbox_nav a{
 	float:left;
-	padding-left:12px;
-	padding-right:12px;
+	padding-left:16px;
+	padding-right:16px;
 	background-color:#F3F3F3;
 	color:#999;
-	font-size:12px;
+	font-size:14px;
 	border:#CCC 1px solid;
 	border-bottom:0;
 	margin-right:2px;
-	height:25px;
-	line-height:25px;
+	height:29px;
+	line-height:29px;
 	background-image:url(../images/ico/button.gif);
 	background-repeat:repeat-x;
 	background-position:bottom center;
@@ -259,21 +258,3 @@
 	text-decoration:none;
 	background-position:-248px -276px;
 	}
-	
-	
-	
-	
-/*页面loading框*/
-.my_right{ position:relative; display:table; height:600px; }
-#user_center_box_mark{
-	position:absolute; z-index:10000; text-align:center; display:table-cell; vertical-align:middle;
-	background-image:url(../images/transparent_bg.gif);
-	}
-#user_center_box_mark #mark_load{
-	margin:auto;
-	margin-top:50px;
-	height:13px;
-	width:208px;
-	/*background-image:url(/public/js/thickbox/images/loadingAnimation.gif);*/
-	}	
-	

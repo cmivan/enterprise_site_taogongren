@@ -1,7 +1,10 @@
+<?php $this->load->view('public/header'); ?>
 <style>
 .upload_img {height:135px; width:296px; margin:3px; overflow:hidden}
 .upload_img img{height:135px;}</style>
-<div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo Get_User_Nav($thisnav,$c_urls); ?> </div>
+</head><body>
+<?php $this->load->view('public/top'); ?>
+<div class="main_width"><div class="body_main"><?php /*?>管理页面的框架分布<?php */?><div class="my_left"><div class="my_left_nav"><?php $this->load->view($c_url.'leftnav'); ?><div class="clear"></div></div></div><div class="my_right"><div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo c_nav($thisnav,$c_urls); ?> </div>
 <div class="mainbox_box">
   <table width="88%" border="0" align="center" cellpadding="0" cellspacing="5" style="margin-top:8px;">
   <tr><td height="30" colspan="2" class="chenghong" style="font-size:17px;">淘工人网实名认证</td></tr><tr><td height="1" colspan="2" align="right" style="background-image:url(<?php echo $img_url?>ico/xline1.gif); line-height:1px;"></td></tr><tr><td colspan="2"><div class="tipbox" style="line-height:200%; padding-right:22px;">
@@ -15,8 +18,8 @@
     <td align="center" bgcolor="#FFFFFF">身份证（背面）</td>
     </tr>
   <tr>
-    <td height="135" align="center" bgcolor="#FFFFFF"><div class="upload_img" id="upload_img_show_1"><a cmd='null' href="<?php echo img_approve($this,$photo1)?>" target="_blank"><img src="<?php echo img_approve($this,$photo1)?>" width="300"></a></div></td>
-    <td align="center" bgcolor="#FFFFFF"><div class="upload_img" id="upload_img_show_2"><a cmd='null' href="<?php echo img_approve($this,$photo2)?>" target="_blank"><img src="<?php echo img_approve($this,$photo2)?>" width="300"></a></div></td>
+    <td height="135" align="center" bgcolor="#FFFFFF"><div class="upload_img" id="upload_img_show_1"><a href="<?php echo img_approve($photo1)?>" target="_blank"><img src="<?php echo img_approve($photo1)?>" width="300"></a></div></td>
+    <td align="center" bgcolor="#FFFFFF"><div class="upload_img" id="upload_img_show_2"><a href="<?php echo img_approve($photo2)?>" target="_blank"><img src="<?php echo img_approve($photo2)?>" width="300"></a></div></td>
     </tr></table></td>
   </tr><tr>
   <td height="45" colspan="2" align="left" valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -27,4 +30,5 @@
       </table></td>
   </tr><tr>
   <td colspan="2" align="center">&nbsp;</td></tr></table>
-</div></div>
+</div></div></div><div class="clear"></div></div></div>
+<?php $this->load->view('public/footer');?>

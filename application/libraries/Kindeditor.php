@@ -4,9 +4,6 @@ if (!defined('BASEPATH'))
  
 class Kindeditor {
 	
-	private $upload_url;
-	private $upload_item;
-	
 	private $base_path;
     private $root_path;
     private $root_url;
@@ -16,35 +13,31 @@ class Kindeditor {
     public function __construct() {
 		$this->base_path = base_url().'public/up/k/';
         $this->root_path = '.'.$this->base_path;
+        //$this->root_url = '.'.$this->base_path;
 		$this->root_url = $this->base_path;
         $this->ext_arr = array('gif', 'jpg', 'jpeg', 'png', 'bmp');
         $this->max_size = 1000000;
-		
-		$this->upload_url = 'editor';
-		$this->upload_item = "items : [";
-		$this->upload_item.= "'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',";
-		$this->upload_item.= "'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',";
-		$this->upload_item.= "'insertunorderedlist', '|', 'emoticons', 'image', 'link'],";
     }
 	
 	
     public function js($boxID='content',$content='',$width='90%',$height='300px')
 	{
-		$edit = "<textarea id=\"".$boxID."\" name=\"".$boxID."\" style=\"width:".$width.";height:".$height."; display:none;\">".$content."</textarea>";
+		$edit = '<script charset="utf-8" type="text/javascript" src="'.base_url().'public/plugins/kindeditor/kindeditor.js"></script>';
 		$edit.= "<script>";
-		$edit.= "$(function(){";
 		$edit.= "var editor;";
-		//2012.3.14异步加载，解决在ajax加载的情况下无法显示的情况
-		$edit.= "$.getScript('".base_url()."public/plugins/kindeditor/kindeditor.js', function() {";
-		$edit.= "KindEditor.basePath = '".base_url()."public/plugins/kindeditor/';";
-		$edit.= "editor = KindEditor.create('textarea[name=\"".$boxID."\"]', {";
+		$edit.= "KindEditor.ready(function(K) {";
+		$edit.= "editor = K.create('textarea[name=\"".$boxID."\"]', {";
 		$edit.= "resizeType : 1,";
 		$edit.= "allowPreviewEmoticons : false,";
-		$edit.= 'uploadJson : "'.site_url($this->upload_url.'/upload').'",'; //更改图片上传
-		$edit.= 'fileManagerJson : "'.site_url($this->upload_url.'/manage').'",'; //更改图片浏览
+		$edit.= 'uploadJson : "'.site_url('editor/upload').'",'; //更改图片上传
+		$edit.= 'fileManagerJson : "'.site_url('editor/manage').'",'; //更改图片浏览
 		$edit.= "allowImageUpload : true,";
 		$edit.= "allowFileManager : true,";
-		$edit.= $this->upload_item; //编辑器项
+		$edit.= "items : [";
+		$edit.= "'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',";
+		$edit.= "'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',";
+		$edit.= "'insertunorderedlist', '|', 'emoticons', 'image', 'link'],";
+		
 		/*由表单使用了validform进行验证，改变了原来的 onsubmit事件所以这里需要下面的处理进行数据同步*/
 		$edit.= "afterCreate : function() {";
 		$edit.= "var self = this;";
@@ -53,9 +46,8 @@ class Kindeditor {
 		
 		$edit.= "});";
 		$edit.= "});";
-		$edit.= "});";
 		$edit.= "</script>";
-
+		$edit.= "<textarea id=\"".$boxID."\" name=\"".$boxID."\" style=\"width:".$width.";height:".$height."; display:none;\">".$content."</textarea>";
 		return $edit;
     }
 	
@@ -63,10 +55,30 @@ class Kindeditor {
     public function system_js($boxID='content',$content='',$width='90%',$height='300px')
 	{
 		$CI = &get_instance();
+		$rootpath = $CI->config->item('s_url');
+		$edit = '<script charset="utf-8" type="text/javascript" src="'.base_url().'public/plugins/kindeditor/kindeditor.js"></script>';
+		$edit.= "<script>var editor;";
+		$edit.= "KindEditor.ready(function(K) {";
+		$edit.= "editor = K.create('textarea[name=\"".$boxID."\"]', {";
+		$edit.= "resizeType : 1,";
+		$edit.= "allowPreviewEmoticons : false,";
+		$edit.= 'uploadJson : "'.site_url($rootpath.'system_editor/upload').'",'; //更改图片上传
+		$edit.= 'fileManagerJson : "'.site_url($rootpath.'system_editor/manage').'",'; //更改图片浏览
+		$edit.= "allowImageUpload : true,";
+		$edit.= "allowFileManager : true,";
+//		$edit.= "items : [";
+//		$edit.= "'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',";
+//		$edit.= "'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',";
+//		$edit.= "'insertunorderedlist', '|', 'emoticons', 'image', 'link'],";
+
+		/*由表单使用了validform进行验证，改变了原来的 onsubmit事件所以这里需要下面的处理进行数据同步*/
+		$edit.= "afterCreate : function(){";
+		$edit.= "var self = this; $('.save_but').click(function(){ self.sync(); });";
+		$edit.= "}";
 		
-		$this->upload_url = $CI->config->item('s_url').'system_editor';
-		$this->upload_item = '';
-		return $this->js($boxID,$content,$width,$height);
+		$edit.= "}); }); </script>";
+		$edit.= "<textarea id=\"".$boxID."\" name=\"".$boxID."\" style=\"width:".$width.";height:".$height."; display:none;\">".$content."</textarea>";
+		return $edit;
     }
 
  

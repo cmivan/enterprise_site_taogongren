@@ -8,19 +8,20 @@
 <link rel="stylesheet" type="text/css" href="<?php echo $css_url?>mod_star.css" />
 <?php
 //评分绑定
-if(!empty($e_scorarr))
-{
+if(!empty($e_scorarr)){
+	
 	echo '<script language="javascript" type="text/javascript">';
-	echo '$(function(){';		 
+	echo '$(function(){';
+					 
 	foreach($e_scorarr as $item){
 		$item_id = $item['id'];
 		$item_scor = $item['scor'];
 		echo '$(".pingji dt#dpStar'.$item_id.'").removeClass().addClass("selectS'.$item_scor.'");';
-		if($item_scor!=0)
-		{
+		if($item_scor!=0){
 			echo '$(".pingji dt#dpStar'.$item_id.'").find(".scor").html("<span class=chenghong2>'.$item_scor.'</span>分");';
-		}
+			}
 	}
+	
 	echo '});</script>';
 }
 ?>
@@ -28,10 +29,12 @@ if(!empty($e_scorarr))
 
 <?php
 //存在相应的评分ID则显示评分结果，否则显示其他的
-if(is_num($e_id)||($cmd=='tab'&&get_num($e_id)==false)){?>
+if(is_num($e_id)||($cmd=='tab'&&is_num($e_id)==false)){?>
 
 <table width="94%" border="0" align="center" cellpadding="0" cellspacing="5">
-<?php /*显示切换框*/
+
+<?php
+//显示切换框
 if($show_tab){?>
 <tr><td width="1104" valign="bottom"><div class="common_tab">
 <a class="thickbox<?php echo $common_tab[0]?>" title="查看订单评分" href="<?php echo reUrl('cmd=null',1)?>">我给出的评分</a>
@@ -39,7 +42,7 @@ if($show_tab){?>
 <div class="clear"></div></div></td></tr>
 <?php }?>
 
-<?php if($cmd=='tab'&&get_num($e_id)==false){?>
+<?php if($cmd=='tab'&&is_num($e_id)==false){?>
 <tr><td align="center">暂时未评分...</td></tr>
 <?php }else{?>
 

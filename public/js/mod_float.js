@@ -90,10 +90,10 @@ if(base_url==''||base_url==null){base_url='/';}
         };
         function ylFloat(){
             if(!showAd){return}
-            var windowTop = $(window).scrollTop();
+            var windowTop=$(window).scrollTop();
             if(fDiv.css("display")!="none")
 				fDiv.css("top",o.top+windowTop+"px");
-			    //fDiv.animate({top:o.top+windowTop+"px"}, 500);
+			   //fDiv.animate({top:o.top+windowTop+"px"}, "slow");
         };
 
       $(window).scroll(ylFloat);
@@ -107,5 +107,6 @@ if(base_url==''||base_url==null){base_url='/';}
 $(function(){
 	//创建浮动框
 	$(document.body).append('<div id=\"right_talk\" style=\"display:none\"><\/div>');
-	$("#right_talk").load('/global_v1/qqs.htm').jFloat({position:"right",top:160,height:470,width:128,left:7});	
+	$("#right_talk").load('/global_v1/qqs.htm');
+	$("#right_talk").jFloat({position:"right",top:160,height:470,width:128,left:7});	
 });

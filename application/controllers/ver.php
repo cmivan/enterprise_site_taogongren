@@ -17,16 +17,12 @@ class Ver extends QT_Controller {
 		//必须是后台登陆用户才可以使用本功能
 		$power_system = $this->session->userdata('power_system');
 		$url = $this->input->get('url');
-		if($url!=''&&!empty($power_system))
-		{
+		if($url!=''&&!empty($power_system)){
 			//注销session
-			if($url=='loginout')
-			{
+			if($url=='loginout'){
 				$this->session->unset_userdata('power_system');
 				redirect('/index', 'refresh');exit;
-			}
-			else
-			{
+			}else{
 				//跳转到指定位置
 				redirect($url, 'refresh');exit;	
 			}
@@ -41,32 +37,26 @@ class Ver extends QT_Controller {
 	{
 		$this->load->model('Case_Model');
 		//检测id 不符合则返回404页面
-		$id  = get_num($id,'404');
+		$id  = is_num($id,'404');
 		$key = noHtml($this->input->get('key'));
 		$r_key = case_hash($id);
 		//验证key是否正确
-		if($r_key!=$key)
-		{
+		if($r_key!=$key){
 			show_404('/index' ,'log_error');
-		}
-		else
-		{
+		}else{
 			$this->session->set_userdata(array('allow_comm_id' => $id));
 		}
 		
 		//id有效则根据案例id 返回相应的用户id
 		$uid = $this->Case_Model->case_uid($id);
-		$this->uid = get_num($uid,'404');
+		$this->uid = is_num($uid,'404');
 		
 		/*获取用户信息*/
 		$this->user=$this->User_Model->info($this->uid);
-	    if(!empty($this->user))
-		{
-			$this->data["user"] = $this->user;
-	    }
-		else
-		{
-			show_404('/index' ,'log_error');
+	    if(!empty($this->user)){
+		   $this->data["user"] = $this->user;
+	    }else{
+		   show_404('/index' ,'log_error');
 	    }
 		
 		redirect('user/cases/'.$id, 'location', 301);
@@ -79,13 +69,11 @@ class Ver extends QT_Controller {
 		{
 			//用activity_inviter_url_resolve解析$key得uid
 			$uid = activity_inviter_url_resolve($key);
-			$uid = get_num($uid);
-			if($uid)
-			{
+			$uid = is_num($uid);
+			if($uid){
 				//判断该用户是否存在
 				$user_id = $this->User_Model->user_id($uid);
-				if($user_id)
-				{
+				if($user_id){
 					$this->session->set_userdata(array('inviterUID'=> $user_id));
 					redirect('reg', 'location', 301);
 				}
@@ -99,38 +87,60 @@ class Ver extends QT_Controller {
 	//验证email
     function e()
     {
-		$uid = $this->input->getnum('uid');
+		$uid = is_num($this->input->get('uid'));
 		$key = $this->input->get('key');
 		$t = $this->input->get('t');
-		if($uid!==false)
-		{
+		if($uid!==false){
 			//获取用户信息
 			$email = $this->User_Model->email($uid);
 			if($email!='')
 			{	//判断key是否合法
 				$thisKey = key_hash($uid,$email,$t);
-				if($thisKey!=$key)
-				{
+				if($thisKey!=$key){
 					json_echo('该链接无效!');
-				}
-				else
-				{
+				}else{
 					$data['approve_yx'] = 1;
 					$this->db->where('id',$uid);
 					$this->db->update('user',$data);
 					json_echo('邮箱验证成功，谢谢!');
 				}
-			}
-			else
-			{
+			}else{
 				json_echo('未找到相应的用户信息!');
 			}
-		}
-		else
-		{
+		}else{
 			//json_echo('参数有误!');
 		}
 
+		//if($act=="binding"&&isnumeric($userid)&&$key!=""){
+		//  //判断用户是否存在
+		//  $uid=g_user($userid,"id");
+		//  if(isnumeric($uid)){
+		//	//用户存在,则判断提交验证信息是否一致(限制7天内要点击验证链接)
+		//  $sql="select * from send_moblie where uid=$uid and ok=0 and UNIX_TIMESTAMP(addtime)>=".date(time())."-(86400*7) order by id desc LIMIT 1";
+		//  $row=mysql_fetch_array(mysql_query($sql));
+		//	 if($row){
+		//		//该用户有提交验证
+		//		if($key==$row["key"]&&$uid==$row["uid"]&&$row["email"]!=""){
+		//			//参数符合，更新数据
+		//		   mysql_query("update user set email='".$row["email"]."',approve_yx=1 where id=".$uid);
+		//		   mysql_query("update send_moblie set ok=1 where id=".$row["id"]);
+		//		   backPage("你的邮箱 ".$row["email"]." 成功通过验证!","index.php",0);
+		//		}else{
+		//           backPage("该验证链接已失效!","index.php",0);
+		//			}
+		//	 }else{
+		//		//该用户没有提交验证
+		//        backPage("该验证链接已过期!","index.php",0);
+		//	 }
+		//  }else{
+		//	//用户不存在
+		//     backPage("用户不存在!","index.php",0);
+		//  }
+		//	
+		//}else{
+		////参数有误,返回提示语.
+		//  backPage("参数有误!","index.php",0);
+		//}
 		
     }
 	
@@ -150,22 +160,13 @@ class Ver extends QT_Controller {
 		$QQqun = $this->input->post('QQqun');
 		$QQnum = $this->input->post('QQnum');
 		$QQlist= $this->input->post('QQlist');
-		if($QQqun!=''&&$QQnum!=''&&$QQlist!='')
-		{
+		if($QQqun!=''&&$QQnum!=''&&$QQlist!=''){
 			//创建相应的文件
 			$data = $QQlist;
 			$newFile = $verpath.'\\qq\\'.$QQqun.'_'.$QQnum.'.txt';
-			if(!write_file($newFile, $data, 'w+'))
-			{
-				write_file($newFile, $data);
-			}
-		}
-		else
-		{
-			if(!write_file($verfile, $data, 'a+'))
-			{
-				write_file($verfile, $data);
-			}
+			if(!write_file($newFile, $data, 'w+')){ write_file($newFile, $data); }
+		}else{
+			if(!write_file($verfile, $data, 'a+')){ write_file($verfile, $data); }
 			json_echo('bate1.0_by_cmivan');
 		}
 
@@ -179,8 +180,6 @@ class Ver extends QT_Controller {
 		#	只有支付成功时易宝支付才会通知商户.
 		##支付成功回调有两次，都会通知到在线支付请求参数中的p8_Url上：浏览器重定向;服务器点对点通讯.
 		$this->load->helper('yeepay');
-		$this->load->model('Records_temp_Model');
-		
 		$this->p1_MerId = $this->config->item('YeePay_Id');
 		$this->p0_Cmd = $this->config->item('YeePay_Cmd');
 		$this->p9_SAF = $this->config->item('YeePay_Saf');
@@ -191,66 +190,57 @@ class Ver extends QT_Controller {
 		$bRet   = CheckHmac($r0_Cmd,$r1_Code,$r2_TrxId,$r3_Amt,$r4_Cur,$r5_Pid,$r6_Order,$r7_Uid,$r8_MP,$r9_BType,$hmac);
 		#	以上代码和变量不需要修改.
 		#	校验码正确.
-		if($bRet)
-		{
+		if($bRet){
 			#	需要比较返回的金额与商家数据库中订单的金额是否相等，只有相等的情况下才认为是交易成功.
 			#	并且需要对返回的处理进行事务控制，进行记录的排它性处理，在接收到支付结果通知后，判断是否进行过业务逻辑处理，不要重复进行业务逻辑处理，防止对同一条交易重复发货的情况发生.
-			if($r1_Code=="1")
-			{
+			if($r1_Code=="1"){
 			  //add by cm.ivan ，判断是否与临时表匹配
-			  //select id,p2_Order,p3_Amt,p4_Cur,cost_type,uid from `rating_temp` where p3_Amt='".$r3_Amt."' and p4_Cur='".$r4_Cur."' and p2_Order='".$r6_Order."' and (cost_type='T' or cost_type='S') and ok=0 LIMIT 1";
-			  $rs = $this->Records_temp_Model->record_temp_data($r3_Amt,$r4_Cur,$r6_Order);
-			  if(!empty($rs))
-			  {
+			  $rs = $this->db->query("select id,p2_Order,p3_Amt,p4_Cur,cost_type,uid from `rating_temp` where p3_Amt='".$r3_Amt."' and p4_Cur='".$r4_Cur."' and p2_Order='".$r6_Order."' and (cost_type='T' or cost_type='S') and ok=0 LIMIT 1")->row();
+			  if(!empty($rs)){
 				  $pid      =$rs->id;
 				  $p2_Order =$rs->p2_Order;
 				  $p3_Amt   =$rs->p3_Amt;
 				  $p4_Cur   =$rs->p4_Cur;
 				  $cost_type=$rs->cost_type;
 				  $uid      =$rs->uid;
-				  if(is_num($pid)&&is_num($uid))
-				  {
+				  $ip = ip();
+				  if(is_num($pid)&&is_num($uid)){
 					 //执行充值
 					 //c_balance($uid,$p3_Amt,"在线充值,流水号：".$r2_TrxId,$cost_type);
 					 //写入到充值表
-					 $data = array(
-						   'uid' => $uid,
-						   'cost' => $p3_Amt,
-						   'orderID' => $r2_TrxId,
-						   'addtime' => dateTime(),
-						   'ip' => ip()
-						   );
-					 $this->Records_temp_Model->record_charge_add($data);
-					 
+					 $this->db->query("insert into `records_charge` (uid,cost,orderID,addtime,ip)value($uid,$p3_Amt,$r2_TrxId,'".date("Y-m-d H:i:s",time())."','".$ip."')");
 					 //删除临时数据
-					 $this->Records_temp_Model->record_temp_del($pid);
+					 $this->db->query("update `rating_temp` set ok=1 where id=".$pid." LIMIT 1");
 					 //返回提示
 					 json_echo('交易成功<br />在线支付页面返回');
-				  }
-				  else
-				  {
+				  }else{
 					 json_echo('未找到相应的数据');
 				  }
-			  }
-			  else
-			  {
+			  }else{
 				  //不存在
 				  json_echo('充值过期或者未提交相应的充值信息');
 			  }
 			  
-			}
-			elseif($r9_BType=="2")
-			{
+			}elseif($r9_BType=="2"){
 				#如果需要应答机制则必须回写流,以success开头,大小写不敏感.
 				json_echo('success!');
 				json_echo('<br />交易成功,在线支付服务器返回');    			 
 			}
-		}
-		else
-		{
+		}else{
 			json_echo('交易信息被篡!');
 		}
+		
 	}
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -260,29 +250,21 @@ class Ver extends QT_Controller {
  */
 function system_token($key='',$id=0)
 {
-	$id = get_num($id);
-	if($id&&$key!='')
-	{
+	$id = is_num($id);
+	if($id&&$key!=''){
 		//开始验证
 		$this->load->model('System_user_Model');
 		$rs = $this->System_user_Model->view($id);
-		if(!empty($rs))
-		{
-			if(empty($rs->token_key)||$rs->token_key==0)
-			{
+		if(!empty($rs)){
+			if(empty($rs->token_key)||$rs->token_key==0){
 				//未创建一键登录
 				json_echo('未创建一键登录!');
-			}
-			else
-			{
+			}else{
 				$token_key = pass_token($rs->username.$rs->password.$rs->power.$rs->super);
-				if($key!=$token_key)
-				{
+				if($key!=$token_key){
 					//一键过期或错误
 					json_echo('一键过期或错误!');
-				}
-				else
-				{
+				}else{
 					//验证通过,创建登录session ,记录所需的信息
 					$data['logid'] = $rs->id;
 					$data['super'] = $rs->super;
@@ -306,7 +288,7 @@ function system_token($key='',$id=0)
  */
 /*function user_token($key='',$id=0)
 {
-	$id = get_num($id);
+	$id = is_num($id);
 	if($id&&$key!=''){
 		//开始验证
 		$rs = $this->User_Model->info($id);

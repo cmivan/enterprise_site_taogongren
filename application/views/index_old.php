@@ -5,7 +5,7 @@
 <div class="main_width">
 <div class="top_ad" style="display:none1"><a href="javascript:void(0);"><img src="<?php echo $img_url;?>ads/index_01.jpg" width="974" height="39" alt="" /></a></div>
 <div class="body_main"><div class="index_left"><div class="index_top_title">最新招标信息</div><!--清除浮动--><div class="box"><!--最新招标信息--><div class="index_new_info"><table border="0" cellpadding="0" cellspacing="0"><tr>
-<?php foreach($zb_new as $rs){?><td><div class="item"><div class="face"><a href="<?php echo site_url("retrieval/view/".$rs->id)?>" title="<?php echo $rs->title?>"><img src="<?php echo img_retrieval($this,$rs->pic);?>" /></a></div></div></td><?php }?>
+<?php foreach($zb_new as $rs){?><td><div class="item"><div class="face"><a href="<?php echo site_url("retrieval/view/".$rs->id)?>" title="<?php echo $rs->title?>"><img src="<?php echo img_retrieval($rs->pic);?>" /></a></div></div></td><?php }?>
 </tr></table></div>
       <div class="clear"></div>
       <table width="100%" border="0" cellpadding="0" cellspacing="0" class="index_ad_line">
@@ -48,7 +48,7 @@
   <?php }?></tr><?php }?></table><div class="clear" style="height:10px;"></div> <?php };?>
  <div class="clear"></div></div></div>
 <div class="index_right"><div class="index_top_title">&nbsp;</div><?php foreach($zb_tj as $rs){?>
-  <div class="right_box"><a href="<?php echo site_url("retrieval/view/".$rs->id)?>" title="<?php echo $rs->title?>"><img src="<?php echo img_retrieval($this,$rs->pic);?>" width="277" height="210" style="border:solid 1px #ccc;" /></a></div>
+  <div class="right_box"><a href="<?php echo site_url("retrieval/view/".$rs->id)?>" title="<?php echo $rs->title?>"><img src="<?php echo img_retrieval($rs->pic);?>" width="277" height="210" style="border:solid 1px #ccc;" /></a></div>
   <div class="right_comm_title right_box"><a href="<?php echo site_url("retrieval/view/".$rs->id)?>"><?php echo $rs->title?></a></div><?php };?>
 <div class="right_box">
   <div class="right_box_title">热门团队</div>

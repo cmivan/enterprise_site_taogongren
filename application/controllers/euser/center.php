@@ -2,77 +2,75 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Center extends E_Controller {
+	
+	public $data;  //用于返回页面数据
+	public $logid = 0;
 
 	function __construct()
 	{
 		parent::__construct();
 
+		/*初始化加载application\core\MY_Controller.php
+		这里的加载必须要在产生其他 $this->data 数据前加载*/
+
+		//基础数据
+		$this->data  = $this->basedata();
+		//初始化用户id
+		$this->logid = $this->data["logid"];
+		
 		//初始化页面导航
-		$this->data["thisnav"] = array(
-		            array('title' => '基本信息','link' => 'userinfo'),
-					array('title' => '个人头像','link' => 'face'),
-					array('title' => '帐号安全','link' => 'security'),
-					array('title' => '修改密码','link' => 'reset_password'),
-					array('title' => '实名认证','link' => 'approve_sm')
-		            );
+		$this->data["thisnav"]["nav"][0]["title"] = "基本信息";
+		$this->data["thisnav"]["nav"][0]["link"]  = "index";
+		$this->data["thisnav"]["nav"][1]["title"] = "个人头像";
+		$this->data["thisnav"]["nav"][1]["link"]  = "face";
+		$this->data["thisnav"]["nav"][2]["title"] = "修改密码";
+		$this->data["thisnav"]["nav"][2]["link"]  = "reset_password";
+		$this->data["thisnav"]["nav"][3]["title"] = "帐号安全";
+		$this->data["thisnav"]["nav"][3]["link"]  = "security";
+		$this->data["thisnav"]["nav"][4]["title"] = "实名认证";
+		$this->data["thisnav"]["nav"][4]["link"]  = "approve_sm";
 	}
 	
+
+
 	function index()
 	{
-		$this->center_ajax_pass_url();
-		//输出到视窗
-		$this->load->view_euser('center',$this->data);
-	}
-
-
-	function userinfo()
-	{
-		$this->load->library('Paging');		
-		$this->load->model('Search_model');
+		$this->load->model('Paging');		
 		
-		//是否创建团队而赠送工币
-		$this->data['create_2gift'] = activity_create2gift($this->logid);
-		
-		//个人信息
+		/*个人信息*/
 	    $this->data["info"] = $this->User_Model->info($this->logid);
-		//工作年限
-		$this->data["age_class"] = $this->Search_model->ages();
+		/*工作年限*/
+	    $this->data["age_class"] = $this->db->query("select * from age_class order by id asc")->result();
 
-		//css样式
+		/*<><><>css样式<><><>*/
 		$this->data['cssfiles'][] = 'js/plus_cal/plus.cal.css';
-		//Js
+		/*<><><>Js<><><>*/
 		$this->data['jsfiles'][]  = 'js/city_select_option.js';
-		//表单配置
+		/*表单配置*/
 		$this->data['formTO']->url = $this->data["c_urls"].'/update_save';
 		$this->data['formTO']->backurl = 'null';
 		
-		//输出到视窗
-		$this->load->view_euser('user/userinfo',$this->data);
+		/*输出到视窗*/
+		$this->load->view_euser('user/index',$this->data);
 	}
-
-	/*活动期间,完个人信息后可以获取赠送金币*/
-	function userok2gift()
-	{
-		activity_userok_2gift($this->logid);
-	}	
 	
 	//保存个人信息
 	function update_save()
 	{
 		$data["name"] = noHtml($this->input->post("name"));
-		$data["sex"]  = $this->input->postnum("sex",0);
+		$data["sex"]  = is_num($this->input->post("sex"),0);
 		$data["birthday"]  = $this->input->post("birthday");
-		$data["entry_age"] = $this->input->postnum("entry_age",1);
-		$data["qq"]    = $this->input->postnum("qq",0);
+		$data["entry_age"] = is_num($this->input->post("entry_age"),1);
+		$data["qq"]    = is_num($this->input->post("qq"),0);
 		//$data["email"] = $this->input->post("email");
 		
-		$data["b_p_id"] = $this->input->postnum("b_p_id",0);
-		$data["b_c_id"] = $this->input->postnum("b_c_id",0);
-		$data["b_a_id"] = $this->input->postnum("b_a_id",0);
+		$data["b_p_id"] = is_num($this->input->post("b_p_id"),0);
+		$data["b_c_id"] = is_num($this->input->post("b_c_id"),0);
+		$data["b_a_id"] = is_num($this->input->post("b_a_id"),0);
 		
-		$data["p_id"] = $this->input->postnum("p_id",0);
-		$data["c_id"] = $this->input->postnum("c_id",0);
-		$data["a_id"] = $this->input->postnum("a_id",0);
+		$data["p_id"] = is_num($this->input->post("p_id"),0);
+		$data["c_id"] = is_num($this->input->post("c_id"),0);
+		$data["a_id"] = is_num($this->input->post("a_id"),0);
 		
 		$data["address"]  = noHtml($this->input->post("address"));
 		$data["addr_adv"] = noHtml($this->input->post("addr_adv"));
@@ -89,17 +87,17 @@ class Center extends E_Controller {
 		$photoID = $this->User_Model->photoID($this->logid);
 		$this->data["photoID"] = $photoID;
 		$this->data["face"] = $this->User_Model->face($photoID);
-		//输出到视窗
+		/*输出到视窗*/
 		$this->load->view_euser('user/face',$this->data);
 	}
 	
 	//修改密码
 	function reset_password()
 	{
-		//表单配置
+		/*表单配置*/
 		$this->data['formTO']->url = $this->data["c_urls"].'/reset_password_save';
 		$this->data['formTO']->backurl = '';
-		//输出到视窗
+		/*输出到视窗*/
 		$this->load->view_euser('user/reset_password',$this->data);
 	}
 	
@@ -112,25 +110,18 @@ class Center extends E_Controller {
 		if($password==""||$password_new=="")
 		{
 			json_form_no('信息不完整!');
-		}
-		elseif($password==$password_new)
-		{
+		}elseif($password==$password_new){
 			json_form_no('保存失败，你的密码没有任何改动!');
-		}
-		else
-		{
+		}else{
 			$rs_num = $this->User_Model->user_is_ok($this->logid,$password);
-			if($rs_num>0)
-			{
+			if($rs_num>0){
 				//修改密码
 				$data["password"] = pass_user($password_new);
 				$data["approve_mm"] = 1;
 				$this->db->where('id', $this->logid);
 				$this->db->update('user', $data); 
 				json_form_yes('保存成功，请牢记你的新密码!');
-			}
-			else
-			{
+			}else{
 				json_form_yes('原密码不正确!');
 			}
 		}
@@ -145,7 +136,7 @@ class Center extends E_Controller {
 		$this->data["approve_yx"] = $user->approve_yx;
 		$this->data["approve_mm"] = $user->approve_mm;
 		$this->data["approve_sm"] = $user->approve_sm;
-		//输出到视窗
+		/*输出到视窗*/
 		$this->load->view_euser('user/security',$this->data);
 	}
 
@@ -162,16 +153,13 @@ class Center extends E_Controller {
 		$this->data['photo1'] = 'none_approve.jpg';
 		$this->data['photo2'] = 'none_approve.jpg';
 		
-		if(empty($yz_sm))
-		{
-			//表单配置
+		if(empty($yz_sm)){
+			/*表单配置*/
 			$this->data['formTO']->url = $this->data["c_urls"].'/approve_sm_save';
 			$this->data['formTO']->backurl = '';
 			//未提交验证信息,或已提交但未审核
 			$this->load->view_euser('user/approve/add',$this->data);
-		}
-		else
-		{
+		}else{
 			//审核处理
 			$this->data['truename'] = $yz_sm->truename;
 			$this->data['sfz']      = $yz_sm->sfz;
@@ -180,25 +168,24 @@ class Center extends E_Controller {
 			$this->data["addtime"]  = dateYMD($yz_sm->addtime);
 			$this->data["errtip"]   = '';
 
-			switch ($yz_sm->ok)
-			{
+			switch ($yz_sm->ok){
 			  case '0':
-				  //输出到视窗
+				  /*输出到视窗*/
 				  $this->load->view_euser('user/approve/verify',$this->data);
 				  break;
 			  case '1':
-				  //表单配置
+				  /*表单配置*/
 				  $this->data['formTO']->url = $this->data["c_urls"].'/approve_sm_save';
 				  $this->data['formTO']->backurl = '';
-				  //输出到视窗
+				  /*输出到视窗*/
 				  $this->load->view_euser('user/approve/ok',$this->data);
 				  break;
 			  case '2':
 				  if($yz_sm->errtip!=""){ $this->data["errtip"] = $yz_sm->errtip; }
-				  //表单配置
+				  /*表单配置*/
 				  $this->data['formTO']->url = $this->data["c_urls"].'/approve_sm_save';
 				  $this->data['formTO']->backurl = '';
-				  //输出到视窗
+				  /*输出到视窗*/
 				  $this->load->view_euser('user/approve/false',$this->data);
 				  break; 
 			}
@@ -215,22 +202,10 @@ class Center extends E_Controller {
 		$photo1   = noSql($this->input->post('pic1'));
 		$photo2   = noSql($this->input->post('pic2'));
 		//数据检测
-		if($truename=="")
-		{
-			json_form_no('请填写姓名!');
-		}
-		elseif($sfz=="")
-		{
-			json_form_no('请填写身份证号!');
-		}
-		elseif($photo1=="")
-		{
-			json_form_no('请上传证件的正面图!');
-		}
-		elseif($photo1=="")
-		{
-			json_form_no('请上传证件的反面图!');
-		}
+		if($truename==""){ json_form_no('请填写姓名!'); }
+		if($sfz==""){ json_form_no('请填写身份证号!'); }
+		if($photo1==""){ json_form_no('请上传证件的正面图!'); }
+		if($photo1==""){ json_form_no('请上传证件的反面图!'); }
 		//写入数据
 		$data['truename'] = $truename;
 		$data['sfz']    = $sfz;
@@ -241,16 +216,15 @@ class Center extends E_Controller {
 		$data["errtip"] = '';
 		//判断是否已经写入
 		$yz_sm = $this->User_Model->yz_sm($this->logid);
-		if(!empty($yz_sm))
-		{
+		if(!empty($yz_sm)){
+			//更新
 			$data['ok'] = 0;
 			$this->db->where('uid', $this->logid);
 			$this->db->where('ok !=',1);
 			$this->db->update('yz_sm',$data);
 			json_form_yes('认证信息更新成功!');
-		}
-		else
-		{
+		}else{
+			//写入
 			$data['uid'] = $this->logid;
 			$this->db->insert('yz_sm',$data);
 			json_form_yes('成功提交认证信息!<br>我们将会在48小时内进行审核!');

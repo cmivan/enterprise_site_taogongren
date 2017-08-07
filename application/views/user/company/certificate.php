@@ -20,11 +20,11 @@
 <?php if(!empty($lists)){?>
 <ul class="pic_img">
 <?php foreach($lists as $item){?>
-<li><a href="javascript:void(0);"><img src="<?php echo img_certificate($this,$item->pic)?>" width="210" height="140"></a></li>
+<li><a href="javascript:void(0);"><img src="<?php echo img_certificate($item->pic)?>" width="210" height="140"></a></li>
 <?php }?>
 </ul>
 <div class="clear"></div>
-<div style="padding:2px; padding-left:10px; padding-bottom:10px;"><?php $this->paging->links(); ?></div>
+<div style="padding:2px; padding-left:10px; padding-bottom:10px;"><?php $this->Paging->links(); ?></div>
 <?php }else{?>
 <div class="jianjie"><div style="padding:80px;text-align:center;">暂未找到相关信息!</div></div>
 <?php }?>

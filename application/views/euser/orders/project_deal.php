@@ -1,3 +1,4 @@
+<?php $this->load->view('public/header'); ?>
 <script type="text/javascript">
 $(function(){	
   reStep();
@@ -25,16 +26,11 @@ function reStep(){
   $(".pro_step").find(".item").each(function(){reNum++;$(this).find("b").text(reNum);});
   $(".pro_step").find(".item").find('.del').css({'display':'block'});
   if(reNum==1){$(".pro_step").find(".item").eq(0).find('.del').css({'display':'none'});}
-}
-</script>
-<style type="text/css">
+}</script><style type="text/css">
 form{margin:0;}
 .pro_main_title{font-size:14px;font-weight:bold;color:#333;}.pro_deal_look td{color:#333;}
 #pro_step .item{background-color:#FFFAF0;border:#FFDEAD 1px solid;padding:10px;margin-bottom:10px;}	
-#pro_step .item .del{float:right;text-align:center;padding-right:4px;}
-</style>
-
-<div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo Get_User_Nav($thisnav,$c_url); ?> </div><div class="mainbox_box"><?php $this->load->view($c_url.'orders/ordertip'); ?>
+#pro_step .item .del{float:right;text-align:center;padding-right:4px;}</style></head><body><?php $this->load->view('public/top'); ?><div class="main_width"><div class="body_main"><?php /*?>管理页面的框架分布<?php */?><div class="my_left"><div class="my_left_nav"><?php $this->load->view($c_url.'leftnav'); ?><div class="clear"></div></div></div><div class="my_right"><div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo c_nav($thisnav,$c_url); ?> </div><div class="mainbox_box"><?php $this->load->view($c_url.'orders/ordertip'); ?>
 <div class="content"><table width="100%" border="0" cellpadding="4" cellspacing="1" class="edit_box"><tr><td align="left"><form class="validform" method="post"><table width="96%" border="0" align="center" cellpadding="2" cellspacing="5">
 <?php /*?><tr><td width="601" height="60" align="left" valign="top"><h1>合同<?php echo $editstr?></h1></td></tr> <?php */?>
 <tr><td height="10" align="left"></td></tr><tr><td height="35" align="left">项目名称：&nbsp;<input name="title" type="text" id="title" value="<?php echo $title?>" style="width:350px;" /></td></tr><tr><td align="left">
@@ -77,4 +73,5 @@ form{margin:0;}
 &nbsp;天完成。 </td></tr><tr><td colspan="2"> 具体工作内容： </td></tr><tr><td colspan="2"><textarea name="content[]" rows="6" id="content[]" style="width:99%;"></textarea></td></tr></table></div></div></div>
 
 <div class="clear"></div></div>
-</div></div>
+</div></div></div><div class="clear"></div></div></div>
+<?php $this->load->view('public/footer');?>

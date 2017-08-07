@@ -9,15 +9,15 @@ function order_stat($ostat='',$isevaluate=0,$id=0)
 	  $back = '';
 	  if($isevaluate==1){
 		  //单方评
-		  $back.= '<a href="javascript:void(0);" cmd="null" class="order_comm tip" id="'.$id.'" title="你已经给出评分!">';
+		  $back.= '<a href="javascript:void(0);" class="order_comm tip" id="'.$id.'" title="你已经给出评分!">';
 		  $back.= '<img src="'.$img_url.'ico/tick_circle.png" width="16" height="16" /><br />已评</a>';
 	  }elseif($isevaluate==2){
 		  //互评
-		  $back.= '<a href="javascript:void(0);" cmd="null" class="order_comm tip" id="'.$id.'" title="双方已经对该订单进行评分!">';
+		  $back.= '<a href="javascript:void(0);" class="order_comm tip" id="'.$id.'" title="双方已经对该订单进行评分!">';
 		  $back.= '<img src="'.$img_url.'ico/tick_circle.png" width="16" height="16" /><br />已互评</a>';
 	  }else{
 		  //未评
-		  $back.= '<a href="javascript:void(0);" cmd="null" class="order_comm tip" id="'.$id.'" title="等待评分">';
+		  $back.= '<a href="javascript:void(0);" class="order_comm tip" id="'.$id.'" title="等待评分">';
 		  $back.= '<img src="'.$img_url.'ico/tick_circle_no.png" width="16" height="16" /><br />评分</a>';
 	  }
 	  return $back;

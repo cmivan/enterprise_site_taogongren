@@ -38,10 +38,8 @@ function activity_sys_inviter($uid)
 function activity_inviter_num($uid)
 {
 	$CI = &get_instance();
-	$CI->db->select('id');
-	$CI->db->from('user');
-	$CI->db->where('inviterID',$uid);
-	return $CI->db->count_all_results();
+    $rownum = $CI->db->query("select id from `user` where inviterID=".$uid)->num_rows();
+    return $rownum;
 }
 
 
@@ -57,15 +55,8 @@ function activity_inviter_num($uid)
 function activity_team_created($uid)
 {
 	$CI = &get_instance();
-	$CI->db->select('id');
-	$CI->db->from('user');
-	$CI->db->where('uid',$uid);
-	$CI->db->where('classid',2);
-	if( $CI->db->count_all_results() > 0 )
-	{
-		return true;
-	}
-	return false;
+    $rownum = $CI->db->query("select id from `user` where uid=".$uid." and classid=2")->num_rows();
+	if($rownum<=0){return false;}else{return true;}
 }
 
 
@@ -81,15 +72,11 @@ function activity_team_created($uid)
 function activity_userok_2gift($uid)
 {
 	$isok = activity_create2gift($uid);
-	if($isok)
-	{
-		json_form_alt("<活动赠送>已成功领取,谢谢你的参与!");
-	}
+	if($isok){ json_form_alt("<活动赠送>已成功送出,谢谢你的参与!"); }
 
 	$CI = &get_instance();
 	$info = $CI->User_Model->info($uid);
-	if(!empty($info))
-	{
+	if(!empty($info)){
 		$user_ok = true;
 		if($info->mobile==''){$user_ok = false;}
 		if($info->name==''){$user_ok = false;}
@@ -102,34 +89,26 @@ function activity_userok_2gift($uid)
 		if($info->birthday==''){$user_ok = false;}
 		if($info->email==''){$user_ok = false;}
 		if($info->address==''){$user_ok = false;}
-		
-		if($info->classid!=1)
-		{
-			if($info->addr_adv==''){$user_ok = false;}
-		}
-
+		if($info->addr_adv==''){$user_ok = false;}
 		if($info->note==''){$user_ok = false;}
-		
+		$ip = $CI->input->ip_address();
 		//团队信息完成ok,则赠送
-		if($user_ok)
-		{
+		if($user_ok){
 			#***** 费用模块 ******
 			$CI->load->model('Records_Model');
-			$balances = $CI->Records_Model->balance_control($uid,"10","<活动赠送>恭喜你!完善个人信息获得系统赠送!","T");
-			if($balances)
-			{
-				$CI->db->set('uid',$uid);
-				$CI->db->set('ip',ip());
-				$CI->db->set('ok',1);
-				$CI->db->set('utype',1);
-				$CI->db->insert('user_gift_ok');
-				json_echo('{"cmd":"activity.ok","info":"恭喜你!你已成功领取10个淘工币!"}');
+			$balances = $CI->Records_Model->balance_control($uid,"10","<活动赠送>恭喜你!完善个人信息并获得系统赠送!","T");
+			if($balances){
+				$CI->db->query("INSERT INTO `user_gift_ok` (`uid` ,`ip` ,`ok` ,`utype`) VALUES ('".$uid."' ,'".$ip."' ,'1' ,'1')");
+				echo '{"cmd":"activity.ok","info":"恭喜你!你已成功领取10个淘工币!"}';
+			}else{
+				json_form_alt("系统繁忙!请稍候再试!");
 			}
-			json_form_alt("系统繁忙!请稍候再试!");
+		}else{
+			json_form_alt("请确定个人信息已经完善!");
 		}
-		json_form_alt("请确定个人信息已经完善!");
+	}else{
+		json_form_alt("系统繁忙!请稍候再试!");
 	}
-	json_form_alt("系统繁忙!请稍候再试!");
 }
 
 
@@ -144,23 +123,14 @@ function activity_userok_2gift($uid)
  * @param: string,$uid 用户id
  * @return: bool 
  */
-function activity_teamok_2gift($uid=0,$tid=0)
+function activity_teamok_2gift($uid)
 {
-	if( is_numeric($uid)==false || is_numeric($tid)==false )
-	{
-		json_form_alt("系统繁忙!请稍候再试!");
-	}
-
-	$isok = activity_create2gift($tid);
-	if($isok)
-	{
-		json_form_alt("<活动赠送>已成功送出,谢谢你的参与!");
-	}
+	$isok = activity_create2gift($uid);
+	if($isok){ json_form_alt("<活动赠送>已成功送出,谢谢你的参与!"); }
 
 	$CI = &get_instance();
-	$team_info = $CI->User_Model->info($tid);
-	if(!empty($team_info))
-	{
+	$team_info = $CI->User_Model->info($uid);
+	if(!empty($team_info)){
 		$team_ok = true;
 		if($team_info->name==''){$team_ok = false;}
 		if(is_num($team_info->photoID)==false){$team_ok = false;}
@@ -171,27 +141,24 @@ function activity_teamok_2gift($uid=0,$tid=0)
 		if($team_info->team_ckbj==''){$team_ok = false;}
 		if($team_info->team_fwxm==''){$team_ok = false;}
 		if($team_info->team_fwdq==''){$team_ok = false;}
-		
+		$ip = $CI->input->ip_address();
 		//团队信息完成ok,则赠送
-		if($team_ok)
-		{
+		if($team_ok){
 			#***** 费用模块 ******
 			$CI->load->model('Records_Model');
-			$balances = $CI->Records_Model->balance_control($uid,"5","<活动赠送>恭喜你!创建并完善团队信息获得系统赠送!","T");
-			if($balances)
-			{
-				$CI->db->set('uid',$tid);
-				$CI->db->set('ip',ip());
-				$CI->db->set('ok',1);
-				$CI->db->set('utype',1);
-				$CI->db->insert('user_gift_ok');
-				json_echo('{"cmd":"activity.ok","info":"恭喜你!你已成功领取5个淘工币!"}');
+			$balances = $CI->Records_Model->balance_control($uid,"5","<活动赠送>恭喜你!完善团队信息并获得系统赠送!","T");
+			if($balances){
+				$CI->db->query("INSERT INTO `user_gift_ok` (`uid` ,`ip` ,`ok` ,`utype`) VALUES ('".$uid."' ,'".$ip."' ,'1' ,'1')");
+				echo '{"cmd":"activity.ok","info":"恭喜你!你已成功领取5个淘工币!"}';
+			}else{
+				json_form_alt("系统繁忙!请稍候再试!");
 			}
-			json_form_alt("系统繁忙!请稍候再试!");
+		}else{
+			json_form_alt("请确定团队信息已经完善!");
 		}
-		json_form_alt("请确定团队信息已经完善!");
+	}else{
+		json_form_alt("请确定您已经创建团队!");
 	}
-	json_form_alt("请确定您已经创建团队!");
 }
 
 
@@ -209,17 +176,8 @@ function activity_teamok_2gift($uid=0,$tid=0)
 function activity_create2gift($uid)
 {
 	$CI = &get_instance();
-	$CI->db->select('id');
-	$CI->db->from('user_gift_ok');
-	$CI->db->where('ok',1);
-	$CI->db->where('utype',1);
-	$CI->db->where('uid',$uid);
-	$CI->db->limit(1);
-	if( $CI->db->count_all_results() > 0 )
-	{
-		return true;
-	}
-	return false;
+    $rownum = $CI->db->query("select id from user_gift_ok where uid=".$uid." and ok=1 and utype=1 LIMIT 1")->num_rows();
+	if($rownum<=0){return false;}else{return true;}
 }
 
 
@@ -269,11 +227,9 @@ function activity_inviter_key($uid)
  */
 function activity_inviter_url_resolve($keys)
 {
-	if(!empty($keys)&&$keys!='')
-	{
+	if(!empty($keys)&&$keys!=''){
 		$keysarr = preg_split('/u0b8d/',$keys);
-		if(!empty($keysarr)&&count($keysarr)==2)
-		{
+		if(!empty($keysarr)&&count($keysarr)==2){
 			$key = $keysarr[0];
 			$uid = $keysarr[1];
 			$ukey= activity_inviter_key($uid);
@@ -304,14 +260,8 @@ function activity_login_task()
 		if($task_nav==0)
 		{
 			$CI->session->set_userdata('tasknav',1);
-			
-			$CI = &get_instance();
-			$CI->db->select('id');
-			$CI->db->from('user_gift_ok');
-			$CI->db->where('uid',$logid);
-			$CI->db->limit(1);
-			if( $CI->db->count_all_results() <= 0 )
-			{
+			$oknum = $CI->db->query("select id from user_gift_ok where uid=".$logid." LIMIT 1")->num_rows();
+			if($oknum<=0){
 				echo "<script> $(function(){ tb_show('温馨提示：','".site_url('task/login_task')."?height=140&width=340',false); }); </script>";
 			}
 		}

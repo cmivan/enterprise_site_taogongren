@@ -4,7 +4,6 @@
 
 class MY_Loader extends CI_Loader
 {
-	
 	//输出工人用户后台view
 	function view_wuser($view, $vars = array(), $return = FALSE)
 	{
@@ -52,14 +51,6 @@ class MY_Loader extends CI_Loader
 		return $this->view('public/public_gzip', $vars, FALSE);
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-
 
 		 
 }

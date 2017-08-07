@@ -32,14 +32,11 @@
 <td><div class="validform_checktip">两次输入密码需一致</div></td></tr><tr>
 <td>邮箱：</td>
 <td><input type="text" name="email" class="inputxt" datatype="e" nullmsg="请输入您常用的邮箱！" errormsg="请输入正确的邮箱！" />
-</td><td><div class="validform_checktip">请输入您常用的邮箱</div></td></tr><tr><td>现在住处：</td><td class="val_place">
-  <select name="p_id" id="p_id" datatype="select" errormsg="请选择省份！" disabled>
+</td><td><div class="validform_checktip">请输入您常用的邮箱</div></td></tr><tr><td>现在住处：</td><td class="val_place"><select name="p_id" id="p_id" datatype="select" errormsg="请选择省份！" disabled>
   <?php if(!empty($provinces)){
 	  foreach ($provinces as $rs){?>
   <option value="<?php echo $rs->p_id?>" ><?php echo $rs->p_name?></option>
-  <?php }}?>
-  </select>
-  <select name="c_id" id="c_id" datatype="select" errormsg="请选择城市！" disabled >
+  <?php }}?></select><select name="c_id" id="c_id" datatype="select" errormsg="请选择城市！" disabled >
   <?php if(!empty($citys)){
 	  foreach ($citys as $rs){?>
   <option value="<?php echo $rs->c_id?>" ><?php echo $rs->c_name?></option>

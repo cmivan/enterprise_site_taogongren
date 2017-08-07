@@ -2,7 +2,9 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Company extends QT_Controller {
-
+	
+	public $data;  //用于返回页面数据
+	public $logid = 0;  //登录用户id
 	public $user;
 	public $uid = 0; //当前用户id
 	
@@ -10,9 +12,23 @@ class Company extends QT_Controller {
 	{
 		parent::__construct();
 
-		//评级打分样式
+		/*初始化加载application\core\MY_Controller.php
+		这里的加载必须要在产生其他 $this->data 数据前加载*/
+		
+		//$this->output->enable_profiler(true);
+
+		//基础数据
+		$this->data  = $this->basedata();
+		//初始化用户id
+		$this->logid = $this->data["logid"];
+		
+		//初始化加载模型
+
+		
+		/*<><><>css样式<><><>*/
+		#评级打分
 		$this->data['cssfiles'][] = 'style/mod_star.css';
-		//排期日历样式
+		#排期日历
 		$this->data['cssfiles'][] = 'js/fullcalendar/fullcalendar.css';
 
 	}
@@ -22,7 +38,7 @@ class Company extends QT_Controller {
 	function base_data($uid=1)
 	{
 		//检测id不符合则返回404页面
-		$this->uid = get_num($uid,'404');
+		$this->uid = is_num($uid,'404');
 		$this->data['uid'] = $this->uid;
 		
 		$page_url = 'v'.$uid.'_';
@@ -30,8 +46,7 @@ class Company extends QT_Controller {
 		/*获取用户信息*/
 		$this->user = $this->User_Model->info($this->uid);
 		/*保证找到该用户信息并要求该用户为系统录入的团队用户(即企业)*/
-	    if(!empty($this->user)&&$this->user->classid==2&&$this->user->uid==1)
-	    {
+	    if(!empty($this->user)&&$this->user->classid==2&&$this->user->uid==1){
 			$this->data["id"] = $this->user->id;
 			$this->data["name"] = $this->user->name;
 			$this->data["truename"] = $this->user->truename;
@@ -59,34 +74,25 @@ class Company extends QT_Controller {
 			$this->data['nav_more']['certificate'] = site_url($this->data['page_url'].'certificate');
 			
 			$on = $this->uri->segment(2);
-			if($on==$uid)
-			{
-				$on = $page_url.'index';
-			}
+			if($on==$uid){ $on = $page_url.'index'; }
 			
 			$this->data['company_nav'] = '';
-			foreach($nav as $nitem)
-			{
-				if(!empty($nitem))
-				{
-					if(!empty($on)&&$on==($page_url.$nitem['key']))
-					{
+			foreach($nav as $nitem){
+				if(!empty($nitem)){
+					if(!empty($on)&&$on==($page_url.$nitem['key'])){
+						
 						/*SEO设置*/
 						$this->data['seo']['title'] = $this->data["truename"].'-'.$nitem['title'].','.$this->data['seo']['title'];
 						$this->data['seo']['keywords'] = $this->data["truename"].','.$this->data["name"].','.$this->data["address"].','.$this->data['seo']['keywords'];
 						$this->data['seo']['description'] = $this->data["addr_adv"].$this->data['seo']['description'];
 						
 						$this->data['company_nav'].= '<li class="choose_on"><a href="javascript:void(0);">'.$nitem['title'].'</a></li>';
-					}
-					else
-					{
+					}else{
 						$this->data['company_nav'].= '<li><a href="'.site_url($this->data['page_url'].$nitem['key']).'">'.$nitem['title'].'</a></li>';
 					}
 				}
 			}
-	    }
-	    else
-	    {
+	    }else{
 			show_404('/index' ,'log_error');
 	    }
 	}
@@ -99,11 +105,9 @@ class Company extends QT_Controller {
 		$this->base_data($uid);
 		//访问累计
 	    $this->User_Model->visite($this->uid);
-	    
-	    $this->load->model('Case_Model');
 		
-		$this->data["cases"] = $this->Case_Model->Company_Case($this->uid);
-		$this->data["certificates"] = $this->Case_Model->Company_Certificates($this->uid);
+		$this->data["cases"] = $this->db->query("select * from cases where uid=".$uid." and type_id=1 order by id desc limit 4")->result();
+		$this->data["certificates"] = $this->db->query("select * from cases where uid=".$uid." and type_id=2 order by id desc limit 4")->result();
 		//输出到视窗
 		$this->load->view('user/company/index',$this->data);
 	}
@@ -131,14 +135,14 @@ class Company extends QT_Controller {
 	function cases($uid=0)
 	{
 		$this->load->model('Case_Model');
-		$this->load->library('Paging');
+		$this->load->model('Paging');
 		
 		//加载基础数据
 		$this->base_data($uid);
 		
 		//读取案例数据
 		$listsql = $this->Case_Model->listsql($uid,1,0);
-	    $this->data["lists"] = $this->paging->show($listsql,8);
+	    $this->data["lists"] = $this->Paging->show($listsql,8);
 		
 		//输出到视窗
 		$this->load->view('user/company/cases',$this->data);
@@ -148,14 +152,14 @@ class Company extends QT_Controller {
 	function certificate($uid=0)
 	{
 		$this->load->model('Case_Model');
-		$this->load->library('Paging');
+		$this->load->model('Paging');
 		
 		//加载基础数据
 		$this->base_data($uid);
 		
 		//读取证书数据
 		$listsql = $this->Case_Model->listsql($uid,2,0);
-		$this->data["lists"] = $this->paging->show($listsql,8);
+		$this->data["lists"] = $this->Paging->show($listsql,8);
 		
 		//输出到视窗
 		$this->load->view('user/company/certificate',$this->data);
@@ -169,6 +173,14 @@ class Company extends QT_Controller {
 		//输出到视窗
 		$this->load->view('user/company/price',$this->data);
 	}
+
+
+
+
+
+
+
+
 
 
 
@@ -199,41 +211,28 @@ class Company extends QT_Controller {
 		$password = $this->input->post('pass');
 		$code = $this->input->post('code');
 		$CompanyVloginCode = $this->session->userdata('CompanyVloginCode');
-		if($username=='')
-		{
+		if($username==''){
 			json_form_no('请输入用户名!');
-		}
-		elseif($password=='')
-		{
+		}elseif($password==''){
 			json_form_no('请输入登录密码!');
-		}
-		elseif($code=='')
-		{
+		}elseif($code==''){
 			json_form_no('请输入验证码!');
-		}
-		elseif($CompanyVloginCode=='')
-		{
+		}elseif($CompanyVloginCode==''){
 			json_form_no('请重新获取验证码!');
-		}
-		elseif(md5($code)!=$CompanyVloginCode)
-		{
+		}elseif(md5($code)!=$CompanyVloginCode){
 			json_form_no('输入的验证码有误!');
-		}
-		else
-		{
+		}else{
 			//清除验证码
 			$this->session->set_userdata("CompanyVloginCode",'');
 			
 			//开始验证
 			$user = $this->User_Model->user_company_login($username,$password);
 			//返回状态
-			if(!empty($user))
-			{
+			if(!empty($user)){
 			   //二重审核
-			   if(($user->mobile!=$username)&&($rs->password!=$password))
-			   {
+			   if(($user->mobile!=$username)&&($rs->password!=$password)){
 				   json_form_no("登录失败,帐号或密码有误!");
-			   }
+				   }
 			   //login_nav 用于记录是否已经弹出登录向导(0未弹出,1已弹出)
 			   $logdata = array(
 					'logid' => $user->id,
@@ -247,11 +246,10 @@ class Company extends QT_Controller {
 			   
 			   //页面跳转
 		   	   json_form_yes('登录成功!');
-			}
-			else
-			{
+			}else{
 			   json_form_no("登录失败,帐号或密码有误!");
 			}
+
 			json_form_no('登录失败,请重新获取验证码后登录!');
 		}
 	}
@@ -273,7 +271,7 @@ class Company extends QT_Controller {
 			$txt = "0123456789";
 			$txtlen=strlen($txt);
 
-			$thetxt = '';
+			$thetxt="";
 			for($i=0;$i<4;$i++)
 			{
 				$randnum=mt_rand(0,$txtlen-1);
@@ -293,10 +291,10 @@ class Company extends QT_Controller {
 			$this->session->set_userdata("CompanyVloginCode",md5($thetxt));
 			imagerectangle($aimg, 0, 0, $x_size - 1, $y_size - 1, $border);
 
-			$newcolor = '';
-			$newx = '';
-			$newy = '';
-			$pxsum = 50;     //干扰像素个数
+			$newcolor="";
+			$newx="";
+			$newy="";
+			$pxsum=50;     //干扰像素个数
 			for($i=0;$i<$pxsum;$i++)
 			{
 				$newcolor=imagecolorallocate($aimg, mt_rand(0,254), mt_rand(0,254), mt_rand(0,254));

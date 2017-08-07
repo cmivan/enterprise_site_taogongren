@@ -1,4 +1,5 @@
 // JavaScript Document
+var base_url=base_url;
 if(base_url==''||base_url==null){base_url='/';}
 $(function(){
   //取消焦点
@@ -23,25 +24,34 @@ $(function(){
   });
   //下拉选择城市--选择区域
   $(".quyu").find("a").click(function(){
+	  //Qloading($(this).offset().left,$(this).offset().top);
 	  var quyuid=$(this).attr("id");
 	  $(".quyu").find("a").attr("class","");
 	  $(this).attr("class","on");
-	  $("#quyu_box").load(base_url+"places/sel_provinces/?r_id="+quyuid);
+	  $("#quyu_box").load(base_url+"places/sel_provinces/?regionid="+quyuid);
   });
   //下拉选择城市,返回城市名称及相应的区
   $("#quyu_box .areas").find("a").live('click',function(){
-	  var c_id = $(this).attr("id");
-	  var city_sel = $(".city_select").find(".citys");
-	  city_sel.find("#title").find("a").html($(this).html());
-	  city_sel.find("#title").find("a").attr("id",$(this).attr("id"));
-	  city_sel.find("#areas").find("a").attr("class",'');
-	  city_sel.find("#areas").find("a").eq(0).attr("class",'on');
-	  $.get(base_url+'places/sel_provinces/?c_id='+c_id);
+	  var cityid=$(this).attr("id");
+	  $(".city_select").find(".citys").find("#title").find("a").html($(this).html());
+	  $(".city_select").find(".citys").find("#title").find("a").attr("id",$(this).attr("id"));
+	  $.ajax({type:'GET',url:base_url+'places/sel_provinces/?cityid='+cityid});
 	  //可应用在不同页面
-	  var url = searchkeys();
+	  var url=searchkeys();
 	  //转向页面
-	  if(url!=''&&url!=null){ window.location.href=url;return false; }
+	  if(url!=""&&url!=null){ window.location.href='?'+url;return false; }
 	  //收起选择框
 	  $(".provinces_citys_box").fadeOut(200);
   });
 });
+
+//function Qloading(left,top)
+//{
+//	var obj = $('#quyuloading');
+//	var size = obj.size();
+//	$('body').css({"position":"relative"});
+//	if(size<=0){ $('body').append('<div id="quyuloading" style="position:absolute;width:50px;height:50px;z-index:999">quyuloading</div>');
+//	}else{
+//		obj.css({"left":left,"top":top});
+//	}
+//}

@@ -33,7 +33,7 @@
 <?php if(!empty($cases)){?>
 <ul class="pic_img">
 <?php foreach($cases as $item){?>
-<li><a href="javascript:void(0);"><img src="<?php echo img_cases($this,$item->pic)?>" width="210" height="140"></a></li>
+<li><a href="javascript:void(0);"><img src="<?php echo img_cases($item->pic)?>" width="210" height="140"></a></li>
 <?php }?>
 </ul>
 <?php }else{?>
@@ -48,7 +48,7 @@
 <?php if(!empty($certificates)){?>
 <ul class="pic_img">
 <?php foreach($certificates as $item){?>
-<li><a href="javascript:void(0);"><img src="<?php echo img_certificate($this,$item->pic)?>" width="210" height="140"></a></li>
+<li><a href="javascript:void(0);"><img src="<?php echo img_certificate($item->pic)?>" width="210" height="140"></a></li>
 <?php }?>
 </ul>
 <?php }else{?>

@@ -2,7 +2,9 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class User_feedback extends XT_Controller {
-
+	
+	public $data;  //用于返回页面数据
+	
 	function __construct()
 	{
 		parent::__construct();
@@ -11,51 +13,55 @@ class User_feedback extends XT_Controller {
 		这里的加载必须要在产生其他 $data 数据前加载*/
 		
 		$this->load->model('Feedback_Model');
-
+		
+		//基础数据
+		$this->data  = $this->basedata();
+		
 		$this->data['table_title'] = '留言反馈';
 	}
 	
-	//管理页面
+	//<><><><><><><><><><><><><><><><><><>
+	//@@@@@@@@@@@ 管理页面 @@@@@@@@@@@@@@@@
+	//<><><><><><><><><><><><><><><><><><>
 	function index()
 	{
 		//分页模型
-		$this->load->library('Paging');
+		$this->load->model('Paging');
+		
+		
+		//<><><>管理页面操作(go)
 		
 		//普通删除、数据处理
-		$del_id = $this->input->get_or_post('del_id');
-		if( is_null($del_id)==FALSE && is_array($del_id) )
-		{
-			foreach($del_id as $delID)
-			{
-				if( is_num($delID) )
-				{
-					$this->Feedback_Model->del($delID);
-				}
+		$del_id = is_num($this->input->get('del_id'));
+		if($del_id){ $this->Feedback_Model->del($del_id); }
+		//批量删除、数据处理
+		$del_id = $this->input->post('del_id');
+		if(!empty($del_id)){
+			foreach($del_id as $delID){
+				if(is_num($delID)){ $this->Feedback_Model->del($delID); }
 			}
 		}
-		elseif( is_num($del_id) )
-		{
-			$this->Feedback_Model->del($del_id);
-		}
-		
-		//判断搜索
-		$keysword = $this->input->get_or_post('keysword',TRUE);
-		if($keysword!='')
-		{
-			$keylike_on[] = array( 'nicename'=> $keysword );
-			$keylike_on[] = array( 'uid'=> $keysword );
-			$keylike_on[] = array( 'qq'=> $keysword );
-			$this->db->like_on($keylike_on);
-		}
-		
-		$this->data['keysword'] = $keysword;
 
-		$this->db->from('feedback');
-		$this->db->order_by('id','desc');
-		$listsql = $this->db->getSQL();
+		//判断搜索
+		$keysword = noSql($this->input->get('keysword'));
+		$this->data['keysword'] = $keysword;
+		if($keysword!=''){
+			$keyswordSql = "(nicename like '%".$keysword."%' or uid like '%".$keysword."%' or qq like '%".$keysword."%')";
+		}
+		
+		
+	 
+		//<><><>管理页面操作(end)
+
+
+		//返回相应的sql
+		$key_sql = ''; //初始化该变量
+		//无分类筛选
+		if(!empty($keyswordSql)){ $key_sql = " where ".$keyswordSql; }
+		$listsql = "select * from feedback".$key_sql.' order by id desc';
 		
 		//获取列表数据
-		$this->data["list"] = $this->paging->show($listsql,10);
+		$this->data["list"] = $this->Paging->show($listsql,10);
 		
 		$this->load->view_system('user_feedback/manage',$this->data);
 	}

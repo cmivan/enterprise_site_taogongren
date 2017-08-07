@@ -7,9 +7,7 @@
 //写入数据
 function inface($pid,$uid){
 	$CI = &get_instance();
-	$CI->db->set('photoID',$pid);
-	$CI->db->where('id',$uid);
-	$CI->db->update('user');
+	$CI->db->query("update `user` set `photoID`='$pid' where id=$uid");
   }
   
   
@@ -43,7 +41,7 @@ class pic_data
 	 public $statusText;
 	 public function __construct()
 	 {
-		 $this->data->urls = array();
+		$this->data->urls = array();
 	 }
 }
 ?>

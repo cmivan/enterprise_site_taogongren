@@ -16,7 +16,6 @@ function cm_form_select($formID,$itemarr,$valuekey,$titlekey,$selectedkey,$style
 	if(empty($titlekey)||$titlekey==''){return '请给select框的title绑定值!';}
 	$selectbox = '';
 	$selectbox.= '<select id="'.$formID.'" name="'.$formID.'" '.$style.' >';
-	$selectbox.= '<option value="">选择全部</option>';
 	foreach($itemarr as $item){
 		if($item->$valuekey==$selectedkey){
 			$selectbox.= '<option value="'.$item->$valuekey.'" selected style="background-color:#F60; color:#FFF">'.$item->$titlekey.'</option>';

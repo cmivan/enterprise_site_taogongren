@@ -1,5 +1,5 @@
 <?php
-#人才招聘
+#单用户信息
 
 class Recruitment_Model extends CI_Model {
 
@@ -8,181 +8,156 @@ class Recruitment_Model extends CI_Model {
         parent::__construct();
     }
 	
-    /*返回所以招聘信息列表sql语句,用于分页*/
-    function page_listsql($type_id=1)
-    {
-        $this->db->select('*');
-        $this->db->from('recruitment');
-		if($type_id)
-		{
-			$this->db->where('type_id',$type_id);
+	
+/**
+ * 返回列表sql语句,用于分页
+ */
+  function listsql($logid)
+  {
+	  $t=$this->input->get("t",true);
+	  
+	  if($t!=""&&is_numeric($t))
+	  {
+		 return "select * from recruitment where uid=".$logid." and type_id=".$t." order by id desc"; 
+	  }else{
+		 return "select * from recruitment where uid=".$logid." order by id desc";
+	  }
+  }		
+	
+	
+/**
+ * 返回最新的N条记录
+ */
+  function get_list($type=1,$num=10)
+  {
+	  return $this->db->query("select R.id,R.title,R.c_id,C.c_name from recruitment R left join place_city C on R.c_id=C.c_id where R.type_id=".$type." order by R.id desc limit ".$num)->result();
+  }	
+  
+  
+	
+/**
+ * 招聘求职的类型
+ */
+  function get_types()
+  {
+	  return $this->db->query("select id,title from `recruitment_type` order by id asc")->result();
+  }		
+ 
+	
+/**
+ * 返回返回招聘或者是求职
+ */
+  function view($id=0,$logid=0)
+  {
+		return $this->db->query("select * from `recruitment` where uid=".$logid." and id=".$id)->row();
+  }	
+
+  
+/**
+ * 返回返回招聘或者是求职
+ */
+  function recruitment_uid($id=0)
+  {
+		$crs = $this->db->query("select uid from `recruitment` where id=".$id)->row();
+		if(!empty($crs)){
+			return $crs->uid;
+		}else{
+			return false;
 		}
-        $this->db->order_by('id','desc');
-		//返回SQL
-		return $this->db->getSQL();
-    }
-    
-    /*返回列表sql语句,用于分页*/
-    function listsql($logid=0)
-    {
-        $this->db->select('*');
-        $this->db->from('recruitment');
-        $this->db->where('uid', $logid);
-        $this->db->order_by('id','desc');
-        $t = $this->input->get('t');
-    	if(is_num($t))
-    	{
-    		$this->db->where('type_id', $t);
-    	}
-		//返回SQL
-		return $this->db->getSQL();
-    }
-    
-    /*返回最新的N条记录*/
-    function get_list($type_id=1,$num=10)
-    {
-        $this->db->select('recruitment.id,recruitment.title,recruitment.c_id,place_city.c_name');
-        $this->db->from('recruitment');
-        $this->db->join('place_city','recruitment.c_id = place_city.c_id','left');
-        $this->db->where('recruitment.type_id', $type_id);
-        $this->db->order_by('recruitment.id','desc');
-        $this->db->limit($num);
-        return $this->db->get()->result();
-    }
-    
-    /*招聘求职的类型*/
-    function get_types()
-    {
-  	    $this->db->select('id,title');
-    	$this->db->from('recruitment_type');
-    	$this->db->order_by('id','asc');
-    	return $this->db->get()->result();
-    }
-    
-    /*返回返回招聘或者是求职*/
-    function view($id=0,$logid=0)
-    {
-  	    $this->db->select('*');
-    	$this->db->from('recruitment');
-    	$this->db->where('uid',$logid);
-    	$this->db->where('id',$id);
-    	return $this->db->get()->row();
-    }
-    
-    /*返回返回招聘或者是求职*/
-    function recruitment_uid($id=0)
-    {
-  	    $this->db->select('uid');
-    	$this->db->from('recruitment');
-    	$this->db->where('id',$id);
-    	$rs = $this->db->get()->row();
-		if(!empty($rs))
-		{
-			return $rs->uid;
-		}
-		return false;
-    }
-    
-    /*累积访问次数*/
+  }
+
+/**
+ * 累积访问次数
+ */
     function visite($id=0)
     {
-    	$this->db->set('visited', 'visited+1', FALSE);
-    	$this->db->where('id', $id);
-    	return $this->db->update('recruitment',array());
+    	$this->db->query("update `recruitment` set visited=visited+1 where id=$id LIMIT 1");
     }
-    
-    /*返回返回招聘或者是求职*/
-    function save($id=0,$logid=0)
-    {
-		$thisdata = array(
-				  "type_id" => $this->input->postnum("type_id"),
-				  "title" => noHtml($this->input->post("title")),
-				  "content" => $this->input->post("content"),
-				  "addtime" => dateTime(),
-				  "num" => $this->input->postnum("num"),
-				  "fuli" => noHtml($this->input->post("fuli")),
-				  "cost" => noHtml($this->input->post("cost")),
-				  "p_id" => $this->input->postnum("p_id"),
-				  "c_id" => $this->input->postnum("c_id"),
-				  "a_id" => $this->input->postnum("a_id"),
-				  "c_addr" => noHtml($this->input->post("c_addr")),
-				  "industryid" => $this->input->post("industryid"),
-				  "uid" => $logid
+
+	
+/**
+ * 返回返回招聘或者是求职
+ */
+  function save($id=0,$logid=0)
+  {
+	  
+		$thisdata=array(
+		"type_id" => $this->input->post("type_id"),
+		"title" => noHtml($this->input->post("title")),
+		"content" => $this->input->post("content"),
+		"addtime" => date("Y-m-d H:i:s",time()),
+		"num" => $this->input->post("num"),
+		"fuli" => noHtml($this->input->post("fuli")),
+		"cost" => noHtml($this->input->post("cost")),
+		"p_id" => $this->input->post("p_id"),
+		"c_id" => $this->input->post("c_id"),
+		"a_id" => $this->input->post("a_id"),
+		"c_addr" => noHtml($this->input->post("c_addr")),
+		"industryid" => $this->input->post("industryid"),
+		"uid" => $logid
 		);
 
 		//检测数据
-		if($thisdata["title"]=='')
-		{
-			json_form_no('请先填写标题！');
-		}
-		elseif($thisdata["content"]=='')
-		{
-			json_form_no('请先填写内容！');
-		}
+		if($thisdata["title"]==""){echo '{"cmd":"n","info":"请先填写标题！"}';exit;}
+		if($thisdata["content"]==""){echo '{"cmd":"n","info":"请先填写内容！"}';exit;}
 		
-		//录入数据
+
 		if($id!=false)
 		{
 			$this->db->where('id', $id);
 			$this->db->update('recruitment', $thisdata); 
-			json_form_yes('更新成功！');
+			echo '{"cmd":"y","info":"更新成功！"}';exit;
+		}else{
+			$this->db->insert('recruitment', $thisdata); 
+			echo '{"cmd":"y","info":"发布成功！"}';exit;
 		}
-		else
-		{
-			$this->db->insert('recruitment', $thisdata);
-			json_form_yes('发布成功！');
-		}
-    }
-    
-    /*删除数据*/
-    function del($id=0,$logid=0)
-    {
-    	$this->db->where('uid', $logid);
-    	$this->db->where('id', $id);
-    	return $this->db->delete('recruitment'); 
-    }
-    
-    
-    /*返回返回所有类型*/
-    function types()
-    {
-	    $this->db->select('*');
-    	$this->db->from('recruitment_type');
-    	return $this->db->get()->result();
-    }
-    
-    /*返回返回招聘或者是求职*/
-    function type($id=0)
-    {
-    	if(is_num($id))
-    	{
-    		$this->db->select('title');
-    		$this->db->from('recruitment_type');
-    		$this->db->where('id',$id);
-    		$rs = $this->db->get()->row();
-    		if(!empty($rs))
-    		{
-    			return $rs->title;
-    		}
-    	}
-    }
-    
-    /*返回返回招聘或者是求职*/
-    function type_id($id=0)
-    {
-        $this->db->select('type_id');
-        $this->db->from('recruitment');
-        $this->db->where('id',$id);
-        $rs = $this->db->get()->row();
-    	if(!empty($rs))
-    	{
-    		return $rs->type_id;
-    	}
-    	else
-    	{
-    		return 1;  
-    	}
-    }
+		
+		
+  }
+  
+  
+/**
+ * 删除数据
+ */
+  function del($id=0,$logid=0)
+  {
+	  $this->db->query("delete from `recruitment` where uid=".$logid." and id=".$id);
+  }
+
+	
+/**
+ * 返回返回所有类型
+ */
+  function types()
+  {
+	  return $this->db->query("select * from `recruitment_type`")->result();
+  }	
+  
+  
+/**
+ * 返回返回招聘或者是求职
+ */
+  function type($id=0)
+  {
+	  if($id!=""&&is_numeric($id))
+	  {
+		  $rs = $this->db->query("select title from `recruitment_type` where id=".$id)->row();
+		  if(!empty($rs)){ return $rs->title; }
+	  }
+  }
+  
+/**
+ * 返回返回招聘或者是求职
+ */
+  function type_id($id=0)
+  {
+	  $trs = $this->db->query("select type_id from `recruitment` where id=".$id)->row();
+	  if(!empty($trs)){
+		  return $trs->type_id;
+	  }else{
+		  return 1;  
+	  }
+  }
   
 
 }

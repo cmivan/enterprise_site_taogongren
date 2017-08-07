@@ -16,12 +16,9 @@ class System_editor extends XT_Controller{
 		//基础数据
 		$this->data  = $this->basedata();
 		//初始化用户id
-		if(!empty($this->data["power_system"])&&is_num($this->data["power_system"]['logid']))
-		{
+		if(!empty($this->data["power_system"])&&is_num($this->data["power_system"]['logid'])){
 			$this->logid = $this->data["power_system"]['logid'];
-		}
-		else
-		{
+		}else{
 			exit;
 		}
 
@@ -35,9 +32,8 @@ class System_editor extends XT_Controller{
     public function upload()
 	{
 		$dir = $this->input->get('dir');
-        if(!empty ($_FILES))
-		{
-			$this->kindeditor->upload($dir,$_FILES,$this->uppath);
+        if(!empty ($_FILES)){
+			$this->kindeditor->upload($dir='',$_FILES,$this->uppath);
         }
     }
 	

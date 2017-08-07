@@ -2,7 +2,9 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Cases extends COMPANY_Controller {
-
+	
+	public $data;  //用于返回页面数据
+	public $logid = 0;
 	public $type_id = 1; //1为案例 2为证书
 	
 	function __construct()
@@ -12,16 +14,21 @@ class Cases extends COMPANY_Controller {
 		/*初始化加载application\core\MY_Controller.php
 		这里的加载必须要在产生其他 $this->data 数据前加载*/
 
+		//基础数据
+		$this->data = $this->basedata();
 		//初始化用户id
 		$this->logid = $this->data["logid"];
 		
 		$this->load->model('Case_Model');
-
+		
 		//初始化页面导航
-		$this->data["thisnav"] = array(
-		            array('title' => '管理案例','link' => 'index'),
-					array('title' => '添加案例','link' => 'add')
-		            );
+		$this->data["thisnav"]["nav"][0]["title"] = "管理案例";
+		$this->data["thisnav"]["nav"][0]["link"]  = "index";
+		$this->data["thisnav"]["nav"][1]["title"] = "添加案例";
+		$this->data["thisnav"]["nav"][1]["link"]  = "add";
+		
+		//工人类型(工人或团队)
+		$this->data['worker_types'] = $this->User_Model->worker_types();
 	}
 	
 	
@@ -29,18 +36,15 @@ class Cases extends COMPANY_Controller {
 	function index()
 	{
 		//删除数据
-		$del_id = $this->input->getnum("del_id");
-		if($del_id)
-		{
-			$this->Case_Model->del($del_id,$this->type_id,$this->logid);
-		}
+		$del_id = is_num($this->input->get("del_id"));
+		if($del_id){ $this->Case_Model->del($del_id,$this->type_id,$this->logid); }
 
 		//分页模型
-		$this->load->library('Paging');
+		$this->load->model('Paging');
 		//获取分页列表sql
 		$listsql=$this->Case_Model->listsql($this->logid,$this->type_id,0);
 		//获取列表数据
-		$this->data["list"] = $this->paging->show($listsql);
+		$this->data["list"] = $this->Paging->show($listsql);
 		/*输出到视窗*/
 		$this->load->view_company('cases/index',$this->data);
 	}
@@ -57,11 +61,11 @@ class Cases extends COMPANY_Controller {
 		$this->load->view_company('cases/add',$this->data);
 	}	
 
-	function edit($id='')
+	function edit($id=0)
 	{
 		$this->load->library('kindeditor');
 		//安全处理
-		$id = get_num($id,'');
+		$id = is_num($id,0);
 		//获取当前编辑项信息
 		$this->data["info"] = $this->Case_Model->view($id,$this->logid);
 		//评论邀请链接
@@ -79,10 +83,10 @@ class Cases extends COMPANY_Controller {
 	}
 
 
-	function save($id='')
+	function save($id=0)
 	{
 		//安全处理
-		$id = get_num($id);
+		$id = is_num($id);
 		//保存数据(添加/编辑)
 		$this->Case_Model->save($id,$this->type_id,$this->logid);
 	}

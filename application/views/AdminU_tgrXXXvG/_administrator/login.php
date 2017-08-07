@@ -9,13 +9,8 @@
 ?>
 <?php $this->load->view_system('header'); ?>
 <script type="text/javascript">
-var url = "<?php echo site_url("administrator/verifycode")?>?";
+var url = "<?php echo site_url("administrator/login/verifycode")?>?";
 $(function(){ $('#verifycode').attr('src',url); });
-<?php /*?>
-站点绑定提示标签，但后台没有这项
-因此需定义该函数 防止出错
-<?php */?>
-function bindtip(){ return false; }
 function reload_vcode(v)
 {
 	var rand = Math.random();
@@ -35,7 +30,7 @@ function reload_vcode(v)
 <?php /*?><input name="pass" type="password" class="login_input" id="pass" size="20" maxlength="15" nullmsg="密码不能为空！" errormsg="密码至少4个字符,最多28个字符" datatype="*4-28" /><?php */?>
 </td><td><div class="validform_checktip"></div></td></tr><tr><td align="right">验证码：</td><td>
 <input class="login_input" name="code" type="text" id="code" size="8" style="width:65px;" nullmsg="验证码不能为空！" errormsg="请输入正确的验证码！" datatype="p" />
-<a href="javascript:void(0);"><img src="<?php echo site_url("administrator/verifycode")?>" alt="点击刷新" name="verifycode" height="20" border="0" align="absmiddle" class="code_img" id="verifycode" onClick="reload_vcode(this)" /></a></td><td width="225"><div class="validform_checktip"></div></td></tr><tr><td>&nbsp;</td><td class="edit_box_save_but" style="text-align:left;"><input type="submit" class="save_but" value="" /><input type="hidden" name="action" id="action"  value="do" /></td><td>&nbsp;</td></tr></table>
+<a href="javascript:void(0);"><img src="<?php echo site_url("administrator/login/verifycode")?>" alt="点击刷新" name="verifycode" height="20" border="0" align="absmiddle" class="code_img" id="verifycode" onClick="reload_vcode(this)" /></a></td><td width="225"><div class="validform_checktip"></div></td></tr><tr><td>&nbsp;</td><td class="edit_box_save_but" style="text-align:left;"><input type="submit" class="save_but" value="" /><input type="hidden" name="action" id="action"  value="do" /></td><td>&nbsp;</td></tr></table>
 </td></tr></table></td></tr></table>
 </form>
 </body></html>

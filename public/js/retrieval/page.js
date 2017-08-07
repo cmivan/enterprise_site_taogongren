@@ -6,7 +6,7 @@ $(function(){
 	   if(isfor=="1"){
 		  //for 单选
 		  if(thison!="on"){$(this).parent().find("a").attr("class","");$(this).attr("class","on");}
-		  window.location.href=searchkeys();//转向页面
+		  window.location.href='?'+searchkeys();//转向页面
 		  return false;
 	   }else{
 		  //for 多选
@@ -40,12 +40,12 @@ $(function(){
  
 	//鼠标移出工种选择框时
 	$("#search_industry").hover(
-	     function(){ $("#SelectIDS").val(searchkeys()); },								   
+	     function(){$("#SelectIDS").val(searchkeys());},								   
 		 function(){
 			 var thisSelectIDS=$("#SelectIDS").val();
 			 var goUrl=searchkeys();
 			 if(goUrl!=thisSelectIDS){
-				 window.location.href=goUrl;//转向页面
+				 window.location.href='?'+searchkeys();//转向页面
 				 return false;}
 			 });
 

@@ -2,23 +2,37 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Wallet extends E_Controller {
+	
+	public $data;  //用于返回页面数据
+	public $logid = 0;
 
 	function __construct()
 	{
 		parent::__construct();
 
-		$this->load->library('Paging');
+		/*初始化加载application\core\MY_Controller.php
+		这里的加载必须要在产生其他 $this->data 数据前加载*/
+
+		//基础数据
+		$this->data = $this->basedata();
+		//初始化用户id
+		$this->logid = $this->data["logid"];
+		
+		$this->load->model('Paging');
 		$this->load->model('Records_Model');
 		
+		
 		//初始化页面导航
-		$this->data["thisnav"] = array(
-		            array('title' => '收入记录','link' => 'index'),
-					array('title' => '支出记录','link' => 'apply'),
-					array('title' => '我要充值','link' => 'charge')
-		            );
-
+		$this->data["thisnav"]["nav"][0]["title"] = "收入记录";
+		$this->data["thisnav"]["nav"][0]["link"]  = "index";
+		$this->data["thisnav"]["nav"][1]["title"] = "支出记录";
+		$this->data["thisnav"]["nav"][1]["link"]  = "apply";
+		$this->data["thisnav"]["nav"][2]["title"] = "我要充值";
+		$this->data["thisnav"]["nav"][2]["link"]  = "charge";
+		
 		/*个人信息*/
 	    $this->data["u_place"] = $this->User_Model->info($this->logid);
+		
 		$this->data["cost_T"] = $this->Records_Model->balance_cost($this->logid,'T');
 		$this->data["cost_S"] = $this->Records_Model->balance_cost($this->logid,'S');
 	}
@@ -28,7 +42,7 @@ class Wallet extends E_Controller {
 	function index()
 	{
 		$this->sql = $this->Records_Model->record_in($this->logid);
-		$this->data["list"] = $this->paging->show($this->sql);
+		$this->data["list"] = $this->Paging->show($this->sql);
 		/*输出到视窗*/
 		$this->load->view($this->data["c_url"].'wallet/index',$this->data);
 	}
@@ -37,7 +51,7 @@ class Wallet extends E_Controller {
 	function apply()
 	{
 		$this->sql = $this->Records_Model->record_out($this->logid);
-	    $this->data["list"] = $this->paging->show($this->sql);
+	    $this->data["list"] = $this->Paging->show($this->sql);
 		/*输出到视窗*/
 		$this->load->view($this->data["c_url"].'wallet/apply',$this->data);
 	}

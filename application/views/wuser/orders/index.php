@@ -26,7 +26,7 @@ if(!empty($thisnav)){
   <td align="center"><a href="<?php echo $rs->id?>" class="favorites_del_id"><img src="views/images/ico/del.png" width="10" height="10" title="取消收藏" /></a></td></tr><?php }}else{?><tr><td colspan="6" align="center">暂无信息</td></tr><?php }?></table>
 
 <div class="clear"></div></div>
-<?php $this->paging->links(); ?><div class="clear"></div>
+<?php $this->Paging->links(); ?><div class="clear"></div>
 </div></div>
 </div>
 

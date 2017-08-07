@@ -28,23 +28,16 @@ function greetings()
     function mobile_mark($mobile=0,$uid=0,$logid=0,$ispay=0,$T=0)
     {
 		$mobile2=substr_replace($mobile,"*****",4).substr($mobile,9,2);
-		if(is_numeric($logid)&&is_numeric($uid)&&$logid!=$uid)
-		{
+		if(is_numeric($logid)&&is_numeric($uid)&&$logid!=$uid){
 		  /*已登录,未付费 判断是否已经可以查看*/
-		  if($ispay==false)
-		  {
-			  if($T==0)
-			  {
+		  if($ispay==false){
+			  if($T==0){
 				  return "<a href='javascript:void(0);' class='get_mobile tip' userid='".$uid."' title='查看联系方式<br><span class=chenghong>1淘工币/号码</span>'><span>".$mobile2."</span></a>";
-			  }
-			  else
-			  {
+			  }else{
 				  return "<a href='javascript:void(0);' class='get_mobile tip' id='get_mobile_2' userid='".$uid."' type='look' title='查看联系方式'><span>与我联系</span></span></a>";
 			  }
 			}
-		}
-		elseif($logid!=$logid)
-		{
+		}elseif($logid!=$logid){
 			/*未登录*/
 			return "<a href='javascript:void(0);' class=user_login title='登录后查看<br><span class=chenghong>1淘工币/号码</span>'>".$mobile2."</a>";
 		}
@@ -107,15 +100,11 @@ function cutstr($string, $sublen, $start = 0, $code = 'UTF-8')
 #辅助函数，用于下拉框
 function selectboxitem($str1,$str2)
 {
-  $strs = preg_split('/,/',$str1);
-  foreach($strs as $s)
-  {
-     if(!empty($str2)&&$s==$str2)
-     {
+  $strs=split(",",$str1);
+  foreach($strs as $s){
+     if(!empty($str2)&&$s==$str2){
 	    echo '<option value="'.$s.'" selected>'.$s.'</option>';
-     }
-     else
-     {
+     }else{
 	    echo '<option value="'.$s.'">'.$s.'</option>';	
      }
   }
@@ -167,15 +156,10 @@ function noHtml($str,$br=0)
  * @param: string,$str，要过滤html的字符
  * @return: string 
  */
-function toText($str,$t=0)
+function toText($str)
 {
    $str = strtolower($str);
    $str = str_replace('&nbsp;',' ',$str);
-   if($t==1)
-   {
-	   $str = str_replace(chr(10),'',$str);
-	   $str = str_replace(chr(13),'',$str);
-   }
    $str = preg_replace( "@<script(.*?)</script>@is","",$str); 
    $str = preg_replace( "@<iframe(.*?)</iframe>@is","",$str); 
    $str = preg_replace( "@<style(.*?)</style>@is","",$str); 
@@ -218,23 +202,17 @@ function noSql($str)
  * @param: string,$val，要要重组的字符
  * @return: string 
  */
-function getarray($val='')
+function getarray($val)
 {
-	$data = NULL;
-	if(!empty($val) && $val != ''&&$val != 'no')
-	{
-		$arr = preg_split('/_/',$val);
-		foreach($arr as $item)
-		{
-			if(is_num($item))
-			{
-				$data[] = (int)$item;
-			}
-		}
+	$newarr = "";
+	if(!empty($val)&&$val!=""&&$val!="no"){
+	   $arr = split("_",$val);
+	   foreach($arr as $item){
+		  if(!empty($item)&&is_numeric($item)){if(empty($newarr)||$newarr==""){$newarr=$item;}else{$newarr.=",".$item;}}
+	   }
 	}
-	return $data;
+	return $newarr;
 }
-
 
 
 
@@ -248,33 +226,12 @@ function getarray($val='')
  */
 function noempty($rs="",$key)
 {
-	if(!empty($rs))
-	{
-		return $rs->$key;
-	}
-	return '';
+	if(!empty($rs)){ return $rs->$key; }else{ return ''; }
 }
 
 
 
 
-/**
- * 重写返回Query，
- * 
- * @access: public
- * @author: mk.zgc
- * @param: string,$url，要重写的url参数
- * @return: string 
- */
-function reQuery($query='')
-{
-	if( !empty($query) )
-	{
-		parse_str($query,$arr); 
-		return $arr;
-	}
-	return array();
-}
 /**
  * 重写返回url，
  * 
@@ -286,55 +243,56 @@ function reQuery($query='')
 function reUrl($url='',$T=0)
 {
 	//获取基本Url参数
-	$Ourl = strtolower($_SERVER["QUERY_STRING"]);
-	$Ourl_arr = reQuery( $Ourl );
-	
-	$Nurl_arr = reQuery( $url );
-	
+	$old_urls = strtolower($_SERVER["QUERY_STRING"]);
+	$new_urls = $old_urls;
+	$old_urls_temp = "&".$old_urls."&";
 	//返回url参数
-	foreach($Nurl_arr as $item => $val)
-	{
-		if($val=='null')
-		{
-			if($item=='page')
-			{
-				$Ourl_arr['v'] = '2.1';
+	$url = strtolower($url);
+	$url_arr = split("&",$url);
+	foreach($url_arr as $url_item){
+		//返回有参数项
+		if($url_item!=''){
+			$url_item_arr = split("=",$url_item);
+			$keyitem = $url_item_arr[0]; //键
+			if(is_int(strpos('o'.$old_urls_temp,'&'.$keyitem.'='))){
+				//存在关键字
+				$oldkey = $keyitem.'=';
+				$oldurl = strtolower($oldkey.urlencode($_GET[$keyitem]));
+				if($url_item_arr[1]=='null'){
+					$new_urls = str_replace('&'.$oldurl,'',$new_urls);
+					$new_urls = str_replace($oldurl,'',$new_urls);
+				}else{
+					$new_urls = str_replace('&'.$oldurl,'&'.$url_item,$new_urls);
+					$new_urls = str_replace($oldurl,$url_item,$new_urls);
+				}
+			}else{
+				//不存在关键字
+				if($url_item_arr[1]!='null'){
+					if($new_urls!=''){$new_urls .= "&".$url_item;}else{$new_urls = $url_item;}
+				}
 			}
-			unset($Ourl_arr[$item]);
-		}
-		else
-		{
-			$Ourl_arr[$item] = $val;
 		}
 	}
-	$back_urls = http_build_query($Ourl_arr);
+	//if(!empty($new_urls)&&$new_urls!=''){$new_urls = '?'.$new_urls;}
+	$new_urls = '?'.$new_urls;
 	
-	if(!empty($back_urls))
-	{
-		$back_urls = '?'.$back_urls;
-		if($T==1)
-		{
-			$CI = &get_instance();
-			$back_urls = site_url($CI->uri->uri_string()) . $back_urls;
+	//返回当前页面的(指定Url路径)
+	if($T==1){
+		$CI = &get_instance();
+		$new_urls = site_url($CI->uri->uri_string()) . $new_urls;
 		}
-		return $back_urls;
-	}
-	return '';
+	
+	return $new_urls;
 }
+
 
 
 //获取网站域名
 function siteurl()
 {
 	$pageURL = 'http://';
-	if($_SERVER["SERVER_PORT"] != "80")
-	{
-		$pageURL .= $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"];
-	} 
-	else
-	{
-		$pageURL .= $_SERVER["SERVER_NAME"];
-	}
+	if ($_SERVER["SERVER_PORT"] != "80") {$pageURL .= $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"];} 
+	else {$pageURL .= $_SERVER["SERVER_NAME"];}
 	return $pageURL;
 }
 
@@ -384,14 +342,8 @@ function key_hash($uid=0,$str=0,$t=0)
  */
 function arr2md5($arr)
 {
-	$dd = '';
-	if(!empty($arr))
-	{
-		foreach($arr as $val)
-		{
-			$dd.= $val;
-		}
-	}
+	$dd='';
+	if(!empty($arr)){ foreach($arr as $val){ $dd.= $val; } }
 	return md5($dd);
 }
 
@@ -438,66 +390,21 @@ function colorT($str,$T='chenghong')
  * @return: int  
  * @err return: $back
  */
-//function get_num($val=0,$back=false)
-//{
-//	if(empty($val)&&$back=='404')
-//	{
-//		show_404('/index' ,'log_error');exit;
-//	}
-//	elseif(empty($val))
-//	{
-//		return $back;	
-//	}
-//	
-//	preg_match_all("/\d+/",$val,$varr);
-//	if(!empty($varr[0][0])&&$varr[0][0]!=''&&($varr[0][0]==0||is_numeric($varr[0][0])))
-//	{
-//		return (int)$varr[0][0]; //强调返回数值
-//	}
-//	elseif($back=='404')
-//	{
-//		show_404('/index' ,'log_error');exit;
-//	}
-//	else
-//	{
-//		return $back;
-//	}
-//}
- 
- 
-function get_num($val=0,$back=false)
+function is_num($val=0,$back=false)
 {
-	if ( is_num($val) )
-	{
-		return (int)$val; //强调返回数值
+	if(empty($val)&&$back=='404'){
+		show_404('/index' ,'log_error');exit;
+	}elseif(empty($val)){
+		return $back;	
 	}
-	elseif($back=='404')
-	{
-		show_404('' ,'log_error');exit;
-	}
-	else
-	{
+	preg_match_all("/\d+/",$val,$varr);
+	if(!empty($varr[0][0])&&$varr[0][0]!=''&&($varr[0][0]==0||is_numeric($varr[0][0]))){
+		return $varr[0][0];
+	}elseif($back=='404'){
+		show_404('/index' ,'log_error');exit;
+	}else{
 		return $back;
 	}
-}
-
-
-/**
- * 判断是否为数字
- * 
- * @access: public
- * @author: mk.zgc
- * @param: string,$val
- * @return: bool
- */
-function is_num($val=0)
-{
-	if( $val==='0' ){ return true; }
-	if( ( $val === 0) || (!empty($val) && $val!='' && is_numeric($val)) )
-	{
-		return true;
-	}
-	return false;
 }
 
 
@@ -517,33 +424,16 @@ function yz_check($yz,$tip="绑定")
 {
 	$CI = & get_instance();
 	$img_url = $CI->config->item("img_url");
-	if($yz==1)
-	{
+	if($yz==1){
 		return '<img title="已'.$tip.'" src="'.$img_url.'ico/tick_shield.png" width="16" height="16" /><br />已'.$tip;
-	}
-	else
-	{
+	}else{
 		return '<img title="请'.$tip.'" src="'.$img_url.'ico/ktip.gif" width="16" height="16" /><br />未'.$tip;
 	}
 }
 
 
 
-## ################################## ##
-## 判断邮件是否合法
-## ################################## ##
-function isEmail($em){
-	if($em!=""){
-		//if(eregi("^[_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,4}$",$em)){
-	   if(preg_match("/^[_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,4}$/i",$em)){
-          return true;
-       }else{
-          return false;
-       }
-	}else{
-          return false;
-	}
-}
+
 
 
 
@@ -558,16 +448,12 @@ function isEmail($em){
  */
 function order_no($uid,$t=0)
 {
-	if(is_numeric($uid))
-	{
-		if($t==0)
-		{
+	if(is_numeric($uid)){
+		if($t==0){
 	      $date = date("YmdHis");
 	      //return $date."-"."TG".$uid."-".rand(1000,9999);
 		  return $date.$uid.rand(1000,9999);
-		}
-		else
-		{
+		}else{
 	      $date = date("ymdHis");
 	      //return $date.".TG".$uid;
 		  return $date.$uid;
@@ -587,11 +473,10 @@ function rnd_no()
 /*转换成json形式*/
 function txt2json($key='')
 {
-	if(!empty($key))
-	{
+	if(!empty($key)){
 		$key = str_replace("/","\/",$key);
 		$key = str_replace('"','\"',$key);
-	}
+		};
 	return $key;
 }
 
@@ -599,10 +484,7 @@ function txt2json($key='')
 function txt2arr($str='')
 {
 	$key = '';
-	if(!empty($str))
-	{
-		$key = preg_split('/'.chr(10).'/',$str);
-	}
+	if(!empty($str)){ $key = split(chr(10),$str); }
 	return $key;
 }
 

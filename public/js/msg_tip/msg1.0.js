@@ -3,7 +3,6 @@
 * 类似于微博新消息提示框
 * 
 */
-
 (function($){
 		  $.fn.msgtip = function(options){
 			 var $eml = $(this);

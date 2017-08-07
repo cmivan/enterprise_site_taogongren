@@ -1,5 +1,5 @@
 <?php
-#其他页面信息
+#淘工会信息
 
 class Sys_page_Model extends CI_Model {
 
@@ -8,34 +8,23 @@ class Sys_page_Model extends CI_Model {
         parent::__construct();
     }
 	
-    
-	/*返回sql(用于页面 /Sys_page 列表数据)*/
+	//返回sql(用于页面 /Sys_page 列表数据)
 	function get_sql()
 	{
-		$this->db->select('*');
-		$this->db->from('sys_page');
-		$this->db->order_by('id','desc');
-		//返回SQL
-		return $this->db->getSQL();
+		return "select * from sys_page order by id desc";
 	}
 	
-	
-	/*内容详情*/
+	//返回文章内容详情
 	function view($id=0)
 	{
-	    $this->db->select('*');
-    	$this->db->from('sys_page');
-    	$this->db->where('id',$id);
-    	$this->db->limit(1);
-    	return $this->db->get()->row();
+		return $this->db->query("select * from sys_page where id=".$id)->row();
 	}
 	
 	
-	/*删除内容*/
+	//删除文章内容
 	function del($id)
 	{
-    	$this->db->where('id', $id);
-    	return $this->db->delete('sys_page');
+		return $this->db->query("delete from sys_page where id=".$id);
 	}
 	
 }

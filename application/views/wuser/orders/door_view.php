@@ -23,7 +23,7 @@ $(function(){
 </head><body><?php $this->load->view('public/top'); ?><div class="main_width"><div class="body_main">
 <?php /*?>管理页面的框架分布<?php */?><div class="my_left"><div class="my_left_nav"><?php $this->load->view($c_url.'leftnav'); ?><div class="clear"></div></div></div>
 <div class="my_right"><div class="mainbox" box="content_box">
-<?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo Get_User_Nav($thisnav,$c_url); ?> </div>
+<?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo c_nav($thisnav,$c_url); ?> </div>
 <div class="mainbox_box"><?php $this->load->view($c_url.'orders/ordertip'); ?><div class="content"><br><table width="100%" border="0" cellpadding="0" cellspacing="0"><?php if(!empty($view)){?><tr><td height="450" align="center" valign="top"><table width="100%" border="0" cellpadding="3" cellspacing="0"><tr><td width="100" align="left"><?php echo $this->User_Model->links($view->uid)?></td><td align="left">&nbsp;&nbsp;<span style="text-decoration:underline">单号：<?php echo $view->orderid?></span></td><td width="100" align="right">费用：<span class="chenghong"><?php echo $view->cost?></span> 元</td><td width="80" align="center"><?php echo dateYMD($view->addtime)?></td><td width="40" align="center">
 <?php echo $order_stat_btu;  /*?>订单状态<?php */ ?>
 </td><td width="60" class="diy_link_but"><a href="javascript:history.back(1);" style="font-weight:lighter">返回</a></td>  </tr>

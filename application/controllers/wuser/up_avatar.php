@@ -2,6 +2,9 @@
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Up_avatar extends W_Controller {
+	
+	public $data;  //用于返回页面数据
+	public $uid = 0;
 
 	public $facepath = ""; //图片上传目录
 	public $uppath   = ""; //根目录
@@ -16,8 +19,11 @@ class Up_avatar extends W_Controller {
 		@header("Cache-Control: private, post-check=0, pre-check=0, max-age=0", FALSE);
 		@header("Pragma: no-cache");
 		
+		//基础数据
+		$this->data = $this->basedata();
+		
 		//初始化用户id
-		$this->logid = get_num($this->logid,'404');
+		$this->uid = is_num($this->data["logid"],'404');
 
 		$this->load->helper('avatar');
 		//图片处理类
@@ -29,8 +35,8 @@ class Up_avatar extends W_Controller {
 	    $this->uppath = '.'.$this->facepath;
 		
 		//初始化上传图片id
-		//$this->uppic_id = $this->logid.'f'.rand(100,999);
-		$this->uppic_id = $this->logid.date("dhi");
+		//$this->uppic_id = $this->uid.'f'.rand(100,999);
+		$this->uppic_id = $this->uid.date("dhi");
 
 	}
 	
@@ -141,8 +147,8 @@ class Up_avatar extends W_Controller {
 		
 		//用来记录是否上传团队头像
 		if(!empty($T)&&$T=='1'){
-			$this->logid = $this->User_Model->one2team_id($this->logid);
-			$this->logid = get_num($this->logid,'404');
+			$this->uid = $this->User_Model->one2team_id($this->uid);
+			$this->uid = is_num($this->uid,'404');
 			}
 		
 		//这里传过来会有两种类型，一先一后, big和small, 保存成功后返回一个json字串，客户端会再次post下一个.
@@ -151,7 +157,7 @@ class Up_avatar extends W_Controller {
 		if($type!='small'&&$type!='big'){$type='small';}
 		//需要用来保存图片,所以必须保证该id合法
 		$pic_id_temp = str_replace('0','',$pic_id);
-		$pic_id_temp = get_num($pic_id_temp);
+		$pic_id_temp = is_num($pic_id_temp);
 		if($pic_id_temp==false){exit;}
 		//$pattern="/(\d+)f(\d+)/";
 		//if(preg_match($pattern,$pic_id)==false)
@@ -161,7 +167,7 @@ class Up_avatar extends W_Controller {
 		//}
 
 		//生成图片存放路径
-		$new_path = picpath($type,$pic_id,$this->logid);
+		$new_path = picpath($type,$pic_id,$this->uid);
 		//将POST过来的二进制数据直接写入图片文件.
 		file_put_contents($this->uppath.$new_path,file_get_contents("php://input"));
 		
@@ -189,12 +195,11 @@ class Up_avatar extends W_Controller {
 		//<><><><><><><><><><><><><><><
 		//add by:cmivan time:2011-04-07
 		//更新头像
-		//$ss=inface($pic_id,$this->logid);
+		//$ss=inface($pic_id,$this->uid);
 		//$this = & get_instance();
 
-		//update `user` set `photoID`=".$pic_id." where id=".$this->logid
-		$this->User_Model->user_update( $this->logid , array('photoID' => $pic_id) );
-
+		$this->db->query("update `user` set `photoID`=".$pic_id." where id=".$this->uid);
+		
 		$msg = json_encode($d);
 		json_echo($msg);
 		

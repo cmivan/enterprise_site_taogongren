@@ -7,7 +7,8 @@
 <link rel="shortcut icon" href="/favicon.ico" />
 <style>body{background-color:#FEFAEF; font-size:12px; }</style>
 </head>
-<body><br><br>
+<body>
+<br><br>
 <div class="retrieval_left" style="text-align:center; padding:20px; padding-left:0; padding-right:0;">
 <div style="border:0; background:none; padding:5px;" id="smart_404"><img src="/public/images/error/404.jpg" /></div>
 <table width="600" border="0" align="center" cellpadding="0" cellspacing="10">

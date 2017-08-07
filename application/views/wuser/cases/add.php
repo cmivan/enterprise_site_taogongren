@@ -1,8 +1,5 @@
-<?php $this->load->view('public/validform'); ?>
-
-<div class="mainbox" box="content_box">
-<?php /*?>订单页面操作导航<?php */?>
-<div class="mainbox_nav"> <?php echo Get_User_Nav($thisnav,$c_urls); ?> </div>
+<?php $this->load->view('public/header'); ?>
+</head><body><?php $this->load->view('public/top'); ?><div class="main_width"><div class="body_main"><?php /*?>管理页面的框架分布<?php */?><div class="my_left"><div class="my_left_nav"><?php $this->load->view($c_url.'leftnav'); ?><div class="clear"></div></div></div><div class="my_right"><div class="mainbox" box="content_box"><?php /*?>订单页面操作导航<?php */?><div class="mainbox_nav"> <?php echo c_nav($thisnav,$c_urls); ?> </div>
 <div class="mainbox_box">
 <form class="validform" name="validform" id="validform" method="post"><table width="576" border="0" align="center" cellpadding="0" cellspacing="3"><tr><td colspan="2"><div class="edit_box_main"></div></td></tr>
 
@@ -24,4 +21,4 @@
 <?php echo $this->kindeditor->js('content','','100%','350px');?>
 
 </td></tr><tr><td colspan="2"><input type="submit" class="save_but" value="" /><input type="hidden" name="pic" value="0" /></td></tr></table></form>
-</div></div>
+</div></div></div><div class="clear"></div></div></div><?php $this->load->view('public/footer');?>
